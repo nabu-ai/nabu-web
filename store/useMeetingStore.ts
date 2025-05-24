@@ -1,6 +1,6 @@
-'use client';
+"use client";
 
-import { create } from 'zustand';
+import { create } from "zustand";
 
 interface MeetingState {
   muted: boolean;
@@ -13,8 +13,10 @@ interface MeetingState {
   setActiveSpeaker: (uid: string) => void;
 
   isChatOpen: boolean;
+  isTranscriptOpen: boolean;
   isParticipantsOpen: boolean;
   toggleChat: () => void;
+  toggleTranscript: () => void;
   toggleParticipants: () => void;
   messages: { uid: string; text: string; time: string }[];
   sendMessage: (uid: string, text: string) => void;
@@ -39,20 +41,32 @@ export const useMeetingStore = create<MeetingState>((set) => ({
     }),
   setActiveSpeaker: (uid) => set(() => ({ activeSpeakerUid: uid })),
   isChatOpen: false,
+  isTranscriptOpen: false,
   isParticipantsOpen: false,
   toggleChat: () =>
     set((s) => ({
       isChatOpen: !s.isChatOpen,
       isParticipantsOpen: false,
+      isTranscriptOpen: false,
+    })),
+  toggleTranscript: () =>
+    set((s) => ({
+      isTranscriptOpen: !s.isTranscriptOpen,
+      isParticipantsOpen: false,
+      isChatOpen: false,
     })),
   toggleParticipants: () =>
     set((s) => ({
       isParticipantsOpen: !s.isParticipantsOpen,
       isChatOpen: false,
+      isTranscriptOpen: false,
     })),
   messages: [],
   sendMessage: (uid, text) =>
     set((s) => ({
-      messages: [...s.messages, { uid, text, time: new Date().toLocaleTimeString() }],
+      messages: [
+        ...s.messages,
+        { uid, text, time: new Date().toLocaleTimeString() },
+      ],
     })),
 }));
