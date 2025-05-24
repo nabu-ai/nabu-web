@@ -14,7 +14,13 @@ import {
   VideoOffIcon,
 } from "lucide-react";
 
-export default function ControlBar({ uid }: { uid: string }) {
+export default function ControlBar({
+  uid,
+  roomName,
+}: {
+  uid: string;
+  roomName: string;
+}) {
   const { raiseHand } = useMeetingStore();
 
   const isRaised = useMeetingStore((s) => s.raisedHands[uid]);
@@ -25,13 +31,13 @@ export default function ControlBar({ uid }: { uid: string }) {
   const videoEnabled = useMeetingStore((s) => s.videoEnabled);
   const toggleVideo = useMeetingStore((s) => s.toggleVideo);
   const toggleChat = useMeetingStore((s) => s.toggleChat);
-   const toggleTranscript = useMeetingStore((s) => s.toggleTranscript);
+  const toggleTranscript = useMeetingStore((s) => s.toggleTranscript);
   const toggleParticipants = useMeetingStore((s) => s.toggleParticipants);
 
   return (
     <div className="fixed bottom-4 w-full flex justify-between items-center px-8 text-white">
       {/* Left Group */}
-      <div className="flex space-x-4">6 PM | oka-jeaz-uco</div>
+      <div className="flex space-x-4">{roomName}</div>
 
       {/* Center Group */}
       <div className="flex space-x-4">
@@ -84,7 +90,8 @@ export default function ControlBar({ uid }: { uid: string }) {
         >
           <MessageCircleMoreIcon />
         </button>
-        <button onClick={toggleTranscript}
+        <button
+          onClick={toggleTranscript}
           title="Transcript"
           className="p-3 bg-gray-700 hover:bg-gray-600 rounded-full text-white"
         >

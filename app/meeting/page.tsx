@@ -31,23 +31,12 @@ export default function MeetingPage() {
     micOn,
     camOn
   );
-
-  const isChatOpen = useMeetingStore((s) => s.isChatOpen);
-  const isParticipantsOpen = useMeetingStore((s) => s.isParticipantsOpen);
-  const sidePanelWidth = isChatOpen
-    ? "sm:mr-96"
-    : isParticipantsOpen
-    ? "sm:mr-80"
-    : "";
-
   return (
     <>
       <div className="flex h-screen bg-gray-900 text-white pb-20">
         {/* Main Screen */}
-        <div className="flex-1 flex p-4 w-full">
-          <div
-            className={`grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-4 w-full transition-all ${sidePanelWidth}`}
-          >
+        <div className="flex-1 flex p-4 w-full bg-white rounded-xl m-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-4 w-full transition-all">
             {localTracks[1] && (
               <VideoTile
                 user={{
@@ -84,7 +73,7 @@ export default function MeetingPage() {
           remoteUsers={remoteUsers}
         />
       </div>
-      <ControlBar uid={uid} />
+      <ControlBar uid={uid} roomName={room} />
     </>
   );
 }

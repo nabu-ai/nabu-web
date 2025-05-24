@@ -25,7 +25,7 @@ export default function ChatPanel({ uid }: { uid: string }) {
   if (!isChatOpen) return null;
 
   return (
-    <div className="w-1/4 flex flex-col rounded-xl bg-white text-black shadow-lg  border-l m-4">
+    <div className="w-1/4 flex flex-col rounded-xl bg-white text-black shadow-lg  border-l m-4 ml-0">
       {/* Chat Header */}
       <div className="p-4 text-lg font-bold border-b">Chat messages</div>
 
@@ -39,7 +39,7 @@ export default function ChatPanel({ uid }: { uid: string }) {
               </span>
               <span>{msg.time}</span>
             </div>
-            <div className="max-w-xs p-2 rounded-lg text-xs">{msg.text}</div>
+            <div className="p-2 pl-0 rounded-lg text-xs">{msg.text}</div>
           </div>
         ))}
       </div>

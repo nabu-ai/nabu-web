@@ -38,13 +38,13 @@ export default function ParticipantsPanel({
   };
 
   return (
-    <div className="w-1/4 flex flex-col rounded-xl bg-white text-black shadow-lg  border-l m-4">
+    <div className="w-1/4 flex flex-col rounded-xl bg-white text-black shadow-lg  border-l m-4 ml-0">
       <h2 className="p-4 text-lg font-bold border-b">Participants</h2>
       <div className="space-y-3">
         {users.map((user, index) => (
           <div
             key={index}
-            className="flex items-center justify-between p-2 rounded-md bg-gray-100"
+            className="flex items-center justify-between p-2 m-2 rounded-md bg-gray-100"
           >
             {/* Initials Avatar */}
             <div className="w-10 h-10 flex items-center justify-center rounded-full bg-gray-500 text-white font-bold">
