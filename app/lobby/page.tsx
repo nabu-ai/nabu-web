@@ -1,19 +1,26 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { ChevronDownIcon } from "lucide-react";
 import {
   awsStreamingLanguages,
   ibmStreamingLanguages,
 } from "@/constants/languages";
+import { getVoiceFromLanguageCode } from "@/constants/voiceMap";
 
 export default function LobbyPage() {
   const [name, setName] = useState("");
-  const [language, setLanguage] = useState("en");
+  const [language, setLanguage] = useState("");
   const [room, setRoom] = useState("nabu");
+  const [hasMaleVoice, setHasMaleVoice] = useState(false);
+  const [hasFemaleVoice, setHasFemaleVoice] = useState(false);
   const router = useRouter();
-  const languagesMap = { ...awsStreamingLanguages, ...ibmStreamingLanguages };
+  const languagesMap = {
+    ...{ "": "Preferred Language" },
+    ...awsStreamingLanguages,
+    ...ibmStreamingLanguages,
+  };
   const handleJoin = () => {
     if (!name.trim()) return alert("Please enter your name");
     if (!language) return alert("Please select a language");
@@ -23,6 +30,13 @@ export default function LobbyPage() {
       `/meeting?name=${encodeURIComponent(name)}&lang=${language}&room=${room}`
     );
   };
+
+  useEffect(() => {
+    const voices = getVoiceFromLanguageCode(language);
+    setHasMaleVoice(voices?.male);
+    setHasFemaleVoice(voices?.female);
+    console.log(voices);
+  }, [language]);
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100 px-4">
@@ -57,6 +71,40 @@ export default function LobbyPage() {
             <ChevronDownIcon />
           </div>
         </div>
+        {language && (
+          <div>
+            <div className="text-black text-xl mb-2">Want to be heard as</div>
+
+            <div className="flex space-x-4">
+              <label className="flex items-center space-x-2 text-xl">
+                <input
+                  disabled={!hasMaleVoice}
+                  type="radio"
+                  className="w-6 h-6 text-blue-500 focus:ring-blue-500"
+                  name="option"
+                  value="male"
+                />
+                <span>He</span>
+              </label>
+
+              <label className="flex items-center space-x-2 text-xl">
+                <input
+                  disabled={!hasFemaleVoice}
+                  type="radio"
+                  className="w-6 h-6 text-red-500 focus:ring-red-500"
+                  name="option"
+                  value="female"
+                />
+                <span>She</span>
+              </label>
+            </div>
+
+            <div className="text-red-500">
+              {hasMaleVoice && !hasFemaleVoice && "Only male voice available"}
+              {hasFemaleVoice && !hasMaleVoice && "Only female voice available"}
+            </div>
+          </div>
+        )}
 
         <input
           type="text"
