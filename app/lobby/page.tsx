@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation';
 export default function LobbyPage() {
   const [name, setName] = useState('');
   const [language, setLanguage] = useState('en');
-  const [room, setRoom] = useState('nabu');
+  const [room, setRoom] = useState('nabu-test');
   const router = useRouter();
 
   const handleJoin = () => {

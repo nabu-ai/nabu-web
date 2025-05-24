@@ -20,6 +20,7 @@ export default function useAgora(
 
   const updateRemoteUsers = () => {
     setRemoteUsers([...client.remoteUsers]);
+
   };
 
   const start = async () => {
@@ -37,6 +38,8 @@ export default function useAgora(
       localTracksRef.current = [micTrack, camTrack];
       setLocalTracks([micTrack, camTrack]);
 
+      updateRemoteUsers();
+
       await client.publish([micTrack, camTrack]);
 
       for (const user of client.remoteUsers) {
@@ -44,7 +47,10 @@ export default function useAgora(
         if (user.hasAudio) await client.subscribe(user, 'audio').catch(() => {});
       }
 
-      updateRemoteUsers();
+      
+      client.on('user-joined', (user) => {
+        setRemoteUsers([...client.remoteUsers]);
+      });
 
       client.on('user-published', async (user, mediaType) => {
         await client.subscribe(user, mediaType).catch(() => {});
