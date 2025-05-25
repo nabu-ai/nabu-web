@@ -1,48 +1,67 @@
-'use client';
+"use client";
 
-import { useMeetingStore } from '@/store/useMeetingStore';
-import { useState } from 'react';
+import { useMeetingStore } from "@/store/useMeetingStore";
+import { SendHorizontalIcon } from "lucide-react";
+import { useState } from "react";
 
-export default function ChatPanel({ uid }: { uid: string}) {
+export default function ChatPanel({ uid }: { uid: string }) {
   const isChatOpen = useMeetingStore((s) => s.isChatOpen);
   const messages = useMeetingStore((s) => s.messages);
   const sendMessage = useMeetingStore((s) => s.sendMessage);
 
-  const [input, setInput] = useState('');
+  const [input, setInput] = useState("");
 
   const handleSend = () => {
     if (!input.trim()) return;
     sendMessage(uid, input.trim());
-    setInput('');
+    setInput("");
+  };
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter") {
+      handleSend();
+    }
   };
 
   if (!isChatOpen) return null;
 
   return (
-    <div className="fixed right-0 top-0 h-full w-full sm:w-96 bg-white text-black shadow-lg z-40 flex flex-col border-l">
-      <div className="flex-none p-4 border-b font-semibold">Chat</div>
-      <div className="flex-1 overflow-y-auto px-4 py-2 space-y-2">
-        {messages.map((m, idx) => (
-          <div key={idx} className="text-sm">
-            <strong>{m.uid === uid ? 'You' : m.uid}</strong>: {m.text}
-            <div className="text-xs text-gray-400">{m.time}</div>
+    <div className="w-1/4 flex flex-col rounded-xl bg-white text-black shadow-lg  border-l m-4 ml-0">
+      {/* Chat Header */}
+      <div className="p-4 text-lg font-bold border-b">Chat messages</div>
+
+      {/* Chat Messages */}
+      <div className="flex-1 p-4 overflow-y-auto space-y-2">
+        {messages.map((msg, index) => (
+          <div key={index} className="flex flex-col items-start">
+            <div className="text-xs text-gray-500 flex  w-full max-w-xs gap-4">
+              <span>
+                <b>{msg.uid === uid ? "You" : msg.uid}</b>
+              </span>
+              <span>{msg.time}</span>
+            </div>
+            <div className="p-2 pl-0 rounded-lg text-xs">{msg.text}</div>
           </div>
         ))}
       </div>
-      <div className="flex-none p-4 border-t flex gap-2">
-        <input
-          type="text"
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
-          className="flex-1 px-2 py-1 border rounded"
-          placeholder="Type a message"
-        />
-        <button
-          onClick={handleSend}
-          className="px-3 py-1 bg-blue-600 text-white rounded"
-        >
-          Send
-        </button>
+
+      {/* Chat Input */}
+      <div className="p-4 flex">
+        <div className="flex items-center p-2 border border-gray-300 rounded-full  w-full">
+          <input
+            type="text"
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            onKeyDown={handleKeyDown} // Detect Enter key press
+            className="flex-1 p-2 outline-none bg-transparent"
+            placeholder="Type a message..."
+          />
+          <button
+            className="p-2 text-gray-500 hover:text-blue-500"
+            onClick={handleSend}
+          >
+            <SendHorizontalIcon />
+          </button>
+        </div>
       </div>
     </div>
   );
