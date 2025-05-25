@@ -1,7 +1,7 @@
 'use client';
 
 import { useSearchParams } from 'next/navigation';
-import useAgora from '@/hooks/useAgora';
+import useAgora from '@/hooks/useAgoraVideoOnly';
 import VideoTile from '@/components/VideoTile';
 import ControlBar from '@/components/ControlBar';
 import SidebarToggles from '@/components/SidebarToggles';
@@ -17,14 +17,11 @@ const TEMP_TOKEN = ''; // Replace with real token if using secure join
 export default function MeetingPage() {
   const searchParams = useSearchParams();
   const name = searchParams.get('name') || 'Guest';
-  const camOn = true;//searchParams.get('camOn') === 'true';
-  const micOn = false;//searchParams.get('micOn') === 'true';
-  const lang = searchParams.get('lang') || 'en';
+  const camOn = true;
   const room = searchParams.get('room') || 'nabu-test';
-  // const uid = `${name}-${Math.floor(Math.random() * 100000)}`;
   const uid = name;
 
-  const { localTracks, remoteUsers } = useAgora(APP_ID, TEMP_TOKEN, room, name, micOn, camOn);
+  const { localTracks, remoteUsers } = useAgora(APP_ID, TEMP_TOKEN, room, name, camOn);
 
   const isChatOpen = useMeetingStore((s) => s.isChatOpen);
   const isParticipantsOpen = useMeetingStore((s) => s.isParticipantsOpen);
@@ -41,7 +38,7 @@ export default function MeetingPage() {
 
       <div className={`grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 transition-all ${sidePanelWidth}`}>
         {localTracks[1] && (
-          <VideoTile user={{ name: String(name), uid: String(uid), audioTrack: localTracks[0], videoTrack: localTracks[1] }} isLocal={true} />
+          <VideoTile user={{ name: String(name), uid: String(uid), videoTrack: localTracks[1] }} isLocal={true} />
         )}
         {remoteUsers.map((user) => (
           <VideoTile key={String(user.uid)}
