@@ -8,17 +8,20 @@ import ChatPanel from "@/components/ChatPanel";
 import ParticipantsPanel from "@/components/ParticipantsPanel";
 import { useMeetingStore } from "@/store/useMeetingStore";
 import TranscriptPanel from "@/components/TranscriptPanel";
+import { useEffect } from "react";
 
-const APP_ID = "";
-const TEMP_TOKEN = ""; // Replace with real token if using secure join
+const APP_ID = 'YOUR_AGORA_APP_ID'; // Replace with your Agora App ID
+const TEMP_TOKEN = ''; // Replace with real token if using secure join
 
 export default function MeetingPage() {
+  const meetingInfo = useMeetingStore((s) => s.meetingInfo);
   const searchParams = useSearchParams();
-  const name = searchParams.get("name") || "Guest";
+  const name = meetingInfo.name || "Guest";
   const camOn = true;   // Default to true for video-only mode
-  const lang = searchParams.get("lang") || "en";
-  const room = searchParams.get("room") || "nabu";
+  const lang = meetingInfo.language || "en-US";
+  const room = meetingInfo.room;
   const uid = name;
+
 
   const { localTracks, remoteUsers } = useAgora(
     APP_ID,
