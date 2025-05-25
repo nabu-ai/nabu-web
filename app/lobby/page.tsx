@@ -8,6 +8,7 @@ import {
   ibmStreamingLanguages,
 } from "@/constants/languages";
 import { getVoiceFromLanguageCode } from "@/constants/voiceMap";
+import { useMeetingStore } from "@/store/useMeetingStore";
 
 export default function LobbyPage() {
   const [name, setName] = useState("");
@@ -15,19 +16,35 @@ export default function LobbyPage() {
   const [room, setRoom] = useState("nabu");
   const [hasMaleVoice, setHasMaleVoice] = useState(false);
   const [hasFemaleVoice, setHasFemaleVoice] = useState(false);
+  const [selectedVoice, setSelectedVoice] = useState("");
   const router = useRouter();
   const languagesMap = {
     ...{ "": "Preferred Language" },
     ...awsStreamingLanguages,
     ...ibmStreamingLanguages,
   };
+  const meetingInfo = useMeetingStore.getState().meetingInfo;
+
   const handleJoin = () => {
     if (!name.trim()) return alert("Please enter your name");
     if (!language) return alert("Please select a language");
     if (!room.trim()) return alert("Please enter a room name");
+    if (!selectedVoice.trim()) return alert("Please select a voice option");
+
+    alert(selectedVoice.trim())
+
+    useMeetingStore.setState({
+      meetingInfo: {
+        ...meetingInfo,
+        name,
+        language,
+        room,
+        gender: selectedVoice
+      }
+    });
 
     router.push(
-      `/meeting?name=${encodeURIComponent(name)}&lang=${language}&room=${room}`
+      `/meeting`
     );
   };
 
@@ -42,7 +59,7 @@ export default function LobbyPage() {
     <div className="flex items-center justify-center min-h-screen bg-gray-100 px-4">
       <div className="w-full max-w-md bg-white rounded-3xl shadow-2xl p-8 space-y-6">
         <div className="text-center">
-          <h1 className="text-2xl font-bold mb-1">Join a Meeting</h1>
+          <h1 className="text-2xl font-bold mb-1">Nabu Meeting</h1>
           <p className="text-gray-500 text-sm">
             Enter details to join the meeting
           </p>
@@ -79,6 +96,7 @@ export default function LobbyPage() {
               <label className="flex items-center space-x-2 text-xl">
                 <input
                   disabled={!hasMaleVoice}
+                  onClick={() => setSelectedVoice('male')}
                   type="radio"
                   className="w-6 h-6 text-blue-500 focus:ring-blue-500"
                   name="option"
@@ -90,6 +108,7 @@ export default function LobbyPage() {
               <label className="flex items-center space-x-2 text-xl">
                 <input
                   disabled={!hasFemaleVoice}
+                  onClick={() => setSelectedVoice('female')}
                   type="radio"
                   className="w-6 h-6 text-red-500 focus:ring-red-500"
                   name="option"

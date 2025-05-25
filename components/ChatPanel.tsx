@@ -33,13 +33,13 @@ export default function ChatPanel({ uid }: { uid: string }) {
       <div className="flex-1 p-4 overflow-y-auto space-y-2">
         {messages.map((msg, index) => (
           <div key={index} className="flex flex-col items-start">
-            <div className="text-xs text-gray-500 flex  w-full max-w-xs gap-4">
+            <div className="text-sm text-gray-500 flex  w-full max-w-xs gap-4">
               <span>
                 <b>{msg.uid === uid ? "You" : msg.uid}</b>
               </span>
               <span>{msg.time}</span>
             </div>
-            <div className="p-2 pl-0 rounded-lg text-xs">{msg.text}</div>
+            <div className="p-2 pl-0 rounded-lg text-sm">{msg.text}</div>
           </div>
         ))}
       </div>

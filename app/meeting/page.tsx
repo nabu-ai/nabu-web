@@ -1,34 +1,33 @@
 "use client";
 
 import { useSearchParams } from "next/navigation";
-import useAgora from "@/hooks/useAgora";
+import useAgora from "@/hooks/useAgoraVideoOnly";
 import VideoTile from "@/components/VideoTile";
 import ControlBar from "@/components/ControlBar";
 import ChatPanel from "@/components/ChatPanel";
 import ParticipantsPanel from "@/components/ParticipantsPanel";
 import { useMeetingStore } from "@/store/useMeetingStore";
 import TranscriptPanel from "@/components/TranscriptPanel";
+import { useEffect } from "react";
 
-const APP_ID = "2b6e358cb3a140e0952e4d7b757a4ca9";
-const TEMP_TOKEN =
-  "007eJxTYFi3i0uh62/ZrfWL1t8tjejsD7tu4iZttthobmnFxYNp85sUGIySzFKNTS2Sk4wTDU0MUg0sTY1STVLMk8xNzRNNkhMt/dcaZDQEMjIoTGhkYWSAQBCfhSEvMamUgQEAj1sftA=="; // Replace with real token if using secure join
+const APP_ID = 'YOUR_AGORA_APP_ID'; // Replace with your Agora App ID
+const TEMP_TOKEN = ''; // Replace with real token if using secure join
 
 export default function MeetingPage() {
+  const meetingInfo = useMeetingStore((s) => s.meetingInfo);
   const searchParams = useSearchParams();
-  const name = searchParams.get("name") || "Guest";
-  const camOn = false; //searchParams.get('camOn') === 'true';
-  const micOn = false; //searchParams.get('micOn') === 'true';
-  const lang = searchParams.get("lang") || "en";
-  const room = searchParams.get("room") || "nabu";
-  // const uid = `${name}-${Math.floor(Math.random() * 100000)}`;
+  const name = meetingInfo.name || "Guest";
+  const camOn = true;   // Default to true for video-only mode
+  const lang = meetingInfo.language || "en-US";
+  const room = meetingInfo.room;
   const uid = name;
+
 
   const { localTracks, remoteUsers } = useAgora(
     APP_ID,
     TEMP_TOKEN,
     room,
     name,
-    micOn,
     camOn
   );
   return (

@@ -20,6 +20,9 @@ interface MeetingState {
   toggleParticipants: () => void;
   messages: { uid: string; text: string; time: string }[];
   sendMessage: (uid: string, text: string) => void;
+
+  meetingInfo: Record<string, any>; // Placeholder for meeting info;
+  setMeetingInfo: (info: Record<string, any>) => void; 
 }
 
 export const useMeetingStore = create<MeetingState>((set) => ({
@@ -66,7 +69,9 @@ export const useMeetingStore = create<MeetingState>((set) => ({
     set((s) => ({
       messages: [
         ...s.messages,
-        { uid, text, time: new Date().toLocaleTimeString() },
+        { uid, text, time: new Date().toLocaleTimeString().split(":").slice(0, 2).join(":")},
       ],
     })),
+    meetingInfo: {},
+  setMeetingInfo: (info) => set(() => ({ meetingInfo: info })),
 }));

@@ -11,14 +11,11 @@ export default function VideoTile({ user, isLocal }: { user: any; isLocal?: bool
   const isSpeaker = activeSpeakerUid === user.uid;
   const isMuted = isLocal ? muted : user.audioTrack?.isEnabled?.() === false;
   const isVideoEnabled = isLocal ? videoEnabled : user.hasVideo;
-  //const isVideoEnabled = isLocal ? videoEnabled : user.videoTrack?.isEnabled?.() !== false; V2
-  //const isVideoEnabled = user.videoTrack?.isEnabled?.() !== false; V1
   const showPlaceholder = !user.videoTrack || !isVideoEnabled;
   const finalPlaceHolder = isLocal ? showPlaceholder: user.hasVideo === false
 
   useEffect(() => {
     const container = videoRef.current;
-    console.log(`UVT user - ${user.uid} with video ${isVideoEnabled} with FPH: ${finalPlaceHolder}`)
     if (
       !showPlaceholder &&
       container &&
@@ -28,18 +25,13 @@ export default function VideoTile({ user, isLocal }: { user: any; isLocal?: bool
       container.innerHTML = '';
       try {
         user.videoTrack.play(container);
-       // console.log(`Playing video for ${user.uid}`);
-        console.log(`Playable videoTrack for local user - ${user.uid} ( ${isLocal} ) with video enabled: ${isVideoEnabled} and showPlaceholder - ${showPlaceholder}`);
       } catch (err) {
         console.warn(`Video play error for ${user.uid}:`, err);
       }
     } else if (container) {
       container.innerHTML = '';
-      console.log(`No playable videoTrack yet for ${user.uid}`);
     }
-    else{
-      console.log(`No playable videoTrack yetttttt for local user - ${user.uid} ( ${isLocal} ) with video enabled: ${isVideoEnabled} and showPlaceholder - ${showPlaceholder}`);
-    }
+   
   
     return () => {
       if (user?.videoTrack && typeof user.videoTrack.stop === 'function') {
