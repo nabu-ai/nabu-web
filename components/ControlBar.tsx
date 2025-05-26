@@ -13,6 +13,8 @@ import {
   VideoIcon,
   VideoOffIcon,
 } from "lucide-react";
+import { useEffect, useRef } from "react";
+import { onRaiseHand, sendRaiseHand, onMute, sendMute } from '@/services/websocket';
 
 export default function ControlBar({
   uid,
@@ -21,9 +23,10 @@ export default function ControlBar({
   uid: string;
   roomName: string;
 }) {
-  const { raiseHand } = useMeetingStore();
+  const { raiseHand, muteUser } = useMeetingStore();
 
   const isRaised = useMeetingStore((s) => s.raisedHands[uid]);
+  const isMuted = useMeetingStore((s) => s.mutedUsers[uid]);
 
   const muted = useMeetingStore((s) => s.muted);
   const toggleMute = useMeetingStore((s) => s.toggleMute);
@@ -34,6 +37,53 @@ export default function ControlBar({
   const toggleTranscript = useMeetingStore((s) => s.toggleTranscript);
   const toggleParticipants = useMeetingStore((s) => s.toggleParticipants);
 
+   const hasInitialized = useRef(false);
+
+  useEffect(() => {
+
+    if (!hasInitialized.current) {
+      hasInitialized.current = true;
+
+      if (muted) {
+        muteUser(uid);
+        sendMute(uid, true);
+      }
+    }
+
+    const unsubRaise = onRaiseHand((uid, raised) => {
+      useMeetingStore.getState().setHandState(uid, raised);
+    });
+
+     const unsubMute = onMute((uid, mute) => {
+      useMeetingStore.getState().setMuteState(uid, mute);
+    });
+
+    
+
+    return () => {
+      unsubRaise();
+      unsubMute();
+    };
+  }, []);
+
+
+    const handleRaiseHand = () => {
+      raiseHand(uid);
+      sendRaiseHand(uid, !isRaised);
+    };
+
+    const handleMute = () => {
+      //toggleMute();
+      muteUser(uid);
+      sendMute(uid, !isMuted);
+    };
+
+    const handleLeave = () => {
+      window.location.href = "/lobby";
+    };
+
+
+
   return (
     <div className="fixed bottom-4 w-full flex justify-between items-center px-8 text-white">
       {/* Left Group */}
@@ -42,13 +92,13 @@ export default function ControlBar({
       {/* Center Group */}
       <div className="flex space-x-4">
         <button
-          title={muted ? "Unmute" : "Mute"}
-          onClick={toggleMute}
+          title={isMuted ? "Unmute" : "Mute"}
+          onClick={handleMute}
           className={`p-3  hover:bg-gray-600 rounded-full text-white" ${
-            muted ? "bg-red-600" : "bg-gray-700"
+            isMuted ? "bg-red-600" : "bg-gray-700"
           }`}
         >
-          {muted ? <MicOffIcon /> : <MicIcon />}
+          {isMuted ? <MicOffIcon /> : <MicIcon />}
         </button>
 
         <button
@@ -62,7 +112,7 @@ export default function ControlBar({
         </button>
         <button
           title={isRaised ? "Put hand down" : "Raise Hand"}
-          onClick={() => raiseHand(uid)}
+          onClick={() => handleRaiseHand()}
           className={`p-3  hover:bg-gray-600 rounded-full text-white" ${
             isRaised ? "bg-yellow-600" : "bg-gray-700"
           }`}
@@ -74,7 +124,7 @@ export default function ControlBar({
         </button>
         <button
           title="Leave"
-          onClick={() => (window.location.href = "/lobby")}
+          onClick={() => handleLeave()}
           className="p-3 bg-red-600 hover:bg-red-500 rounded-full text-white"
         >
           <PhoneOffIcon />

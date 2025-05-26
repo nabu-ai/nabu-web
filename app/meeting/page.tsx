@@ -1,6 +1,5 @@
 "use client";
 
-import { useSearchParams } from "next/navigation";
 import useAgora from "@/hooks/useAgoraVideoOnly";
 import VideoTile from "@/components/VideoTile";
 import ControlBar from "@/components/ControlBar";
@@ -8,28 +7,26 @@ import ChatPanel from "@/components/ChatPanel";
 import ParticipantsPanel from "@/components/ParticipantsPanel";
 import { useMeetingStore } from "@/store/useMeetingStore";
 import TranscriptPanel from "@/components/TranscriptPanel";
-import { useEffect } from "react";
-
-const APP_ID = 'YOUR_AGORA_APP_ID'; // Replace with your Agora App ID
-const TEMP_TOKEN = ''; // Replace with real token if using secure join
 
 export default function MeetingPage() {
   const meetingInfo = useMeetingStore((s) => s.meetingInfo);
-  const searchParams = useSearchParams();
+
   const name = meetingInfo.name || "Guest";
-  const camOn = true;   // Default to true for video-only mode
+  const camOn = false;   // Default to true for video-only mode
   const lang = meetingInfo.language || "en-US";
   const room = meetingInfo.room;
   const uid = name;
+  
 
 
   const { localTracks, remoteUsers } = useAgora(
-    APP_ID,
-    TEMP_TOKEN,
+    meetingInfo.appId,
+    meetingInfo.token,
     room,
     name,
     camOn
   );
+
   return (
     <>
       <div className="flex h-screen bg-gray-900 text-white pb-20">
@@ -64,7 +61,7 @@ export default function MeetingPage() {
         </div>
 
         {/* Right Sidebar (Chat) */}
-        <ChatPanel uid={uid} />
+        <ChatPanel uid={uid} room={room}/>
         <TranscriptPanel uid={uid} />
         <ParticipantsPanel
           localUid={uid}
