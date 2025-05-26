@@ -6,10 +6,12 @@ interface MeetingState {
   muted: boolean;
   videoEnabled: boolean;
   raisedHands: Record<string, boolean>;
+  mutedUsers: Record<string, boolean>;
   activeSpeakerUid: string | null;
   toggleMute: () => void;
   toggleVideo: () => void;
   raiseHand: (uid: string) => void;
+  muteUser: (uid: string) => void;
   setActiveSpeaker: (uid: string) => void;
 
   isChatOpen: boolean;
@@ -22,13 +24,17 @@ interface MeetingState {
   sendMessage: (uid: string, text: string) => void;
 
   meetingInfo: Record<string, any>; // Placeholder for meeting info;
-  setMeetingInfo: (info: Record<string, any>) => void; 
+  setMeetingInfo: (info: Record<string, any>) => void;
+
+  setHandState: (uid: string, raised: boolean) => void;
+  setMuteState: (uid: string, mute: boolean) => void;
 }
 
 export const useMeetingStore = create<MeetingState>((set) => ({
-  muted: false,
-  videoEnabled: true,
+  muted: true,
+  videoEnabled: false,
   raisedHands: {},
+  mutedUsers: {},
   activeSpeakerUid: null,
   toggleMute: () => set((s) => ({ muted: !s.muted })),
   toggleVideo: () => set((s) => ({ videoEnabled: !s.videoEnabled })),
@@ -38,6 +44,16 @@ export const useMeetingStore = create<MeetingState>((set) => ({
       return {
         raisedHands: {
           ...state.raisedHands,
+          [uid]: !current,
+        },
+      };
+    }),
+  muteUser: (uid: string) =>
+    set((state) => {
+      const current = state.mutedUsers[uid] ?? false;
+      return {
+        mutedUsers: {
+          ...state.mutedUsers,
           [uid]: !current,
         },
       };
@@ -69,9 +85,21 @@ export const useMeetingStore = create<MeetingState>((set) => ({
     set((s) => ({
       messages: [
         ...s.messages,
-        { uid, text, time: new Date().toLocaleTimeString().split(":").slice(0, 2).join(":")},
+        { uid, text, time: new Date().toLocaleTimeString().split(":").slice(0, 2).join(":") },
       ],
     })),
-    meetingInfo: {},
+  meetingInfo: {},
   setMeetingInfo: (info) => set(() => ({ meetingInfo: info })),
+  setHandState: (uid, raised) =>
+    set((s) => ({
+      raisedHands: raised
+        ? { ...s.raisedHands, [uid]: true }
+        : Object.fromEntries(Object.entries(s.raisedHands).filter(([k]) => k !== uid)),
+    })),
+  setMuteState: (uid, muted) =>
+    set((s) => ({
+      mutedUsers: muted
+        ? { ...s.mutedUsers, [uid]: true }
+        : Object.fromEntries(Object.entries(s.mutedUsers).filter(([k]) => k !== uid)),
+    })),
 }));

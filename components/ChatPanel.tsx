@@ -1,18 +1,28 @@
 "use client";
 
 import { useMeetingStore } from "@/store/useMeetingStore";
-import { SendHorizontalIcon } from "lucide-react";
-import { useState } from "react";
+import { sendChatMessage, connectWebSocket, onChat } from '@/services/websocket';
 
-export default function ChatPanel({ uid }: { uid: string }) {
+import { SendHorizontalIcon } from "lucide-react";
+import { useEffect, useState } from "react";
+
+export default function ChatPanel({ uid, room }: { uid: string, room: string }) {
   const isChatOpen = useMeetingStore((s) => s.isChatOpen);
   const messages = useMeetingStore((s) => s.messages);
   const sendMessage = useMeetingStore((s) => s.sendMessage);
 
   const [input, setInput] = useState("");
 
+  useEffect(() => {
+    const unsub = onChat((uid, text) => {
+      useMeetingStore.getState().sendMessage(uid, text);
+    });
+    return unsub;
+  }, []);
+
   const handleSend = () => {
     if (!input.trim()) return;
+    sendChatMessage(uid, input.trim());
     sendMessage(uid, input.trim());
     setInput("");
   };
@@ -27,7 +37,7 @@ export default function ChatPanel({ uid }: { uid: string }) {
   return (
     <div className="w-1/4 flex flex-col rounded-xl bg-white text-black shadow-lg  border-l m-4 ml-0">
       {/* Chat Header */}
-      <div className="p-4 text-lg font-bold border-b">Chat messages</div>
+      <div className="p-4 text-lg font-bold border-b">Chat Messages</div>
 
       {/* Chat Messages */}
       <div className="flex-1 p-4 overflow-y-auto space-y-2">

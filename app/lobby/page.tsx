@@ -3,17 +3,19 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { ChevronDownIcon } from "lucide-react";
+import axios from "axios";
 import {
   awsStreamingLanguages,
   ibmStreamingLanguages,
 } from "@/constants/languages";
 import { getVoiceFromLanguageCode } from "@/constants/voiceMap";
 import { useMeetingStore } from "@/store/useMeetingStore";
+import { connectWebSocket } from "@/services/websocket";
 
 export default function LobbyPage() {
   const [name, setName] = useState("");
   const [language, setLanguage] = useState("");
-  const [room, setRoom] = useState("nabu");
+  const [room, setRoom] = useState("nabu-test");
   const [hasMaleVoice, setHasMaleVoice] = useState(false);
   const [hasFemaleVoice, setHasFemaleVoice] = useState(false);
   const [selectedVoice, setSelectedVoice] = useState("");
@@ -25,13 +27,18 @@ export default function LobbyPage() {
   };
   const meetingInfo = useMeetingStore.getState().meetingInfo;
 
-  const handleJoin = () => {
+  const handleJoin = async() => {
     if (!name.trim()) return alert("Please enter your name");
     if (!language) return alert("Please select a language");
     if (!room.trim()) return alert("Please enter a room name");
     if (!selectedVoice.trim()) return alert("Please select a voice option");
 
-    alert(selectedVoice.trim())
+    let {token, appId} = await fetchToken();
+    if (!token || !appId) {
+      //return alert("Failed to fetch token. Please try again later.");
+      token = "";
+      appId = "";
+    }
 
     useMeetingStore.setState({
       meetingInfo: {
@@ -39,20 +46,29 @@ export default function LobbyPage() {
         name,
         language,
         room,
-        gender: selectedVoice
+        gender: selectedVoice,
+        appId: appId,
+        token: token
       }
     });
+
+    connectWebSocket(room, name); // 🔁 one-time setup
 
     router.push(
       `/meeting`
     );
   };
 
+  const fetchToken = async () => {
+    const response = await fetch(`http://localhost:5001/api/streaming/token?channel=${room.trim()}&uid=${name.trim()}`);
+    const { token, appId } = await response.json();
+    return { token, appId };
+  }
+
   useEffect(() => {
     const voices = getVoiceFromLanguageCode(language);
     setHasMaleVoice(voices?.male);
     setHasFemaleVoice(voices?.female);
-    console.log(voices);
   }, [language]);
 
   return (

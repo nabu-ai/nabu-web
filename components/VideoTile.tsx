@@ -5,14 +5,13 @@ import { useMeetingStore } from '@/store/useMeetingStore';
 
 export default function VideoTile({ user, isLocal }: { user: any; isLocal?: boolean}) {
   const videoRef = useRef<HTMLDivElement>(null);
-  const { raisedHands, activeSpeakerUid, muted, videoEnabled } = useMeetingStore();
+  const { raisedHands, mutedUsers, activeSpeakerUid, videoEnabled } = useMeetingStore();
 
   const isRaised = raisedHands[user.uid];
   const isSpeaker = activeSpeakerUid === user.uid;
-  const isMuted = isLocal ? muted : user.audioTrack?.isEnabled?.() === false;
+  const isMuted = mutedUsers[user.uid];
   const isVideoEnabled = isLocal ? videoEnabled : user.hasVideo;
   const showPlaceholder = !user.videoTrack || !isVideoEnabled;
-  const finalPlaceHolder = isLocal ? showPlaceholder: user.hasVideo === false
 
   useEffect(() => {
     const container = videoRef.current;
