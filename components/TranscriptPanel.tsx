@@ -11,9 +11,10 @@ export default function TranscriptPanel({ uid }: { uid: string}) {
   const transcripts = useMeetingStore((s) => s.transcripts);
   const meetingInfo = useMeetingStore((s) => s.meetingInfo);
   
-  const {generateTranslationAudio, translate} = nabuTranslator
+  
 
   useEffect(() => {
+    const {generateTranslationAudio, translate} = nabuTranslator
     const unsub = onTranscript((uid, transcript, sourceLanguage, audioHeardAs) => {
       const options = {
         text: transcript,

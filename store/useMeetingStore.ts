@@ -14,6 +14,11 @@ interface MeetingState {
   muteUser: (uid: string) => void;
   setActiveSpeaker: (uid: string) => void;
 
+  agoraInstance: any;
+  agoraClient: any;
+  setAgoraInstance: (agoraInstance: any) => void;
+  setAgoraClient: (agoraClient: any) => void;
+
   isChatOpen: boolean;
   isTranscriptOpen: boolean;
   isParticipantsOpen: boolean;
@@ -62,6 +67,10 @@ export const useMeetingStore = create<MeetingState>((set) => ({
       };
     }),
   setActiveSpeaker: (uid) => set(() => ({ activeSpeakerUid: uid })),
+  agoraInstance: null,
+  agoraClient: null,
+  setAgoraInstance: (_agoraInstance) => set(() => ({agoraInstance: _agoraInstance})),
+  setAgoraClient: (_agoraClient) => set(() => ({agoraInstance: _agoraClient})),
   isChatOpen: false,
   isTranscriptOpen: false,
   isParticipantsOpen: false,

@@ -101,7 +101,7 @@ export default function ControlBar({
   const onAudioProcessed = (data) => {
     const store = useMeetingStore.getState();
     store.setActiveSpeaker(uid)
-    console.log("Data response AWS::", data);
+    console.log("Data response::", data);
     if (data?.transcript) {
       // Call BE to submit, transcript, sourceLanguage and audioHeardas
       sendTranscript(
@@ -146,7 +146,7 @@ export default function ControlBar({
   };
 
   const handleLeave = () => {
-    window.location.href = "/lobby";
+    window.location.href = "/nabu-web/lobby";
   };
 
   return (

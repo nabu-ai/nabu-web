@@ -1,5 +1,7 @@
 "use client";
 
+const nabuTranslator = require("nabu-translator/src");
+
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { ChevronDownIcon } from "lucide-react";
@@ -26,6 +28,7 @@ export default function LobbyPage() {
     ...ibmStreamingLanguages,
   };
   const meetingInfo = useMeetingStore.getState().meetingInfo;
+  const {prepareStreaming} = nabuTranslator;
 
   const handleJoin = async() => {
     if (!name.trim()) return alert("Please enter your name");
@@ -53,14 +56,35 @@ export default function LobbyPage() {
     });
 
     connectWebSocket(room, name); // 🔁 one-time setup
+    console.log("[NABU] before streaming:::", new Date().toLocaleTimeString())
+    //prepareStreaming()
 
     router.push(
       `/meeting`
     );
   };
 
+  useEffect(() => {
+    (async () => {
+      let AgoraRTC = (await import('agora-rtc-sdk-ng')).default;
+  
+      let client = AgoraRTC.createClient({ mode: 'rtc', codec: 'vp8' });   
+      // rest of your Agora logic
+      useMeetingStore.setState({
+        agoraInstance: AgoraRTC
+      })
+
+      useMeetingStore.setState({
+        agoraClient: client
+      })
+      //start(_client);
+    })();
+  }, []);
+
   const fetchToken = async () => {
-    const response = await fetch(`http://localhost:5001/api/streaming/token?channel=${room.trim()}&uid=${name.trim()}`);
+    
+    const response = await fetch(`https://nabu-0390bfe7dc2f.herokuapp.com/api/streaming/token?channel=${room.trim()}&uid=${name.trim()}`);
+    // const response = await fetch(`http://localhost:5001/api/streaming/token?channel=${room.trim()}&uid=${name.trim()}`);
     const { token, appId } = await response.json();
     return { token, appId };
   }

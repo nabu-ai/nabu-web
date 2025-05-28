@@ -14,8 +14,9 @@ const transcriptListeners: Set<TranscriptHandler> = new Set();
 
 export function connectWebSocket(roomId: string, uid: string): WebSocket | null {
     if (socket) return socket;
+    // socket = new WebSocket(`ws://localhost:5001?room=${roomId}&uid=${uid}`);
+    socket = new WebSocket(`https://nabu-0390bfe7dc2f.herokuapp.com?room=${roomId}&uid=${uid}`);
 
-    socket = new WebSocket(`ws://localhost:5001?room=${roomId}&uid=${uid}`);
 
     socket.onopen = () => {
         console.log(`[NABU WS] Connected to room ${roomId}`);
