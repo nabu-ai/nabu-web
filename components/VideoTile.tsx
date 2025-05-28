@@ -60,7 +60,8 @@ export default function VideoTile({ user, isLocal }: { user: any; isLocal?: bool
 
       {isMuted && (
         <div className="absolute top-2 right-2 bg-black bg-opacity-60 p-1 rounded-full">
-          🔇
+          {/* 🔇 */}
+          🚫🎤
         </div>
       )}
 

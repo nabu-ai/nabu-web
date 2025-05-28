@@ -1,7 +1,7 @@
 "use client";
 
 import { useMeetingStore } from "@/store/useMeetingStore";
-import { sendChatMessage, connectWebSocket, onChat } from '@/services/websocket';
+import { sendChatMessage, onChat } from '@/services/websocket';
 
 import { SendHorizontalIcon } from "lucide-react";
 import { useEffect, useState } from "react";
@@ -9,13 +9,13 @@ import { useEffect, useState } from "react";
 export default function ChatPanel({ uid, room }: { uid: string, room: string }) {
   const isChatOpen = useMeetingStore((s) => s.isChatOpen);
   const messages = useMeetingStore((s) => s.messages);
-  const sendMessage = useMeetingStore((s) => s.sendMessage);
+  const addMessage = useMeetingStore((s) => s.addMessage);
 
   const [input, setInput] = useState("");
 
   useEffect(() => {
     const unsub = onChat((uid, text) => {
-      useMeetingStore.getState().sendMessage(uid, text);
+      useMeetingStore.getState().addMessage(uid, text);
     });
     return unsub;
   }, []);
@@ -23,7 +23,7 @@ export default function ChatPanel({ uid, room }: { uid: string, room: string }) 
   const handleSend = () => {
     if (!input.trim()) return;
     sendChatMessage(uid, input.trim());
-    sendMessage(uid, input.trim());
+    addMessage(uid, input.trim());
     setInput("");
   };
   const handleKeyDown = (e) => {

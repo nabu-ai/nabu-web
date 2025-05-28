@@ -21,7 +21,10 @@ interface MeetingState {
   toggleTranscript: () => void;
   toggleParticipants: () => void;
   messages: { uid: string; text: string; time: string }[];
-  sendMessage: (uid: string, text: string) => void;
+  addMessage: (uid: string, text: string) => void;
+
+  transcripts: { uid: string; transcript: string; sourceLanguage: string, audioHeardAs: string, time: string }[];
+  addTranscript: (uid: string, transcript: string, sourceLanguage: string, audioHeardAs: string) => void;
 
   meetingInfo: Record<string, any>; // Placeholder for meeting info;
   setMeetingInfo: (info: Record<string, any>) => void;
@@ -81,13 +84,23 @@ export const useMeetingStore = create<MeetingState>((set) => ({
       isTranscriptOpen: false,
     })),
   messages: [],
-  sendMessage: (uid, text) =>
+  addMessage: (uid, text) =>
     set((s) => ({
       messages: [
         ...s.messages,
-        { uid, text, time: new Date().toLocaleTimeString().split(":").slice(0, 2).join(":") },
+        // { uid, text, time: new Date().toLocaleTimeString().split(":").slice(0, 2).join(":") },
+        { uid, text, time: new Date().toLocaleTimeString() },
       ],
     })),
+  transcripts: [],
+  addTranscript: (uid, transcript, sourceLanguage, audioHeardAs) =>
+    set((s) => ({
+      transcripts: [
+        ...s.transcripts,
+        // { uid, transcript, sourceLanguage, audioHeardAs, time: new Date().toLocaleTimeString().split(":").slice(0, 2).join(":") },
+        { uid, transcript, sourceLanguage, audioHeardAs, time: new Date().toLocaleTimeString() },
+      ],
+  })),
   meetingInfo: {},
   setMeetingInfo: (info) => set(() => ({ meetingInfo: info })),
   setHandState: (uid, raised) =>

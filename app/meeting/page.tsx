@@ -29,7 +29,7 @@ export default function MeetingPage() {
 
   return (
     <>
-      <div className="flex h-screen bg-gray-900 text-white pb-20">
+      <div className="flex h-screen bg-gray-900 text-white pr-20">
         {/* Main Screen */}
         <div className="flex-1 flex p-4 w-full bg-white rounded-xl m-4">
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-4 w-full transition-all">
