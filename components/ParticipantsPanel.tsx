@@ -1,7 +1,7 @@
 "use client";
 
 import { useMeetingStore } from "@/store/useMeetingStore";
-import { EllipsisVerticalIcon, MicIcon, MicOffIcon } from "lucide-react";
+import { EllipsisVerticalIcon, MicIcon, MicOffIcon, XIcon } from "lucide-react";
 import { useState } from "react";
 
 export default function ParticipantsPanel({
@@ -16,6 +16,7 @@ export default function ParticipantsPanel({
   const isParticipantsOpen = useMeetingStore((s) => s.isParticipantsOpen);
   const raisedHands = useMeetingStore((s) => s.raisedHands);
   const muted = useMeetingStore((s) => s.muted);
+  const toggleParticipants = useMeetingStore((s) => s.toggleParticipants);
 
   if (!isParticipantsOpen) return null;
 
@@ -36,10 +37,19 @@ export default function ParticipantsPanel({
       .join("")
       .toUpperCase();
   };
-
   return (
     <div className="w-1/4 flex flex-col rounded-xl bg-white text-black shadow-lg  border-l m-4 ml-0">
-      <h2 className="p-4 text-lg font-bold border-b">Participants</h2>
+      <div className="flex justify-between font-bold border-b">
+        <div className="p-4 text-lg ">Participants</div>
+        <div className="p-4">
+          <button
+            className="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 inline-flex justify-center items-center"
+            onClick={()=>toggleParticipants()}
+          >
+            <XIcon />
+          </button>
+        </div>
+      </div>
       <div className="space-y-3">
         {users.map((user, index) => (
           <div

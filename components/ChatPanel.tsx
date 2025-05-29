@@ -3,13 +3,14 @@
 import { useMeetingStore } from "@/store/useMeetingStore";
 import { sendChatMessage, onChat } from '@/services/websocket';
 
-import { SendHorizontalIcon } from "lucide-react";
+import { SendHorizontalIcon, XIcon } from "lucide-react";
 import { useEffect, useState } from "react";
 
 export default function ChatPanel({ uid, room }: { uid: string, room: string }) {
   const isChatOpen = useMeetingStore((s) => s.isChatOpen);
   const messages = useMeetingStore((s) => s.messages);
   const addMessage = useMeetingStore((s) => s.addMessage);
+  const toggleChat = useMeetingStore((s) => s.toggleChat);
 
   const [input, setInput] = useState("");
 
@@ -33,11 +34,20 @@ export default function ChatPanel({ uid, room }: { uid: string, room: string }) 
   };
 
   if (!isChatOpen) return null;
-
   return (
     <div className="w-1/4 flex flex-col rounded-xl bg-white text-black shadow-lg  border-l m-4 ml-0">
       {/* Chat Header */}
-      <div className="p-4 text-lg font-bold border-b">Chat Messages</div>
+      <div className="flex justify-between font-bold border-b">
+        <div className="p-4 text-lg ">Chat Messages</div>
+        <div className="p-4">
+          <button
+            className="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 inline-flex justify-center items-center"
+            onClick={()=>toggleChat()}
+          >
+            <XIcon />
+          </button>
+        </div>
+      </div>
 
       {/* Chat Messages */}
       <div className="flex-1 p-4 overflow-y-auto space-y-2">
