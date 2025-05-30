@@ -1,5 +1,7 @@
 "use client";
 
+const nabuTranslator = require("nabu-translator/src");
+
 import { useMeetingStore } from "@/store/useMeetingStore";
 import { sendChatMessage, onChat } from '@/services/websocket';
 
@@ -11,20 +13,34 @@ export default function ChatPanel({ uid, room }: { uid: string, room: string }) 
   const messages = useMeetingStore((s) => s.messages);
   const addMessage = useMeetingStore((s) => s.addMessage);
   const toggleChat = useMeetingStore((s) => s.toggleChat);
+  const meetingInfo = useMeetingStore((s) => s.meetingInfo);
 
   const [input, setInput] = useState("");
 
   useEffect(() => {
-    const unsub = onChat((uid, text) => {
-      useMeetingStore.getState().addMessage(uid, text);
+    const {translate} = nabuTranslator
+    const unsub = onChat((uid, text, sourceLanguage) => {
+      const options = {
+        text,
+        sourceLanguage,
+        targetLanguage: meetingInfo.language,
+        onProcessed: (data) => {
+          const {translation} = data
+          useMeetingStore.getState().addMessage(uid, translation, meetingInfo.language);
+        },
+        onError: (data) => {
+          console.log("Error:::", data)
+        }
+      }
+      translate(options)
     });
     return unsub;
   }, []);
 
   const handleSend = () => {
     if (!input.trim()) return;
-    sendChatMessage(uid, input.trim());
-    addMessage(uid, input.trim());
+    sendChatMessage(uid, input.trim(), meetingInfo.language);
+    addMessage(uid, input.trim(), meetingInfo.language);
     setInput("");
   };
   const handleKeyDown = (e) => {

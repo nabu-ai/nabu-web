@@ -60,6 +60,7 @@ export default function ControlBar({
 
       if (muted) {
         muteUser(uid);
+        console.log(`[NABU] Muting user, ${uid} by default`)
         sendMute(uid, true);
       }
     }

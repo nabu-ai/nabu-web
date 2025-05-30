@@ -12,7 +12,7 @@
 node_modules
 
 *-lock.json
-*.DS_Store
+.DS_Store
 
 # testing
 /coverage

@@ -6,7 +6,6 @@ export default function useTokenRenewal(channelName, uid) {
 
   useEffect(() => {
     const renewToken = async () => {
-        // setToken("007eJxTYOAoCeUtOZ/sJ/Ofdz6j69PtVgzdOd0ztwhxrTLnMet/uUOBwSjJLNXY1CI5yTjR0MQg1cDS1CjVJMU8ydzUPNEkOdFSVcsgoyGQkaHoTRIrIwMEgvgsDHmJSaUMDABG+hvv")
     //   try {
     //     const response = await axios.post("http://localhost:5001/api/token", { channelName, uid });
     //     setToken(response.data.token);

@@ -25,10 +25,10 @@ interface MeetingState {
   toggleChat: () => void;
   toggleTranscript: () => void;
   toggleParticipants: () => void;
-  messages: { uid: string; text: string; time: string }[];
-  addMessage: (uid: string, text: string) => void;
+  messages: { uid: string; text: string; sourceLanguage: string;  time: string }[];
+  addMessage: (uid: string, text: string, sourceLanguage: string) => void;
 
-  transcripts: { uid: string; transcript: string; sourceLanguage: string, audioHeardAs: string, time: string }[];
+  transcripts: { uid: string; transcript: string; sourceLanguage: string; audioHeardAs: string; time: string }[];
   addTranscript: (uid: string, transcript: string, sourceLanguage: string, audioHeardAs: string) => void;
 
   meetingInfo: Record<string, any>; // Placeholder for meeting info;
@@ -93,12 +93,12 @@ export const useMeetingStore = create<MeetingState>((set) => ({
       isTranscriptOpen: false,
     })),
   messages: [],
-  addMessage: (uid, text) =>
+  addMessage: (uid, text, sourceLanguage) =>
     set((s) => ({
       messages: [
         ...s.messages,
         // { uid, text, time: new Date().toLocaleTimeString().split(":").slice(0, 2).join(":") },
-        { uid, text, time: new Date().toLocaleTimeString() },
+        { uid, text, sourceLanguage, time: new Date().toLocaleTimeString() },
       ],
     })),
   transcripts: [],

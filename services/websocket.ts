@@ -1,7 +1,8 @@
 import { useMeetingStore } from '@/store/useMeetingStore';
+import { NABU_SERVER_HOST } from '@/constants/consts';
 
 type RaiseHandHandler = (uid: string, raised: boolean) => void;
-type ChatHandler = (uid: string, text: string) => void;
+type ChatHandler = (uid: string, text: string, sourceLanguage: string) => void;
 type MuteHandler = (uid: string, mute: boolean) => void;
 type TranscriptHandler = (uid: string, text: string, sourceLanguage: string, audioHeardAs: string) => void;
 
@@ -14,9 +15,14 @@ const transcriptListeners: Set<TranscriptHandler> = new Set();
 
 export function connectWebSocket(roomId: string, uid: string): WebSocket | null {
     if (socket) return socket;
-    // socket = new WebSocket(`ws://localhost:5001?room=${roomId}&uid=${uid}`);
-    socket = new WebSocket(`https://nabu-0390bfe7dc2f.herokuapp.com?room=${roomId}&uid=${uid}`);
+   
+    socket = new WebSocket(`${NABU_SERVER_HOST}?room=${roomId}&uid=${uid}`);
 
+    setInterval(() => {
+        if (socket && socket.readyState === WebSocket.OPEN){
+            socket.send("keep-alive")
+        }
+    }, 30000)
 
     socket.onopen = () => {
         console.log(`[NABU WS] Connected to room ${roomId}`);
@@ -38,7 +44,7 @@ export function connectWebSocket(roomId: string, uid: string): WebSocket | null 
             if (msg.type === 'hand') {
                 raiseHandListeners.forEach((cb) => cb(msg.uid, msg.raised));
             } else if (msg.type === 'chat') {
-                chatListeners.forEach((cb) => cb(msg.uid, msg.text));
+                chatListeners.forEach((cb) => cb(msg.uid, msg.text, msg.sourceLanguage));
             } else if (msg.type === 'mute') {
                 muteListeners.forEach((cb) => cb(msg.uid, msg.muted));
             }
@@ -74,13 +80,14 @@ export function sendRaiseHand(uid: string, raised: boolean) {
     socket.send(JSON.stringify({ type: 'hand', uid, raised }));
 }
 
-export function sendChatMessage(uid: string, text: string) {
+export function sendChatMessage(uid: string, text: string, sourceLanguage: string) {
     if (!socket || socket.readyState !== WebSocket.OPEN) return;
-    socket.send(JSON.stringify({ type: 'chat', uid, text }));
+    socket.send(JSON.stringify({ type: 'chat', uid, text, sourceLanguage }));
 }
 
 export function sendMute(uid: string, muted: boolean) {
     if (!socket || socket.readyState !== WebSocket.OPEN) return;
+    console.log(`[NABU] Sending Mute for user, ${uid} with state: ${muted}`)
     socket.send(JSON.stringify({ type: 'mute', uid, muted }));
 }
 

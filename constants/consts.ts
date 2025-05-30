@@ -1,0 +1,1 @@
+export const NABU_SERVER_HOST = "https://nabu-0390bfe7dc2f.herokuapp.com"

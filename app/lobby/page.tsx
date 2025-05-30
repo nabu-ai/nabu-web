@@ -5,7 +5,7 @@ const nabuTranslator = require("nabu-translator/src");
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { ChevronDownIcon } from "lucide-react";
-import axios from "axios";
+import { NABU_SERVER_HOST } from "@/constants/consts";
 import {
   awsStreamingLanguages,
   ibmStreamingLanguages,
@@ -17,7 +17,7 @@ import { connectWebSocket } from "@/services/websocket";
 export default function LobbyPage() {
   const [name, setName] = useState("");
   const [language, setLanguage] = useState("");
-  const [room, setRoom] = useState("nabu-test");
+  const [room, setRoom] = useState("");
   const [hasMaleVoice, setHasMaleVoice] = useState(false);
   const [hasFemaleVoice, setHasFemaleVoice] = useState(false);
   const [selectedVoice, setSelectedVoice] = useState("");
@@ -43,6 +43,8 @@ export default function LobbyPage() {
       appId = "";
     }
 
+    connectWebSocket(room, name); // 🔁 one-time setup
+
     useMeetingStore.setState({
       meetingInfo: {
         ...meetingInfo,
@@ -55,13 +57,14 @@ export default function LobbyPage() {
       }
     });
 
-    connectWebSocket(room, name); // 🔁 one-time setup
-    console.log("[NABU] before streaming:::", new Date().toLocaleTimeString())
-    //prepareStreaming()
+    setTimeout(()=> {
+      router.push(
+        `/meeting`
+      );
+    }, 1000)
+    
 
-    router.push(
-      `/meeting`
-    );
+    
   };
 
   useEffect(() => {
@@ -82,9 +85,7 @@ export default function LobbyPage() {
   }, []);
 
   const fetchToken = async () => {
-    
-    const response = await fetch(`https://nabu-0390bfe7dc2f.herokuapp.com/api/streaming/token?channel=${room.trim()}&uid=${name.trim()}`);
-    // const response = await fetch(`http://localhost:5001/api/streaming/token?channel=${room.trim()}&uid=${name.trim()}`);
+    const response = await fetch(`${NABU_SERVER_HOST}/api/streaming/token?channel=${room.trim()}&uid=${name.trim()}`);
     const { token, appId } = await response.json();
     return { token, appId };
   }
@@ -94,6 +95,10 @@ export default function LobbyPage() {
     setHasMaleVoice(voices?.male);
     setHasFemaleVoice(voices?.female);
   }, [language]);
+
+  const handleLanguageSelect = (lang) => {
+    setLanguage(lang)
+  }
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100 px-4">
@@ -115,7 +120,7 @@ export default function LobbyPage() {
         <div className="relative">
           <select
             value={language}
-            onChange={(e) => setLanguage(e.target.value)}
+            onChange={(e) => handleLanguageSelect(e.target.value)}
             className="appearance-none h-16 w-full px-4 py-2 border border-black rounded-xl focus:outline-none focus:ring focus:border-blue-500 text-lg"
           >
             {Object.keys(languagesMap).map((languageCode) => (

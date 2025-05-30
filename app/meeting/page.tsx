@@ -38,7 +38,6 @@ export default function MeetingPage() {
                 user={{
                   name: String(name),
                   uid: String(uid),
-                  audioTrack: localTracks[0],
                   videoTrack: localTracks[1],
                 }}
                 isLocal={true}
@@ -51,7 +50,6 @@ export default function MeetingPage() {
                   name: String(name),
                   uid: String(user.uid),
                   videoTrack: user.videoTrack,
-                  audioTrack: user.audioTrack,
                   hasVideo: user.hasVideo,
                 }}
                 isLocal={false}

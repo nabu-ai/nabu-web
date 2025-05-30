@@ -2,65 +2,60 @@
 
 const nabuTranslator = require("nabu-translator/src");
 
-import { useMeetingStore } from "@/store/useMeetingStore";
-import { sendChatMessage, onTranscript } from "@/services/websocket";
-import { useEffect, useState } from "react";
+import { useMeetingStore } from '@/store/useMeetingStore';
+import { sendChatMessage, onTranscript } from '@/services/websocket';
+import { useEffect, useState } from 'react';
+import { AudioQueue } from "@/utils/AudioQueue";
 import { XIcon } from "lucide-react";
 
 export default function TranscriptPanel({ uid }: { uid: string }) {
   const isTranscriptOpen = useMeetingStore((s) => s.isTranscriptOpen);
   const transcripts = useMeetingStore((s) => s.transcripts);
   const meetingInfo = useMeetingStore((s) => s.meetingInfo);
+
+  const audioQueue = new AudioQueue();
   const toggleTranscript = useMeetingStore((s) => s.toggleTranscript);
+  
+
   useEffect(() => {
-    const { generateTranslationAudio, translate } = nabuTranslator;
-    const unsub = onTranscript(
-      (uid, transcript, sourceLanguage, audioHeardAs) => {
-        const options = {
-          text: transcript,
-          sourceLanguage,
-          targetLanguage: meetingInfo.language,
-          audioHeardAs,
-          onTranslated: (data) => {
-            const { translation } = data;
-            useMeetingStore
-              .getState()
-              .addTranscript(
-                uid,
-                translation,
-                meetingInfo.language,
-                meetingInfo.gender
-              );
-          },
-          onProcessed: (data) => {
-            const { translation, audio } = data;
-            //useMeetingStore.getState().addTranscript(uid, translation, meetingInfo.language, meetingInfo.gender);
-            if (audio) {
-              console.log(
-                "Audio received on:::",
-                new Date().toLocaleTimeString()
-              );
-              const audioElement = new Audio(URL.createObjectURL(audio));
-              audioElement.play();
-            }
-          },
-          onError: (data) => {
-            console.log("Error:::", data);
-          },
-        };
-        console.log("receiver options:::", options);
+    const {generateTranslationAudio} = nabuTranslator
+    const unsub = onTranscript((uid, transcript, sourceLanguage, audioHeardAs) => {
+      const options = {
+        text: transcript,
+        sourceLanguage,
+        targetLanguage: meetingInfo.language,
+        audioHeardAs,
+        onTranslated: (data) => {
+          const {translation} = data
+          useMeetingStore.getState().addTranscript(uid, translation, meetingInfo.language, meetingInfo.gender);
+        },
+        onProcessed:(data)=>{
+          const {audio} = data
+          if(audio){
+            console.log("Audio received on:::", new Date().toLocaleTimeString())
+            const audioElement = new Audio(URL.createObjectURL(audio));
+            //audioElement.play();
+            audioQueue.enqueue(audioElement);
+          }
+        }, 
+        onError: (data) => {
+          console.log("Error:::", data)
+        }
+      }
+      console.log("receiver options:::", options)
 
-        generateTranslationAudio(options);
-
-        //  const trOptions = {
-        //   text: transcript,
-        //   sourceLanguage,
-        //   targetLanguage: meetingInfo.language,
-        //   onProcessed: (data) =>{
-        //     const {translation} = data
-        //     useMeetingStore.getState().addTranscript(uid, translation, meetingInfo.language, meetingInfo.gender);
-        //   },
-        //   onError: () => {
+       generateTranslationAudio(options)
+       
+       
+      //  const trOptions = {
+      //   text: transcript,
+      //   sourceLanguage,
+      //   targetLanguage: meetingInfo.language,
+      //   onProcessed: (data) =>{
+      //     const {translation} = data
+      //     useMeetingStore.getState().addTranscript(uid, translation, meetingInfo.language, meetingInfo.gender);
+      //   }, 
+      //   onError: () => {
 
         //   }
         // }
