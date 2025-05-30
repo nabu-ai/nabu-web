@@ -125,7 +125,7 @@ export default function ControlBar({
     console.log("microphone stopped");
   };
 
-  const handleMute = () => {
+  const handleMute = async () => {
     //toggleMute();
     if (isMuted) {
       const output = "transcriptOnly";
@@ -137,7 +137,7 @@ export default function ControlBar({
         onProcessed: onAudioProcessed,
         onError: onAudioError,
       };
-      processMicrophone(options);
+      await processMicrophone(options);
     } else {
       stopMicrophoneRecording({ onStopped: onAudioRecordingStopped });
     }
