@@ -4,7 +4,6 @@ const nabuTranslator = require("nabu-translator/src");
 
 import { useMeetingStore } from "@/store/useMeetingStore";
 import {
-  EllipsisVerticalIcon,
   HandIcon,
   MessageCircleMoreIcon,
   MessageSquareTextIcon,
@@ -25,7 +24,7 @@ import {
   sendTranscript,
 } from "@/services/websocket";
 
-const { processMicrophone, stopMicrophoneRecording } = nabuTranslator;
+const { processMicrophone, stopMicrophoneRecording, terminateStreaming } = nabuTranslator;
 
 export default function ControlBar({
   uid,
@@ -53,6 +52,7 @@ export default function ControlBar({
 
   const hasInitialized = useRef(false);
   const [duration, setDuration] = useState(0);
+  const [isMuteProcessing, setIsMuteProcessing] = useState(true)
 
   useEffect(() => {
     if (!hasInitialized.current) {
@@ -120,15 +120,22 @@ export default function ControlBar({
     }
   };
 
+  const onConnectedToStreaming = () => {
+    console.log("[NABU] Connected callback")
+    setIsMuteProcessing(false)
+  }
+
   const onAudioError = () => {};
 
   const onAudioRecordingStopped = () => {
     console.log("microphone stopped");
   };
 
-  const handleMute = async () => {
+  const handleMute = () => {
+    
     //toggleMute();
     if (isMuted) {
+      setIsMuteProcessing(true)
       const output = "transcriptOnly";
       const options = {
         sourceLanguage: meetingInfo.language,
@@ -137,9 +144,11 @@ export default function ControlBar({
         output,
         onProcessed: onAudioProcessed,
         onError: onAudioError,
+        onConnected: onConnectedToStreaming
       };
-      await processMicrophone(options);
+      processMicrophone(options);
     } else {
+      setIsMuteProcessing(false)
       stopMicrophoneRecording({ onStopped: onAudioRecordingStopped });
     }
     muteUser(uid);
@@ -147,6 +156,9 @@ export default function ControlBar({
   };
 
   const handleLeave = () => {
+    setIsMuteProcessing(false)
+    stopMicrophoneRecording({ onStopped: onAudioRecordingStopped });
+    terminateStreaming();
     window.location.href = "/nabu-web/lobby";
   };
 
@@ -156,22 +168,23 @@ export default function ControlBar({
       <div className="mb-6 text-sm font-semibold text-gray-300">{roomName}</div>
 
       {/* Mic */}
-      <button
+      { !meetingInfo.nonVerbal && (<button
         title={isMuted ? "Unmute" : "Mute"}
         onClick={handleMute}
         className={`p-3 hover:bg-gray-600 rounded-full text-white ${
-          isMuted ? "bg-red-600" : "bg-gray-700"
+          isMuted ? "bg-red-600" : (isMuteProcessing?"bg-gray-700":"bg-green-700")
         }`}
       >
         {isMuted ? <MicOffIcon /> : <MicIcon />}
       </button>
+      )}
 
       {/* Video */}
       <button
         title={videoEnabled ? "Video On" : "Video Off"}
         onClick={toggleVideo}
         className={`p-3 hover:bg-gray-600 rounded-full text-white ${
-          videoEnabled ? "bg-gray-700" : "bg-red-600"
+          videoEnabled ? "bg-green-700" : "bg-red-600"
         }`}
       >
         {videoEnabled ? <VideoIcon /> : <VideoOffIcon />}

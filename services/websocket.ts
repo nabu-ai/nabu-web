@@ -18,18 +18,21 @@ export function connectWebSocket(roomId: string, uid: string): WebSocket | null 
    
     socket = new WebSocket(`${NABU_SERVER_HOST}?room=${roomId}&uid=${uid}`);
 
-    setInterval(() => {
-        if (socket && socket.readyState === WebSocket.OPEN){
-            socket.send("keep-alive")
-        }
-    }, 30000)
-
     socket.onopen = () => {
         console.log(`[NABU WS] Connected to room ${roomId}`);
+        setInterval(() => {
+            if (socket && socket.readyState === WebSocket.OPEN){
+                socket.send("keep-alive")
+            }
+        }, 30000)
     };
 
     socket.onerror = (err) => {
         console.error('[NABU WS] WebSocket error', err);
+        socket.close()
+        socket = null;
+        console.error('[NABU WS] WebSocket Reconnecting', err);
+        socket = new WebSocket(`${NABU_SERVER_HOST}?room=${roomId}&uid=${uid}`);
     };
 
     socket.onclose = () => {

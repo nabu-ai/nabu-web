@@ -54,33 +54,45 @@ const DashboardPage = () => {
       )}
 
       {/* Hero Section */}
-      <section className="container mx-auto flex flex-col items-center text-center py-20">
+      <section className="container mx-auto flex flex-col items-center text-center py-16">
         <h2 className="text-4xl font-bold text-gray-800">
           Speak Locally, Connect Globally
         </h2>
         <p className="mt-4 text-lg text-gray-600">
           Seamless communication with AI-powered calling and messaging.
         </p>
-        <a href="/nabu-web/lobby">
+       
+      </section>
+
+      {/* Features Section */}
+      <section className="container mx-auto grid grid-cols-1 md:grid-cols-3 gap-8 py-6">
+        <div className="p-6 bg-white shadow rounded-lg text-center">
+          <h3 className="text-xl font-bold text-gray-700">Multilingual Calling Solution</h3>
+          <p className="mt-2 text-gray-600">
+            Supports over 40 languages with transcriptions and translations.
+          </p>
+          <a href="/nabu-web/lobby" target="_blank">
           <button className="mt-6 bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-500">
             Get Started
           </button>
         </a>
-      </section>
-
-      {/* Features Section */}
-      <section className="container mx-auto grid grid-cols-1 md:grid-cols-3 gap-8 py-16">
-        <div className="p-6 bg-white shadow rounded-lg text-center">
-          <h3 className="text-xl font-bold text-gray-700">Multilingual Calling Solution</h3>
-          <p className="mt-2 text-gray-600">
-            Supports 41 languages.
-          </p>
         </div>
         <div className="p-6 bg-white shadow rounded-lg text-center">
-          <h3 className="text-xl font-bold text-gray-700">Messaging</h3>
+          <h3 className="text-xl font-bold text-gray-700">Multilingual Messaging</h3>
           <p className="mt-2 text-gray-600">
             Instantly connect with team members and clients.
           </p>
+        </div>
+        <div className="p-6 bg-white shadow rounded-lg text-center">
+          <h3 className="text-xl font-bold text-gray-700">Translator</h3>
+          <p className="mt-2 text-gray-600">
+            Instantly translate your text to any of available 41 languages.
+          </p>
+          <a href="/nabu-web/translator">
+          <button className="mt-6 bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-500">
+            Try now
+          </button>
+        </a>
         </div>
         <div className="p-6 bg-white shadow rounded-lg text-center">
           <h3 className="text-xl font-bold text-gray-700">Integrations</h3>

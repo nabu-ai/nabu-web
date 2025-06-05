@@ -46,7 +46,7 @@ export default function VideoTile({ user, isLocal }: { user: any; isLocal?: bool
   return (
     <div
       className={`relative aspect-video rounded-xl overflow-hidden bg-black shadow ${
-        isSpeaker ? 'ring-4 ring-blue-400' : ''
+        isSpeaker ? 'ring-4 ring-green-700' : ''
       }`}
     >
       {!isVideoEnabled ? (

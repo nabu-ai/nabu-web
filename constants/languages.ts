@@ -2,7 +2,7 @@ export const awsStreamingLanguages = {
   //'arb': 'Arabic',
   "ar-AE": "Arabic (Gulf)",
   "ca-ES": "Catalan",
-  "yue-CN": "Chinese (Cantonese)",
+  //"yue-CN": "Chinese (Cantonese)",
   "cmn-CN": "Chinese (Mandarin)",
   "cs-CZ": "Czech",
   "da-DK": "Danish",
