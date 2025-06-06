@@ -76,7 +76,9 @@ export default function LobbyPage() {
       },
     });
 
-    prepareStreaming(language);
+    if(!nonVerbal){
+      prepareStreaming(language);
+    }
 
     setTimeout(() => {
       router.push(`/meeting`);
