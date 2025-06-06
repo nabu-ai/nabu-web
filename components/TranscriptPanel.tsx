@@ -8,7 +8,7 @@ import {
   onTranscript,
   sendTranscript,
 } from "@/services/websocket";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { AudioQueue } from "@/utils/AudioQueue";
 import { SendHorizontalIcon, XIcon } from "lucide-react";
 
@@ -18,6 +18,7 @@ export default function TranscriptPanel({ uid }: { uid: string }) {
   const meetingInfo = useMeetingStore((s) => s.meetingInfo);
   const addTranscript = useMeetingStore((s) => s.addTranscript);
   const isMuted = useMeetingStore((s) => s.mutedUsers[uid]);
+  const transcriptsWindowRef = useRef(null); // Reference to scroll the transcripts window
 
   const audioQueue = new AudioQueue();
   const toggleTranscript = useMeetingStore((s) => s.toggleTranscript);
@@ -25,6 +26,10 @@ export default function TranscriptPanel({ uid }: { uid: string }) {
   const [input, setInput] = useState("");
 
   useEffect(() => {
+    if (transcriptsWindowRef.current) {
+      transcriptsWindowRef.current.scrollTop = transcriptsWindowRef.current.scrollHeight;
+    }
+
     const unsub = onTranscript(
       (uid, transcript, sourceLanguage, audioHeardAs) => {
         if (meetingInfo.hearingImpaired) {
@@ -104,6 +109,12 @@ export default function TranscriptPanel({ uid }: { uid: string }) {
     }
   };
 
+  useEffect(() => {
+    if (transcriptsWindowRef.current) {
+      transcriptsWindowRef.current.scrollTop = transcriptsWindowRef.current.scrollHeight;
+    }
+  }, [transcripts, isTranscriptOpen])
+
   if (!isTranscriptOpen) return null;
 
   return (
@@ -124,7 +135,7 @@ export default function TranscriptPanel({ uid }: { uid: string }) {
 
       <div></div>
       {/* Transcript Messages */}
-      <div className="flex-1 p-4 overflow-y-auto space-y-2">
+      <div className="flex-1 p-4 overflow-y-auto space-y-2"  ref={transcriptsWindowRef}>
         {transcripts.map((transcript, index) => (
           <div key={index} className="flex flex-col items-start">
             <div className="text-xs text-gray-500 flex  w-full max-w-xs gap-4">

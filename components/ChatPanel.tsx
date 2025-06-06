@@ -6,7 +6,7 @@ import { useMeetingStore } from "@/store/useMeetingStore";
 import { sendChatMessage, onChat } from '@/services/websocket';
 
 import { SendHorizontalIcon, XIcon } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 export default function ChatPanel({ uid, room }: { uid: string, room: string }) {
   const isChatOpen = useMeetingStore((s) => s.isChatOpen);
@@ -14,10 +14,14 @@ export default function ChatPanel({ uid, room }: { uid: string, room: string }) 
   const addMessage = useMeetingStore((s) => s.addMessage);
   const toggleChat = useMeetingStore((s) => s.toggleChat);
   const meetingInfo = useMeetingStore((s) => s.meetingInfo);
+  const chatWindowRef = useRef(null); // Reference to scroll the chat window
 
   const [input, setInput] = useState("");
 
   useEffect(() => {
+    if (chatWindowRef.current) {
+      chatWindowRef.current.scrollTop = chatWindowRef.current.scrollHeight;
+    }
     const {translate} = nabuTranslator
     const unsub = onChat((uid, text, sourceLanguage) => {
       const options = {
@@ -33,6 +37,7 @@ export default function ChatPanel({ uid, room }: { uid: string, room: string }) 
         }
       }
       translate(options)
+     
     });
     return unsub;
   }, []);
@@ -48,6 +53,12 @@ export default function ChatPanel({ uid, room }: { uid: string, room: string }) 
       handleSend();
     }
   };
+
+  useEffect(() => {
+    if (chatWindowRef.current) {
+      chatWindowRef.current.scrollTop = chatWindowRef.current.scrollHeight;
+    }
+  }, [messages, isChatOpen])
 
   if (!isChatOpen) return null;
   return (
@@ -66,7 +77,7 @@ export default function ChatPanel({ uid, room }: { uid: string, room: string }) 
       </div>
 
       {/* Chat Messages */}
-      <div className="flex-1 p-4 overflow-y-auto space-y-2">
+      <div className="flex-1 p-4 overflow-y-auto space-y-2"  ref={chatWindowRef}>
         {messages.map((msg, index) => (
           <div key={index} className="flex flex-col items-start">
             <div className="text-sm text-gray-500 flex  w-full max-w-xs gap-4">

@@ -15,6 +15,7 @@ export default function ParticipantsPanel({
 }) {
   const isParticipantsOpen = useMeetingStore((s) => s.isParticipantsOpen);
   const raisedHands = useMeetingStore((s) => s.raisedHands);
+  const mutedUsers = useMeetingStore((s) => s.mutedUsers);
   const muted = useMeetingStore((s) => s.muted);
   const toggleParticipants = useMeetingStore((s) => s.toggleParticipants);
 
@@ -74,11 +75,11 @@ export default function ParticipantsPanel({
 
             {/* Action Icons */}
             <div className="flex space-x-2 text-gray-400">
-              <button className="hover:text-white">
+              <button className={`hover:text-blue-500 ${mutedUsers[user.uid] ? 'text-red-400' : 'text-green-400'}`}>
                 {/* Mute Icon */}
-                {user.muted ? <MicOffIcon /> : <MicIcon />}
+                {mutedUsers[user.uid] ? <MicOffIcon /> : <MicIcon />}
               </button>
-              <button className="hover:text-red-500">
+              <button className="hover:text-blue-500 text-gray-400">
                 {/* More Icon */}
                 <EllipsisVerticalIcon className="w-5 h-5" />
               </button>
