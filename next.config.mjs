@@ -4,7 +4,6 @@ const nextConfig = {
      assetPrefix: "/nabu-web",
     output: "export",  // <=== enables static exports
     reactStrictMode: true,
-    swcMinify: false,
     images: {
         unoptimized: true, // Disable default image optimization
     },

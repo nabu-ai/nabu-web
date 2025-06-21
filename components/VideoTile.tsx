@@ -65,7 +65,7 @@ export default function VideoTile({ user, isLocal }: { user: any; isLocal?: bool
         </div>
       )}
 
-      <div className="absolute bottom-2 left-2 text-xs bg-black bg-opacity-60 text-white px-2 py-1 rounded">
+      <div className="absolute bottom-2 left-2 text-theme-sm bg-black bg-opacity-60 text-white px-2 py-1 rounded">
         {`${user.uid}`} {isRaised && '✋'}
       </div>
     </div>

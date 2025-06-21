@@ -165,7 +165,7 @@ export default function ControlBar({
   return (
     <div className="fixed top-1/2 right-4 transform -translate-y-1/2 flex flex-col items-center space-y-4 z-50 text-white">
       {/* Room name (at top of control bar) */}
-      <div className="mb-6 text-sm font-semibold text-gray-300">{roomName}</div>
+      <div className="mb-6 text-theme-xl font-semibold text-gray-300">{roomName}</div>
 
       {/* Mic */}
       { !meetingInfo.nonVerbal && (<button
@@ -246,7 +246,7 @@ export default function ControlBar({
       </button>
 
       {/* Room name (at top of control bar) */}
-      <div className="mt-auto text-sm text-gray-400 pt-6">
+      <div className="mt-auto text-theme-xl text-gray-400 pt-6">
         {formatDuration(duration)}
       </div>
     </div>

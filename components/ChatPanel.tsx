@@ -68,7 +68,7 @@ export default function ChatPanel({ uid, room }: { uid: string, room: string }) 
         <div className="p-4 text-lg ">Chat Messages</div>
         <div className="p-4">
           <button
-            className="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 inline-flex justify-center items-center"
+            className="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-theme-xl w-8 h-8 inline-flex justify-center items-center"
             onClick={()=>toggleChat()}
           >
             <XIcon />
@@ -80,13 +80,13 @@ export default function ChatPanel({ uid, room }: { uid: string, room: string }) 
       <div className="flex-1 p-4 overflow-y-auto space-y-2"  ref={chatWindowRef}>
         {messages.map((msg, index) => (
           <div key={index} className="flex flex-col items-start">
-            <div className="text-sm text-gray-500 flex  w-full max-w-xs gap-4">
+            <div className="text-theme-xl text-gray-500 flex  w-full max-w-xs gap-4">
               <span>
                 <b>{msg.uid === uid ? "You" : msg.uid}</b>
               </span>
               <span>{msg.time}</span>
             </div>
-            <div className="p-2 pl-0 rounded-lg text-sm">{msg.text}</div>
+            <div className="p-2 pl-0 rounded-lg text-theme-xl">{msg.text}</div>
           </div>
         ))}
       </div>

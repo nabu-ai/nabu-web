@@ -177,7 +177,7 @@ export default function LobbyPage() {
 
         <div className="text-center mb-6">
           <h1 className="text-2xl font-bold mb-1">Nabu Meeting</h1>
-          <p className="text-gray-500 text-sm">
+          <p className="text-gray-500 text-theme-xl">
             Enter details to join the meeting
           </p>
         </div>

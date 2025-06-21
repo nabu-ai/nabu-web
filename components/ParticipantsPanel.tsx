@@ -44,7 +44,7 @@ export default function ParticipantsPanel({
         <div className="p-4 text-lg ">Participants</div>
         <div className="p-4">
           <button
-            className="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 inline-flex justify-center items-center"
+            className="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-theme-xl w-8 h-8 inline-flex justify-center items-center"
             onClick={()=>toggleParticipants()}
           >
             <XIcon />
@@ -64,11 +64,11 @@ export default function ParticipantsPanel({
 
             {/* Participant Name & Status */}
             <div className="flex-1 mx-3">
-              <p className="text-sm font-medium">
+              <p className="text-theme-xl font-medium">
                 {user.isLocal ? "You" : `${user.uid}`}{" "}
                 {raisedHands[user.uid] && "✋"}
               </p>
-              <p className="text-xs text-gray-400">
+              <p className="text-theme-sm text-gray-400">
                 {user.uid ? "joined" : "NA"}
               </p>
             </div>

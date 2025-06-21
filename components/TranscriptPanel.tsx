@@ -125,7 +125,7 @@ export default function TranscriptPanel({ uid }: { uid: string }) {
         <div className="p-4 text-lg ">Transcripts</div>
         <div className="p-4">
           <button
-            className="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 inline-flex justify-center items-center"
+            className="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-theme-xl w-8 h-8 inline-flex justify-center items-center"
             onClick={() => toggleTranscript()}
           >
             <XIcon />
@@ -138,13 +138,13 @@ export default function TranscriptPanel({ uid }: { uid: string }) {
       <div className="flex-1 p-4 overflow-y-auto space-y-2"  ref={transcriptsWindowRef}>
         {transcripts.map((transcript, index) => (
           <div key={index} className="flex flex-col items-start">
-            <div className="text-xs text-gray-500 flex  w-full max-w-xs gap-4">
+            <div className="text-theme-sm text-gray-500 flex  w-full max-w-xs gap-4">
               <span>
                 <b>{transcript.uid === uid ? "You" : transcript.uid}</b>
               </span>
               <span>{transcript.time}</span>
             </div>
-            <div className="p-2 pl-0 rounded-lg text-xs">
+            <div className="p-2 pl-0 rounded-lg text-theme-sm">
               {transcript.transcript}
             </div>
           </div>

@@ -1,0 +1,5 @@
+const NEXT_PUBLIC_BASE_PATH = process.env.NEXT_PUBLIC_BASE_PATH ?? "/api/";
+const NEXT_PUBLIC_API_ENDPOINT = process.env.NEXT_PUBLIC_API_ENDPOINT ?? "";
+const IS_DEVELOPMENT_ENV = process.env.NODE_ENV === "development";
+
+export { NEXT_PUBLIC_BASE_PATH, NEXT_PUBLIC_API_ENDPOINT, IS_DEVELOPMENT_ENV };
