@@ -1,11 +1,12 @@
 import { SignInForm } from "@/components/auth/login/SignInForm";
 import { Metadata } from "next";
+import {useRouter} from "next/navigation"
 
 export const metadata: Metadata = {
-  title: "Next.js SignIn Page | TailAdmin - Next.js Dashboard Template",
-  description: "This is Next.js Signin Page TailAdmin Dashboard Template",
+  title: "Nabu",
+  description: "Multilingual Calling Solution",
 };
 
 export default function SignIn() {
-  return <SignInForm />;
+  return <SignInForm  />;
 }
