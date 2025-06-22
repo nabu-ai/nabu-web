@@ -72,10 +72,10 @@ const DashboardPage = () => {
             Supports over 40 languages with transcriptions and translations.
           </p>
           <a href="/nabu-web/lobby" target="_blank">
-          <button className="mt-6 bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-500">
-            Get Started
-          </button>
-        </a>
+            <button className="mt-6 bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-500">
+              Get Started
+            </button>
+          </a>
         </div>
         <div className="p-6 bg-white shadow rounded-lg text-center">
           <h3 className="text-xl font-bold text-gray-700">Multilingual Messaging</h3>

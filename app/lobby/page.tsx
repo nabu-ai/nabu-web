@@ -13,6 +13,7 @@ import {
 import { getVoiceFromLanguageCode } from "@/constants/voiceMap";
 import { useMeetingStore } from "@/store/useMeetingStore";
 import { connectWebSocket } from "@/services/websocket";
+import MediaPermissionPrompt from "@/components/MediaPermissionPrompt";
 
 export default function LobbyPage() {
   const [name, setName] = useState("");
@@ -34,11 +35,12 @@ export default function LobbyPage() {
   const hasInitialized = useRef(false);
   const [nonVerbal, setNonVerbal] = useState(false);
   const [hearingImpaired, setHearingImpaired] = useState(false);
+  const [permissionStatus, setPermissionStatus] = useState("");
 
   useEffect(() => {
     if (!hasInitialized.current) {
       hasInitialized.current = true;
-      requestMediaAccess();
+      // requestMediaAccess();
     }
   }, []);
 
@@ -48,10 +50,12 @@ export default function LobbyPage() {
     if (!room.trim()) return alert("Please enter a room name");
     if (!selectedVoice.trim()) return alert("Please select a voice option");
 
-    if (!mediaPermissionGranted)
+    if (!mediaPermissionGranted){
+      //requestMediaAccess();
       return alert(
         "Please grant permissions for accessing microphone and camera"
       );
+    }
 
     let { token, appId } = await fetchToken();
     if (!token || !appId) {
@@ -119,55 +123,6 @@ export default function LobbyPage() {
   const handleLanguageSelect = (lang) => {
     setLanguage(lang);
   };
-
-  async function checkMediaPermissions(): Promise<{
-    mic: PermissionState;
-    cam: PermissionState;
-  }> {
-    const micStatus = await navigator.permissions.query({
-      name: "microphone" as PermissionName,
-    });
-    const camStatus = await navigator.permissions.query({
-      name: "camera" as PermissionName,
-    });
-
-    return {
-      mic: micStatus.state,
-      cam: camStatus.state,
-    };
-  }
-
-  async function requestMediaAccess() {
-    try {
-      const { mic, cam } = await checkMediaPermissions();
-
-      if (mic !== "granted" || cam !== "granted") {
-        console.log("Requesting media permissions...");
-
-        // This will trigger the browser prompt if not already granted
-        const stream = await navigator.mediaDevices.getUserMedia({
-          audio: true,
-          video: true,
-        });
-
-        console.log("Permissions granted!");
-        if (stream) {
-          stream.getTracks().forEach((track) => track.stop());
-        }
-
-        setMediaPermissionGranted(true);
-      } else {
-        console.log("Permissions already granted.");
-        setMediaPermissionGranted(true);
-      }
-    } catch (error) {
-      setMediaPermissionGranted(false);
-      console.error("Error accessing media devices:", error);
-      alert(
-        "Please enable microphone and camera permissions in your browser settings."
-      );
-    }
-  }
 
 
   return (
@@ -274,14 +229,16 @@ export default function LobbyPage() {
             </label>
           </div>
 
-          <button
+          { permissionStatus === "granted" && <button
             onClick={handleJoin}
             className="h-16 w-full py-2 text-xl bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-semibold transition"
           >
             Join Meeting
           </button>
+}
         </div>
       </div>
+       <MediaPermissionPrompt onPermissionChange={setPermissionStatus}/>
     </div>
   );
 }
