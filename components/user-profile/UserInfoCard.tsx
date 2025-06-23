@@ -1,24 +1,13 @@
 "use client";
+import React from "react";
 import { useModal } from "../../hooks/useModal";
 import { Modal } from "../ui/modal";
-import { useUserStore } from "@/store/useUserStore";
-import { EditProfileForm } from "./components";
-
+import { Label } from "../ui/label";
+import { Input } from "../ui/input";
+import { Button } from "../ui/button";
 
 export default function UserInfoCard() {
   const { isOpen, openModal, closeModal } = useModal();
-  const userId = useUserStore.getState().loginData.userId
-  const userData = useUserStore.getState().userData;
-  const {firstName, lastName, email, phoneCode, phoneNumber} = userData || {};
-  // const { data: userInfo, isLoading } = useGetUserProfile(userId);
-  // const usrData = userInfo?.data
-
-  //console.log("userInfo:::", userData)
-
-  
-  //useUserStore.getState().setUserData(userInfo);
-
-
   const handleSave = () => {
     // Handle save logic here
     console.log("Saving changes...");
@@ -38,7 +27,7 @@ export default function UserInfoCard() {
                 First Name
               </p>
               <p className="text-theme-xl font-medium text-gray-800 dark:text-white/90">
-               {firstName}
+                Virendra
               </p>
             </div>
 
@@ -47,7 +36,7 @@ export default function UserInfoCard() {
                 Last Name
               </p>
               <p className="text-theme-xl font-medium text-gray-800 dark:text-white/90">
-                 {lastName}
+                Kumar
               </p>
             </div>
 
@@ -56,7 +45,7 @@ export default function UserInfoCard() {
                 Email address
               </p>
               <p className="text-theme-xl font-medium text-gray-800 dark:text-white/90">
-                 {email}
+                vk@gmail.com
               </p>
             </div>
 
@@ -65,7 +54,7 @@ export default function UserInfoCard() {
                 Phone
               </p>
               <p className="text-theme-xl font-medium text-gray-800 dark:text-white/90">
-                {phoneCode}  {phoneNumber}
+                +09 363 398 46
               </p>
             </div>
           </div>
@@ -104,7 +93,81 @@ export default function UserInfoCard() {
               Update your details to keep your profile up-to-date.
             </p>
           </div>
-          <EditProfileForm onSuccess={closeModal}/>
+          <form className="flex flex-col">
+            <div className="custom-scrollbar h-[450px] overflow-y-auto px-2 pb-3">
+              <div>
+                <h5 className="mb-5 text-lg font-medium text-gray-800 dark:text-white/90 lg:mb-6">
+                  Social Links
+                </h5>
+
+                <div className="grid grid-cols-1 gap-x-6 gap-y-5 lg:grid-cols-2">
+                  <div>
+                    <Label>Facebook</Label>
+                    <Input
+                      type="text"
+                      defaultValue="https://www.facebook.com/PimjoHQ"
+                    />
+                  </div>
+
+                  <div>
+                    <Label>X.com</Label>
+                    <Input type="text" defaultValue="https://x.com/PimjoHQ" />
+                  </div>
+
+                  <div>
+                    <Label>Linkedin</Label>
+                    <Input
+                      type="text"
+                      defaultValue="https://www.linkedin.com/company/pimjo"
+                    />
+                  </div>
+
+                  <div>
+                    <Label>Instagram</Label>
+                    <Input
+                      type="text"
+                      defaultValue="https://instagram.com/PimjoHQ"
+                    />
+                  </div>
+                </div>
+              </div>
+              <div className="mt-7">
+                <h5 className="mb-5 text-lg font-medium text-gray-800 dark:text-white/90 lg:mb-6">
+                  Personal Information
+                </h5>
+
+                <div className="grid grid-cols-1 gap-x-6 gap-y-5 lg:grid-cols-2">
+                  <div className="col-span-2 lg:col-span-1">
+                    <Label>First Name</Label>
+                    <Input type="text" defaultValue="Virendra" />
+                  </div>
+
+                  <div className="col-span-2 lg:col-span-1">
+                    <Label>Last Name</Label>
+                    <Input type="text" defaultValue="Kumar" />
+                  </div>
+
+                  <div className="col-span-2 lg:col-span-1">
+                    <Label>Email Address</Label>
+                    <Input type="text" defaultValue="vk@gmail.com" />
+                  </div>
+
+                  <div className="col-span-2 lg:col-span-1">
+                    <Label>Phone</Label>
+                    <Input type="text" defaultValue="+09 363 398 46" />
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className="flex items-center gap-3 px-2 mt-6 lg:justify-end">
+              <Button size="sm" variant="outline" onClick={closeModal}>
+                Close
+              </Button>
+              <Button size="sm" onClick={handleSave}>
+                Save Changes
+              </Button>
+            </div>
+          </form>
         </div>
       </Modal>
     </div>

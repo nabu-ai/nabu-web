@@ -29,14 +29,13 @@ const navItems: NavItem[] = [
   {
     icon: <GridIcon />,
     name: "Dashboard",
-    path: "/dashboard"
-   // subItems: [{ name: "User Dashboard", path: "/dashboard", pro: false }],
+    subItems: [{ name: "User Dashboard", path: "/dashboard", pro: false }],
   },
-  // {
-  //   icon: <CalenderIcon />,
-  //   name: "Calendar",
-  //   path: "/calendar",
-  // },
+  {
+    icon: <CalenderIcon />,
+    name: "Calendar",
+    path: "/calendar",
+  },
   {
     icon: <UserCircleIcon />,
     name: "User Profile",
@@ -309,7 +308,7 @@ const AppSidebar: React.FC = () => {
             </>
           ) : (
             <Image
-              src="/nabu-web//Nabu-Logo.png"
+              src="/images/logo/logo-icon.svg"
               alt="Logo"
               width={32}
               height={32}

@@ -1,9 +1,6 @@
 import axiosInstance from "@/services/axios-service";
 import { useMutation } from "@tanstack/react-query";
 
-import { useUserStore } from "@/store/useUserStore"; 
-import { NABU_USER_API_ENDPOINT } from "@/constants/environmentVariables";
-
 type SignInResponse = {
   accessToken: string;
 };
@@ -13,12 +10,11 @@ export type UseLoginPayload = {
   password: string;
 };
 
-export const useSignIn = ({router}) => {
-    const loginData = useUserStore.getState().loginData;
+export const useSignIn = () => {
   return useMutation({
     mutationFn: ({ email, password }: UseLoginPayload) => {
       return axiosInstance.post(
-        `${NABU_USER_API_ENDPOINT}auth/login`,
+        `/auth/login`,
         { email, password },
         {
           headers: { "Content-Type": undefined },
@@ -30,22 +26,10 @@ export const useSignIn = ({router}) => {
     },
     onSuccess: async (data, variables) => {
       const results = data.data;
-
       if (results.accessToken) {
-        
-        useUserStore.setState({
-              loginData: {
-                ... loginData,
-                accessToken: results.accessToken,
-                userId: results.userId,
-                tenantId: results.tenantId
-              }})
-      setTimeout(() => {
-       router.push("/dashboard");
-      }, 1000);
-       
+        window.location.href = "/dashboard";
       }
-      //alert("Successfully logged in.");
+      alert("Successfully logged in.");
     },
   });
 };

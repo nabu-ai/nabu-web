@@ -12,11 +12,9 @@ import { Input } from "@/components/ui/input";
 import { Checkbox } from "@radix-ui/react-checkbox";
 import { Button } from "@/components/ui/button";
 import { useSignIn } from "./hooks/useSignIn";
-import {useRouter} from "next/navigation"
 
 const SignInForm = () => {
-   const router = useRouter();
-  const { isPending, mutate: handleSignIn, isSuccess, data } = useSignIn({router});
+  const { isPending, mutate: handleSignIn, isSuccess, data } = useSignIn();
   const form = useForm<z.infer<typeof SignInFormSchema>>({
     resolver: zodResolver(SignInFormSchema),
     defaultValues: {
@@ -73,7 +71,7 @@ const SignInForm = () => {
             </FormItem>
           )}
         />
-        {/* <FormField
+        <FormField
           control={form.control}
           name="remember"
           render={({ field }) => (
@@ -91,8 +89,7 @@ const SignInForm = () => {
               </FormLabel>
             </FormItem>
           )}
-        /> */}
-        <Button className="w-full" size="sm" type="submit">
+        /><Button className="w-full" size="sm" type="submit">
           Sign in
         </Button>
 

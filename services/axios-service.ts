@@ -1,21 +1,18 @@
 import axios from "axios";
-import { NABU_PUBLIC_API_ENDPOINT as publicApi } from "@/constants";
+import { NEXT_PUBLIC_API_ENDPOINT as publicApi } from "@/constants";
 import {
   interceptorRequestFulfilled,
   interceptorRequestRejected,
   interceptorResponseFulfilled,
   interceptorResponseRejected,
 } from "./interceptors";
-import { useUserStore } from "@/store/useUserStore";
 
 export const envBaseURL = !!publicApi ? `${publicApi}/api` : `/api`;
 
 const axiosInstance = axios.create({
-  // baseURL: envBaseURL,
+  baseURL: envBaseURL,
   headers: {
     "Content-Type": "application/json",
-    "Authorization": "Bearer "+useUserStore.getState().loginData.accessToken,
-    "X-Tenant-Id": useUserStore.getState().loginData.tenantId
   },
   ...(!!publicApi && { withCredentials: true }),
 });
