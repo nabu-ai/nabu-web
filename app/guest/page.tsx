@@ -2,7 +2,7 @@
 import React from "react";
 import { useSearchParams } from "next/navigation";
 import { GuestMeetingForm } from "./components/GuestMeetingForm";
-import { Label } from "@/components/ui/label";
+
 export default function MeetingPage() {
     const searchParams = useSearchParams();
     const id = searchParams.get("id");
