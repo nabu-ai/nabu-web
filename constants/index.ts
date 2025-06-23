@@ -1,1 +1,1 @@
-export { IS_DEVELOPMENT_ENV, NEXT_PUBLIC_API_ENDPOINT, NEXT_PUBLIC_BASE_PATH } from './environmentVariables';
+export { IS_DEVELOPMENT_ENV, NABU_PUBLIC_API_ENDPOINT, NABU_PUBLIC_BASE_PATH } from './environmentVariables';

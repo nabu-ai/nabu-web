@@ -8,18 +8,26 @@ type SignInResponse = {
   accessToken: string;
 };
 
-export type UseLoginPayload = {
-  email: string;
-  password: string;
+export type UseProfileUpdatePayload = {
+    id: string;
+  firstName: string;
+  lastName: string;
+  phoneCode: string;
+  phoneNumber: string;
+  city: string;
+  state: string;
+  postalCode: string;
+  country: string;
 };
 
-export const useSignIn = ({router}) => {
+export const useUpdateUserProfile = () => {
     const loginData = useUserStore.getState().loginData;
+
   return useMutation({
-    mutationFn: ({ email, password }: UseLoginPayload) => {
-      return axiosInstance.post(
-        `${NABU_USER_API_ENDPOINT}auth/login`,
-        { email, password },
+    mutationFn: (payload: UseProfileUpdatePayload) => {
+      return axiosInstance.put(
+        `${NABU_USER_API_ENDPOINT}users/${loginData.userId}/update`,
+        payload,
         {
           headers: { "Content-Type": undefined },
         },
@@ -31,20 +39,7 @@ export const useSignIn = ({router}) => {
     onSuccess: async (data, variables) => {
       const results = data.data;
 
-      if (results.accessToken) {
-        
-        useUserStore.setState({
-              loginData: {
-                ... loginData,
-                accessToken: results.accessToken,
-                userId: results.userId,
-                tenantId: results.tenantId
-              }})
-      setTimeout(() => {
-       router.push("/dashboard");
-      }, 1000);
-       
-      }
+      
       //alert("Successfully logged in.");
     },
   });
