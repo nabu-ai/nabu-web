@@ -97,7 +97,7 @@ export default function MeetingsTable() {
         </div>
 
         <div className="flex items-center gap-3">
-          <button className="inline-flex items-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-theme-xl font-medium text-gray-700 shadow-theme-md hover:bg-gray-50 hover:text-gray-800 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03] dark:hover:text-gray-200">
+          {/* <button className="inline-flex items-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-theme-xl font-medium text-gray-700 shadow-theme-md hover:bg-gray-50 hover:text-gray-800 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03] dark:hover:text-gray-200">
             <svg
               className="stroke-current fill-white dark:fill-gray-800"
               width="20"
@@ -134,9 +134,9 @@ export default function MeetingsTable() {
               />
             </svg>
             Filter
-          </button>
+          </button> */}
           <button onClick={openModal} className="inline-flex items-center justify-center font-medium gap-2 rounded-lg transition w-full px-4 py-3 text-theme-xl bg-brand-500 text-white shadow-theme-md hover:bg-brand-600 disabled:bg-brand-300 ">
-            New Meeting
+            New Instant Meeting
           </button>
         </div>
       </div>

@@ -4,13 +4,16 @@ import Badge from "../ui/badge/Badge";
 import { ClockFading, ListVideo } from "lucide-react";
 import { ApexOptions } from "apexcharts";
 import dynamic from "next/dynamic";
+import { useGetMeetingStats } from "./hooks/useGetMeetingStats";
 // Dynamically import the ReactApexChart component
 const ReactApexChart = dynamic(() => import("react-apexcharts"), {
   ssr: false,
 });
 
 export const DashboardMetrics = () => {
-  const series = [75.55];
+  const { data: meetingStats, isLoading } = useGetMeetingStats();
+  const {minutesUsed, meetingsScheduled, percentage} = meetingStats || {}
+  const series = [percentage];
   const options: ApexOptions = {
     colors: ["#465FFF"],
     chart: {
@@ -72,12 +75,12 @@ export const DashboardMetrics = () => {
               Minutes Used
             </span>
             <h4 className="mt-2 font-bold text-gray-800 text-title-sm dark:text-white/90">
-              8
+              {minutesUsed}
             </h4>
           </div>
-          <Badge color="success">
+          {/* <Badge color="success">
             11.01%
-          </Badge>
+          </Badge> */}
         </div>
       </div>
       {/* <!-- Metric Item End --> */}
@@ -93,7 +96,7 @@ export const DashboardMetrics = () => {
               Meetings Scheduled
             </span>
             <h4 className="mt-2 font-bold text-gray-800 text-title-sm dark:text-white/90">
-              10
+              {meetingsScheduled}
             </h4>
           </div>
         </div>
@@ -106,7 +109,7 @@ export const DashboardMetrics = () => {
               Usage
             </h3>
             <p className="mt-1 font-normal text-gray-500 text-theme-xl dark:text-gray-400">
-              Minutes Used / Minutes Available
+              Trial Minutes Consumed
             </p>
           </div>
         </div>
