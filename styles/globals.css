@@ -33,7 +33,10 @@
   --text-theme-xs: 12px;
   --text-theme-xs--line-height: 18px;
 
-
+  --popover: oklch(1.00 0 0);
+  --popover-foreground: oklch(0.32 0 0);
+  --border: oklch(0.90 0.01 247.88);
+  
   --color-current: currentColor;
   --color-transparent: transparent;
   --color-white: #ffffff;

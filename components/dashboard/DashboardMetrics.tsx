@@ -1,6 +1,5 @@
 "use client";
 import React from "react";
-import Badge from "../ui/badge/Badge";
 import { ClockFading, ListVideo } from "lucide-react";
 import { ApexOptions } from "apexcharts";
 import dynamic from "next/dynamic";
@@ -12,8 +11,8 @@ const ReactApexChart = dynamic(() => import("react-apexcharts"), {
 
 export const DashboardMetrics = () => {
   const { data: meetingStats, isLoading } = useGetMeetingStats();
-  const {minutesUsed, meetingsScheduled, percentage} = meetingStats || {}
-  const series = [percentage];
+  const { minutesUsed, meetingsScheduled, percentage } = meetingStats || {}
+  const series = [percentage ?? 0];
   const options: ApexOptions = {
     colors: ["#465FFF"],
     chart: {
@@ -115,15 +114,15 @@ export const DashboardMetrics = () => {
         </div>
         <div className="flex items-end justify-between mt-5">
           <div className="relative ">
-          <div className="max-h-[330px]">
-            <ReactApexChart
-              options={options}
-              series={series}
-              type="radialBar"
-              height={330}
-            />
+            <div className="max-h-[330px]">
+              <ReactApexChart
+                options={options}
+                series={series}
+                type="radialBar"
+                height={330}
+              />
+            </div>
           </div>
-        </div>
         </div>
       </div>
     </div>

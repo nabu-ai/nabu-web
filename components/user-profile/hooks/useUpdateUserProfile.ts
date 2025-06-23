@@ -3,6 +3,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 import { useUserStore } from "@/store/useUserStore"; 
 import { NABU_USER_API_ENDPOINT } from "@/constants/environmentVariables";
+import { toast } from "sonner";
 
 type SignInResponse = {
   accessToken: string;
@@ -35,7 +36,7 @@ export const useUpdateUserProfile = () => {
       );
     },
     onError: () => {
-      alert("Failed to login");
+      toast.error("Failed to update user profile information");
     },
     onSuccess: async (data, variables) => {
       const results = data.data;
@@ -43,8 +44,6 @@ export const useUpdateUserProfile = () => {
             queryKey: ['get-user-profile'],
             exact: true, // only if key must match exactly
         });
-      
-      //alert("Successfully logged in.");
     },
   });
 };

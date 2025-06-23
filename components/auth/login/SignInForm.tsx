@@ -4,19 +4,17 @@ import React from "react";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { toast } from "sonner";
 import { z } from "zod";
 import { SignInFormSchema } from "./schema";
 import AuthWrapper from "../components/AuthWrapper";
 import { Input } from "@/components/ui/input";
-import { Checkbox } from "@radix-ui/react-checkbox";
 import { Button } from "@/components/ui/button";
 import { useSignIn } from "./hooks/useSignIn";
-import {useRouter} from "next/navigation"
+import { useRouter } from "next/navigation"
 
 const SignInForm = () => {
-   const router = useRouter();
-  const { isPending, mutate: handleSignIn, isSuccess, data } = useSignIn({router});
+  const router = useRouter();
+  const { mutate: handleSignIn } = useSignIn({ router });
   const form = useForm<z.infer<typeof SignInFormSchema>>({
     resolver: zodResolver(SignInFormSchema),
     defaultValues: {
@@ -28,13 +26,6 @@ const SignInForm = () => {
   const onSubmit = async (formData: z.infer<typeof SignInFormSchema>) => {
     const { email, password } = formData;
     handleSignIn({ email, password })
-    // toast("You submitted the following values", {
-    //   description: (
-    //     <pre className="mt-2 w-[320px] rounded-md bg-neutral-950 p-4">
-    //       <code className="text-white">{JSON.stringify(data, null, 2)}</code>
-    //     </pre>
-    //   ),
-    // });
   };
 
   return (<AuthWrapper bannerHeading="" bannerDescription="Speak Locally, Connect Globally"
@@ -73,25 +64,6 @@ const SignInForm = () => {
             </FormItem>
           )}
         />
-        {/* <FormField
-          control={form.control}
-          name="remember"
-          render={({ field }) => (
-            <FormItem className="flex flex-row items-center">
-              <FormControl>
-                <Checkbox
-                  id="login-remember"
-                  checked={field.value}
-                  onCheckedChange={field.onChange}
-                  className="size-4"
-                />
-              </FormControl>
-              <FormLabel htmlFor="login-remember" className="text-muted-foreground ml-1 text-theme-xl font-medium">
-                Keep me logged in
-              </FormLabel>
-            </FormItem>
-          )}
-        /> */}
         <Button className="w-full" size="sm" type="submit">
           Sign in
         </Button>

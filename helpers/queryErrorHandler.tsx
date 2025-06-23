@@ -1,10 +1,8 @@
 import { DefaultError } from "@tanstack/react-query";
 import { AxiosError } from "axios";
-import { CircleX } from "lucide-react";
-
 import { toast } from "sonner";
-import { UNKNOWN_ERROR_MESSAGE } from "../constants";
 import { handleAuthError } from "./authErrorHandler";
+import { UNKNOWN_ERROR_MESSAGE } from "@/constants/errorLabel";
 
 function extractErrorMessage(error: AxiosError<unknown, any>) {
     try {
@@ -41,11 +39,7 @@ function handleAxiosError(error: AxiosError) {
 
     const errorMessage = extractErrorMessage(error);
 
-    toast({
-        title: errorMessage,
-        icon: <CircleX />,
-        variant: "negative",
-    });
+    toast.error(errorMessage);
 
     return;
 }
@@ -57,9 +51,5 @@ export function handleQueryError(error: DefaultError) {
         return;
     }
 
-    toast({
-        title: error.message || UNKNOWN_ERROR_MESSAGE,
-        icon: <CircleX />,
-        variant: "negative",
-    });
+    toast.error(error.message || UNKNOWN_ERROR_MESSAGE);
 }

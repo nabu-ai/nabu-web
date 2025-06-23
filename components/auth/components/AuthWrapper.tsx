@@ -32,7 +32,7 @@ export default function AuthWrapper({
                     </div>
                 </div>
             </div>
-            <div className="flex flex-col flex-1 lg:w-1/2 w-full overflow-auto">
+            <div className="flex flex-col flex-1 lg:w-1/2 w-full overflow-auto px-4">
                 <div className="flex flex-col justify-center flex-1 w-full max-w-2xl mx-auto">
                     <div className="p-8 rounded-4xl border-2 border-blue-500 shadow-lg">
 

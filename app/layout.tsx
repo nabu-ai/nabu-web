@@ -30,7 +30,7 @@ export default function RootLayout({
               <SidebarProvider>{children}</SidebarProvider>
             </ReactQueryProvider>
           </Suspense>
-          {/* <Toaster /> */}
+          <Toaster />
         </ThemeProvider>
       </body>
     </html>

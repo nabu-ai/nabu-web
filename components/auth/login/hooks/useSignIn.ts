@@ -3,6 +3,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 import { useUserStore } from "@/store/useUserStore"; 
 import { NABU_USER_API_ENDPOINT } from "@/constants/environmentVariables";
+import { toast } from "sonner";
 
 type SignInResponse = {
   accessToken: string;
@@ -28,7 +29,7 @@ export const useSignIn = ({router}) => {
       );
     },
     onError: () => {
-      alert("Failed to login");
+      toast.error("Failed to login");
     },
     onSuccess: async (data, variables) => {
       const results = data.data;
@@ -46,7 +47,6 @@ export const useSignIn = ({router}) => {
       }, 1000);
        
       }
-      //alert("Successfully logged in.");
     },
   });
 };

@@ -1,8 +1,6 @@
 "use client";
 import UserAddressCard from "@/components/user-profile/UserAddressCard";
 import UserInfoCard from "@/components/user-profile/UserInfoCard";
-import UserMetaCard from "@/components/user-profile/UserMetaCard";
-import { Metadata } from "next";
 import React, { useEffect } from "react";
 import { useGetUserProfile } from "@/components/user-profile/hooks/useGetUserProfile";
 import { useUserStore } from "@/store/useUserStore";
