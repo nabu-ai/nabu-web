@@ -6,7 +6,7 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 export const getInitials = (str: string): string => {
-  if (typeof str !== "string" || !str.trim()) return "?";
+  if (typeof str !== "string" || !str.trim()) return "";
 
   return (
     str
@@ -20,7 +20,7 @@ export const getInitials = (str: string): string => {
 };
 
 export const  titleCase = (str: string) => {
-   if (typeof str !== "string" || !str.trim()) return "?";
+   if (typeof str !== "string" || !str.trim()) return "";
     return str.toLowerCase()
             .split(' ')
             .map(word => word.charAt(0).toUpperCase() + word.slice(1))
