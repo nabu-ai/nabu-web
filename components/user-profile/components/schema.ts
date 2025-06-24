@@ -10,9 +10,7 @@ export const ProfileUpdateSchema = z.object({
     lastName: z.string().min(1, {
         message: "Required",
     }),
-    phoneCode: z.string().min(1, {
-        message: "Required",
-    }),
+    phoneCode: z.string().optional(),
     phoneNumber: z.string().min(1, {
         message: "Required",
     }),

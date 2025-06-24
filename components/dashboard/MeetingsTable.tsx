@@ -93,18 +93,19 @@ export default function MeetingsTable() {
     navigator.clipboard.writeText(text);
     toast.success("Meeting link copied")
   }
-
+   const headerCSS = "py-3 font-semibold text-gray-800 text-start text-theme-xl dark:text-gray-400"
+   const cellCSS= "py-3 text-gray-700 text-theme-xl dark:text-gray-400";
   return (<>
     <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white px-4 pb-3 pt-4 dark:border-gray-800 dark:bg-white/[0.03] sm:px-6">
       <div className="flex flex-col gap-2 mb-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h3 className="text-lg font-semibold text-gray-800 dark:text-white/90">
+          <h3 className="text-3xl font-semibold text-gray-800 dark:text-white/90">
             Meetings
           </h3>
         </div>
 
         <div className="flex items-center gap-3">
-          <button onClick={openModal} className="inline-flex items-center justify-center font-medium gap-2 rounded-lg transition w-full px-4 py-3 text-theme-xl bg-brand-500 text-white shadow-theme-md hover:bg-brand-600 disabled:bg-brand-300 ">
+          <button onClick={openModal} disabled={true} className="inline-flex items-center justify-center font-medium gap-2 rounded-lg transition w-full px-4 py-3 text-theme-xl bg-brand-500 text-white shadow-theme-md hover:bg-brand-600 disabled:bg-brand-300 ">
             New Instant Meeting
           </button>
         </div>
@@ -116,43 +117,43 @@ export default function MeetingsTable() {
             <TableRow>
               <TableCell
                 isHeader
-                className="py-3 font-medium text-gray-500 text-start text-theme-xl dark:text-gray-400"
+                className={headerCSS}
               >
                 Agenda
               </TableCell>
               <TableCell
                 isHeader
-                className="py-3 font-medium text-gray-500 text-start text-theme-xl dark:text-gray-400"
+                className={headerCSS}
               >
-                Host language
+                Host<br /> language
               </TableCell>
               <TableCell
                 isHeader
-                className="py-3 font-medium text-gray-500 text-start text-theme-xl dark:text-gray-400"
+               className={headerCSS}
               >
-                Participant Name
+                Participant<br /> Name
               </TableCell>
               <TableCell
                 isHeader
-                className="py-3 font-medium text-gray-500 text-start text-theme-xl dark:text-gray-400"
+               className={headerCSS}
               >
-                Participant Language
+                Participant<br /> Language
               </TableCell>
               <TableCell
                 isHeader
-                className="py-3 font-medium text-gray-500 text-start text-theme-xl dark:text-gray-400"
+                className={headerCSS}
               >
                 Duration
               </TableCell>
               <TableCell
                 isHeader
-                className="py-3 font-medium text-gray-500 text-start text-theme-xl dark:text-gray-400"
+                className={headerCSS}
               >
-                Meeting Status
+                Meeting<br /> Status
               </TableCell>
               <TableCell
                 isHeader
-                className="py-3 font-medium text-gray-500 text-start text-theme-xl dark:text-gray-400"
+                className={headerCSS}
               >
                 Meeting Link
               </TableCell>
@@ -167,22 +168,22 @@ export default function MeetingsTable() {
           <TableBody className="divide-y divide-gray-100 dark:divide-gray-800">
             {tableData.map(({ id, agenda, language, participant, participantLanguage, duration, status, meetingLink }) => (
               <TableRow key={id} className="">
-                <TableCell className="py-3 text-gray-500 text-theme-xl dark:text-gray-400">
+                <TableCell className={cellCSS}>
                   {agenda}
                 </TableCell>
-                <TableCell className="py-3 text-gray-500 text-theme-xl dark:text-gray-400">
+                <TableCell className={cellCSS}>
                   {language}
                 </TableCell>
-                <TableCell className="py-3 text-gray-500 text-theme-xl dark:text-gray-400">
+                <TableCell className={cellCSS}>
                   {participant}
                 </TableCell>
-                <TableCell className="py-3 text-gray-500 text-theme-xl dark:text-gray-400">
+                <TableCell className={cellCSS}>
                   {participantLanguage}
                 </TableCell>
-                <TableCell className="py-3 text-gray-500 text-theme-xl dark:text-gray-400">
+                <TableCell className={cellCSS}>
                   {duration}
                 </TableCell>
-                <TableCell className="py-3 text-gray-500 text-theme-xl dark:text-gray-400">
+                <TableCell className={cellCSS}>
                   <Badge
                     size="sm"
                     color={
@@ -201,7 +202,7 @@ export default function MeetingsTable() {
                 </TableCell>
                 <TableCell>
                   <Link href={meetingLink} target="_blank">
-                    <Button variant="primary" size="sm" className="w-40"> Join Meeting
+                    <Button variant="primary" size="sm" className="text-theme-lg py-1 w-20"> Join
                     </Button>
                   </Link>
                 </TableCell>

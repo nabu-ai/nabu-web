@@ -11,8 +11,9 @@ import { Button } from "../../ui/button";
 import AuthWrapper from "../components/AuthWrapper";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../ui/select";
 import { countries } from "@/constants/countries";
-import { CircleFlag } from "react-circle-flags";
 import { PhoneInput } from 'react-international-phone';
+import * as flagIcons from 'country-flag-icons/string/3x2'
+import SVG from 'react-inlinesvg';
 import "@/styles/react-international-phone.css";
 import { SignUpFormSchema } from "./schema";
 import { cn } from "@/lib/utils";
@@ -222,10 +223,8 @@ const SignUpForm = () => {
                       <SelectContent>
                         {countries.map(({ emoji, iso2, name }) => (
                           <SelectItem key={iso2} value={iso2}>
-                            <CircleFlag
-                              countryCode={iso2.toLowerCase()}
-                              style={{ height: "20px" }}
-                            /> {name}
+                            <SVG src={flagIcons[iso2]} width="20px" height="20px" className="w-20 h-20" />
+                            {name}
                           </SelectItem>))}
                       </SelectContent>
                     </Select>

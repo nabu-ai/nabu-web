@@ -3,15 +3,13 @@
 import React, { useEffect } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { toast } from "sonner";
 import { z } from "zod";
-import Link from "next/link";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/form";
 import { Input } from "../../ui/input";
 import { Button } from "../../ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../ui/select";
 import { countries } from "@/constants/countries";
-import { CircleFlag } from "react-circle-flags";
+import * as flagIcons from 'country-flag-icons/string/3x2'
 import { PhoneInput } from "react-international-phone";
 import "@/styles/react-international-phone.css";
 import { ProfileUpdateSchema } from "./schema";
@@ -19,9 +17,9 @@ import { cn } from "@/lib/utils";
 import { useUserStore } from "@/store/useUserStore";
 import { useUpdateUserProfile } from "../hooks/useUpdateUserProfile";
 import { Checkbox } from "@/components/ui/checkbox";
-import { watch } from "fs";
+import SVG from 'react-inlinesvg';
 
-const EditProfileForm = ({onSuccess}) => {
+const EditProfileForm = ({ onSuccess }) => {
   const userData = useUserStore.getState().userData;
   const { id, firstName, lastName, phoneCode, phoneNumber, address, city, state, postalCode, country, nonVerbal, hearingImpaired } = userData;
   const { isPending, mutate: handleUpdateProfile, isSuccess, data } = useUpdateUserProfile();
@@ -45,14 +43,14 @@ const EditProfileForm = ({onSuccess}) => {
   });
 
   useEffect(() => {
-    if(isSuccess){
-        onSuccess()
+    if (isSuccess) {
+      onSuccess()
     }
   }, [isSuccess])
 
   const onSubmit = async (data: z.infer<typeof ProfileUpdateSchema>) => {
-    const { id, firstName, lastName, phoneCode, phoneNumber, address, city, state, postalCode, country } = data;
-    handleUpdateProfile({ id, firstName, lastName, phoneCode, phoneNumber, address, city, state, postalCode, country });
+    const { id, firstName, lastName, phoneCode, phoneNumber, address, city, state, postalCode, country, nonVerbal, hearingImpaired } = data;
+    handleUpdateProfile({ id, firstName, lastName, phoneCode, phoneNumber, address, city, state, postalCode, country, nonVerbal, hearingImpaired });
   };
 
   return (
@@ -100,30 +98,30 @@ const EditProfileForm = ({onSuccess}) => {
             />
           </div>
           <div className="md:grid md:grid-cols-2 md:gap-3">
-          <FormField
-            control={form.control}
-            name="phoneNumber"
-            render={({ field }) => (
-              <FormItem className="flex flex-col items-start">
-                <FormLabel className="text-left">Phone Number</FormLabel>
-                <FormControl className="w-full">
-                  <PhoneInput
-                    placeholder="Enter a phone number"
-                    {...field}
-                    defaultCountry="us"
-                    inputClassName={cn(
-                      "w-full rounded-lg border appearance-none px-4 py-2.5 text-base shadow-theme-md placeholder:text-gray-400 focus:outline-hidden focus:ring-3 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800",
-                      "bg-transparent text-gray-800 border-gray-300 focus:border-brand-300 focus:ring-3 focus:ring-brand-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:focus:border-brand-800",
-                      "aria-invalid:ring-error-500/20 dark:aria-invalid:ring-error-500/40 aria-invalid:border-error-500",
-                    )}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
+            <FormField
+              control={form.control}
+              name="phoneNumber"
+              render={({ field }) => (
+                <FormItem className="flex flex-col items-start">
+                  <FormLabel className="text-left">Phone Number</FormLabel>
+                  <FormControl className="w-full">
+                    <PhoneInput
+                      placeholder="Enter a phone number"
+                      {...field}
+                      defaultCountry="us"
+                      inputClassName={cn(
+                        "w-full rounded-lg border appearance-none px-4 py-2.5 text-base shadow-theme-md placeholder:text-gray-400 focus:outline-hidden focus:ring-3 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800",
+                        "bg-transparent text-gray-800 border-gray-300 focus:border-brand-300 focus:ring-3 focus:ring-brand-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:focus:border-brand-800",
+                        "aria-invalid:ring-error-500/20 dark:aria-invalid:ring-error-500/40 aria-invalid:border-error-500",
+                      )}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
 
-          />
-          <FormField
+            />
+            <FormField
               control={form.control}
               name="country"
               render={({ field }) => (
@@ -137,7 +135,8 @@ const EditProfileForm = ({onSuccess}) => {
                       <SelectContent>
                         {countries.map(({ emoji, iso2, name }) => (
                           <SelectItem key={iso2} value={iso2}>
-                            <CircleFlag countryCode={iso2.toLowerCase()} style={{ height: "20px" }} /> {name}
+                            <SVG src={flagIcons[iso2]} width="20px" height="20px" className="w-20 h-20" />
+                            {name}
                           </SelectItem>
                         ))}
                       </SelectContent>
@@ -147,7 +146,7 @@ const EditProfileForm = ({onSuccess}) => {
                 </FormItem>
               )}
             />
-            </div>
+          </div>
           <div className="md:grid md:grid-cols-2 md:gap-3">
             <FormField
               control={form.control}
@@ -207,10 +206,10 @@ const EditProfileForm = ({onSuccess}) => {
               render={({ field }) => (
                 <FormItem>
                   <div className="flex items-center gap-3 mt-5">
-                  <FormLabel>Non Verbal </FormLabel>
-                  <FormControl>
-                    <Checkbox id="nonVerbal" onChange={field.onChange} checked={field.value} {...field} />
-                  </FormControl>
+                    <FormLabel>Non Verbal </FormLabel>
+                    <FormControl>
+                      <Checkbox id="nonVerbal" onCheckedChange={field.onChange} checked={field.value} ref={field.ref} />
+                    </FormControl>
                   </div>
                   <FormMessage />
                 </FormItem>
@@ -222,16 +221,16 @@ const EditProfileForm = ({onSuccess}) => {
               render={({ field }) => (
                 <FormItem>
                   <div className="flex items-center gap-3 mt-5">
-                  <FormLabel>Hearing Impaired</FormLabel>
-                  <FormControl>
-                    <Checkbox id="hearingImpaired" onChange={field.onChange} checked={field.value} {...field} />
-                  </FormControl>
+                    <FormLabel>Hearing Impaired</FormLabel>
+                    <FormControl>
+                      <Checkbox id="hearingImpaired" onCheckedChange={field.onChange}  checked={field.value} ref={field.ref} />
+                    </FormControl>
                   </div>
                   <FormMessage />
                 </FormItem>
               )}
             />
-            
+
           </div>
           <Button className="mt-10 w-full" type="submit">
             Update

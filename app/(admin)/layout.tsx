@@ -12,15 +12,16 @@ export default function AdminLayout({
 }: {
   children: React.ReactNode;
 }) {
-  useAuthGuard();
+  const isAuthenticated = useAuthGuard();
+  if (!isAuthenticated) return null;
   const { isExpanded, isHovered, isMobileOpen } = useSidebar();
 
   // Dynamic class for main content margin based on sidebar state
   const mainContentMargin = isMobileOpen
     ? "ml-0"
     : isExpanded || isHovered
-    ? "lg:ml-[290px]"
-    : "lg:ml-[90px]";
+      ? "lg:ml-[290px]"
+      : "lg:ml-[90px]";
 
   return (
     <div className="min-h-screen xl:flex">
@@ -34,7 +35,7 @@ export default function AdminLayout({
         {/* Header */}
         <AppHeader />
         {/* Page Content */}
-        <div className="p-4 mx-auto max-w-(--breakpoint-2xl) md:p-6">{children}</div>
+        <div className="p-4 mx-auto max-w-(--breakpoint-3xl) md:p-6">{children}</div>
       </div>
     </div>
   );

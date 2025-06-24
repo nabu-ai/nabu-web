@@ -20,6 +20,8 @@ export type UseProfileUpdatePayload = {
   state: string;
   postalCode: string;
   country: string;
+  nonVerbal: boolean;
+  hearingImpaired: boolean;
 };
 
 export const useUpdateUserProfile = () => {

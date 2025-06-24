@@ -309,7 +309,7 @@ const AppSidebar: React.FC = () => {
             </>
           ) : (
             <Image
-              src="/nabu-web//Nabu-Logo.png"
+              src="/nabu-web//Nabu-Logo-globe.png"
               alt="Logo"
               width={32}
               height={32}

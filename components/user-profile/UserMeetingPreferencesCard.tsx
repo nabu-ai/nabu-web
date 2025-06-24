@@ -1,20 +1,10 @@
 "use client";
-import { useModal } from "../../hooks/useModal";
-import { Modal } from "../ui/modal";
 import { useUserStore } from "@/store/useUserStore";
-import { EditProfileForm } from "./components";
-import { useEffect, useState } from "react";
 import { Checkbox } from "../ui/checkbox";
 
 
 export default function UserMeetingPreferencesCard({userInfo}) {
-
-  const { isOpen, openModal, closeModal } = useModal();
-  const userId = useUserStore.getState().loginData.userId
-  //const userInfo = useUserStore.getState().userData;
   const {nonVerbal, hearingImpaired} = userInfo || {};
-
-
   return (
     <div className="p-5 border border-gray-200 rounded-2xl dark:border-gray-800 lg:p-6">
       <div className="flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between">
@@ -28,7 +18,7 @@ export default function UserMeetingPreferencesCard({userInfo}) {
               <p className="mb-2 text-theme-lg font-semibold text-gray-500 dark:text-gray-400">
                 Verbal Only
               </p>
-              <Checkbox checked={nonVerbal} >
+              <Checkbox checked={nonVerbal} disabled>
               </Checkbox>
             </div>
 
@@ -36,7 +26,7 @@ export default function UserMeetingPreferencesCard({userInfo}) {
               <p className="mb-2 text-theme-lg font-semibold text-gray-500 dark:text-gray-400">
                Hearing Impaired
               </p>
-              <Checkbox checked={hearingImpaired}>
+              <Checkbox checked={hearingImpaired} disabled>
               </Checkbox>
             </div>
           </div>
