@@ -7,7 +7,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import z from 'zod'
 import { getVoiceFromLanguageCode } from '@/constants/voiceMap'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { awsStreamingLanguages, ibmStreamingLanguages } from '@/constants/languages'
+import { languagesMap } from '@/constants/languages'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 import { Label } from '@/components/ui/label'
 
@@ -33,10 +33,7 @@ const GuestMeetingForm = () => {
     const handleSubmit = (data: z.infer<typeof guestMeetingSchema>) => {
         console.log('Meeting data:', data);
     };
-    const languagesMap = {
-        ...awsStreamingLanguages,
-        ...ibmStreamingLanguages,
-    };
+
 
     return (
         <Form {...form}>

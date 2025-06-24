@@ -5,8 +5,8 @@ import { useUserStore } from "@/store/useUserStore";
 import { NABU_MEETING_API_ENDPOINT } from "@/constants/environmentVariables";
 
 type MeetingStatsResponse = {
-   minutesUsed: string;
-   meetingsScheduled: string;
+   minutesUsed: number;
+   meetingsScheduled: number;
    percentage: number;
 }
 

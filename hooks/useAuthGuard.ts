@@ -15,6 +15,5 @@ export function useAuthGuard() {
       router.push("/signin");
     }
   }, [router]);
-
-  return { isAuthenticated: isAuthenticated() };
+  return { isAuthenticated: isAuthenticated() }
 }

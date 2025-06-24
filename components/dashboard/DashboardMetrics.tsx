@@ -74,7 +74,7 @@ export const DashboardMetrics = () => {
               Minutes Used
             </span>
             <h4 className="mt-2 font-bold text-gray-800 text-title-sm dark:text-white/90">
-              {minutesUsed}
+              {minutesUsed/60}
             </h4>
           </div>
           {/* <Badge color="success">

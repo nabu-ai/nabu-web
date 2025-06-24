@@ -18,3 +18,11 @@ export const getInitials = (str: string): string => {
       .toUpperCase() || "?"
   );
 };
+
+export const  titleCase = (str: string) => {
+   if (typeof str !== "string" || !str.trim()) return "?";
+    return str.toLowerCase()
+            .split(' ')
+            .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+            .join(' ');
+}

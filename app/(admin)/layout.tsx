@@ -12,8 +12,9 @@ export default function AdminLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const isAuthenticated = useAuthGuard();
-  if (!isAuthenticated) return null;
+  const { isAuthenticated } = useAuthGuard();
+  if(!isAuthenticated) return null;
+  
   const { isExpanded, isHovered, isMobileOpen } = useSidebar();
 
   // Dynamic class for main content margin based on sidebar state

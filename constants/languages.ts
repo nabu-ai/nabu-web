@@ -57,3 +57,8 @@ export const ibmStreamingLanguages = {
   "es-ES": "Spanish (European)",
   "es-US": "Spanish (US)",
 };
+
+  export const languagesMap = {
+    ...awsStreamingLanguages,
+    ...ibmStreamingLanguages,
+  };

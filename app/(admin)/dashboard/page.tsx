@@ -5,16 +5,9 @@ import React from "react";
 import MeetingsTable from "@/components/dashboard/MeetingsTable";
 import { useUserStore } from "@/store/useUserStore";
 
-// export const metadata: Metadata = {
-//     title: "Dashboard",
-//     description: "User dashboard",
-// };
-
 export default function DashboardPage() {
 
     const loginData = useUserStore((s) => s.loginData);
-    
-    console.log("loginData:::", loginData)
 
     return (
         <div className="grid gap-4">

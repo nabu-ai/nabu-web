@@ -29,6 +29,12 @@ export const ProfileUpdateSchema = z.object({
     country: z.string().min(1, {
         message: "Required",
     }),
-    nonVerbal : z.boolean().optional(),
+    nonVerbal: z.boolean().optional(),
     hearingImpaired: z.boolean().optional(),
+    preferredLanguage: z.string().min(1, {
+        message: "Required",
+    }),
+    spokenInVoice: z.string().min(1, {
+        message: "Required",
+    }),
 });

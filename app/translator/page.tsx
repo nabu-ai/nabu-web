@@ -3,8 +3,7 @@ const nabuTranslator = require("nabu-translator/src");
 import { useMeetingStore } from "@/store/useMeetingStore";
 import { useEffect, useState } from "react";
 import {
-  awsStreamingLanguages,
-  ibmStreamingLanguages,
+  languagesMap
 } from "@/constants/languages";
 
 export default function TranslatorUI() {
@@ -13,10 +12,9 @@ export default function TranslatorUI() {
   const [sourceLanguage, setSourceLanguage] = useState("");
   const [targetLanguage, setTargetLanguage] = useState("");
   const meetingInfo = useMeetingStore((s) => s.meetingInfo);
-  const languagesMap = {
+  const languagesMapOptions = {
     ...{ "": "-- Select --" },
-    ...awsStreamingLanguages,
-    ...ibmStreamingLanguages,
+    ...languagesMap,
   };
 
 
@@ -82,9 +80,9 @@ export default function TranslatorUI() {
             onChange={(e) => {setSourceLanguage(e.target.value); setInputText("")} }
             className="p-2 border rounded-md"
           >
-            {Object.keys(languagesMap).map((languageCode) => (
+            {Object.keys(languagesMapOptions).map((languageCode) => (
               <option key={languageCode} value={languageCode}>
-                {languagesMap[languageCode]} {/* Display the language name */}
+                {languagesMapOptions[languageCode]} {/* Display the language name */}
               </option>
             ))}
           </select>
@@ -111,9 +109,9 @@ export default function TranslatorUI() {
             onChange={(e) => setTargetLanguage(e.target.value)}
             className="p-2 border rounded-md"
           >
-           {Object.keys(languagesMap).map((languageCode) => (
+           {Object.keys(languagesMapOptions).map((languageCode) => (
               <option key={languageCode} value={languageCode}>
-                {languagesMap[languageCode]} {/* Display the language name */}
+                {languagesMapOptions[languageCode]} {/* Display the language name */}
               </option>
             ))}
           </select>

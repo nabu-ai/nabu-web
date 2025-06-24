@@ -7,8 +7,7 @@ import { useRouter } from "next/navigation";
 import { ChevronDownIcon } from "lucide-react";
 import { NABU_SERVER_HOST } from "@/constants/consts";
 import {
-  awsStreamingLanguages,
-  ibmStreamingLanguages,
+  languagesMap,
 } from "@/constants/languages";
 import { getVoiceFromLanguageCode } from "@/constants/voiceMap";
 import { useMeetingStore } from "@/store/useMeetingStore";
@@ -22,10 +21,9 @@ export default function LobbyPage() {
   const [hasFemaleVoice, setHasFemaleVoice] = useState(false);
   const [selectedVoice, setSelectedVoice] = useState("");
   const router = useRouter();
-  const languagesMap = {
+  const languagesMapOptions = {
     ...{ "": "Preferred Language" },
-    ...awsStreamingLanguages,
-    ...ibmStreamingLanguages,
+    ...languagesMap,
   };
   const meetingInfo = useMeetingStore.getState().meetingInfo;
   const { prepareStreaming } = nabuTranslator;
@@ -195,9 +193,9 @@ export default function LobbyPage() {
               onChange={(e) => handleLanguageSelect(e.target.value)}
               className="appearance-none h-16 w-full px-4 py-2 border border-black rounded-xl focus:outline-none focus:ring focus:border-blue-500 text-lg"
             >
-              {Object.keys(languagesMap).map((languageCode) => (
+              {Object.keys(languagesMapOptions).map((languageCode) => (
                 <option key={languageCode} value={languageCode}>
-                  {languagesMap[languageCode]} {/* Display the language name */}
+                  {languagesMapOptions[languageCode]} {/* Display the language name */}
                 </option>
               ))}
             </select>

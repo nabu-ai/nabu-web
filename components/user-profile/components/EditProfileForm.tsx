@@ -1,13 +1,12 @@
 "use client";
 
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/form";
-import { Input } from "../../ui/input";
-import { Button } from "../../ui/button";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../ui/select";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 import { countries } from "@/constants/countries";
 import * as flagIcons from 'country-flag-icons/string/3x2'
 import { PhoneInput } from "react-international-phone";
@@ -18,11 +17,33 @@ import { useUserStore } from "@/store/useUserStore";
 import { useUpdateUserProfile } from "../hooks/useUpdateUserProfile";
 import { Checkbox } from "@/components/ui/checkbox";
 import SVG from 'react-inlinesvg';
+import { watch } from "fs";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { languagesMap } from "@/constants/languages";
+import { getVoiceFromLanguageCode } from "@/constants/voiceMap";
 
 const EditProfileForm = ({ onSuccess }) => {
   const userData = useUserStore.getState().userData;
-  const { id, firstName, lastName, phoneCode, phoneNumber, address, city, state, postalCode, country, nonVerbal, hearingImpaired } = userData;
+  const {
+    id,
+    firstName,
+    lastName,
+    phoneCode,
+    phoneNumber,
+    address,
+    city,
+    state,
+    postalCode,
+    country,
+    nonVerbal,
+    hearingImpaired,
+    preferredLanguage,
+    spokenInVoice,
+  } = userData;
   const { isPending, mutate: handleUpdateProfile, isSuccess, data } = useUpdateUserProfile();
+  const [hasMaleVoiceParticipant, setHasMaleVoiceParticipant] = useState(false);
+  const [hasFemaleVoiceParticipant, setHasFemaleVoiceParticipant] = useState(false);
 
   const form = useForm<z.infer<typeof ProfileUpdateSchema>>({
     resolver: zodResolver(ProfileUpdateSchema),
@@ -39,18 +60,28 @@ const EditProfileForm = ({ onSuccess }) => {
       country,
       nonVerbal,
       hearingImpaired,
+      preferredLanguage,
+      spokenInVoice,
     },
   });
 
   useEffect(() => {
+    form.setValue("spokenInVoice", "");
+    const language = form.watch("preferredLanguage");
+    const voices = getVoiceFromLanguageCode(language);
+    
+    setHasMaleVoiceParticipant(Boolean(voices?.male));
+    setHasFemaleVoiceParticipant(Boolean(voices?.female));
+  }, [form.watch("preferredLanguage")]);
+
+  useEffect(() => {
     if (isSuccess) {
-      onSuccess()
+      onSuccess();
     }
-  }, [isSuccess])
+  }, [isSuccess]);
 
   const onSubmit = async (data: z.infer<typeof ProfileUpdateSchema>) => {
-    const { id, firstName, lastName, phoneCode, phoneNumber, address, city, state, postalCode, country, nonVerbal, hearingImpaired } = data;
-    handleUpdateProfile({ id, firstName, lastName, phoneCode, phoneNumber, address, city, state, postalCode, country, nonVerbal, hearingImpaired });
+    handleUpdateProfile({ ...data });
   };
 
   return (
@@ -97,6 +128,52 @@ const EditProfileForm = ({ onSuccess }) => {
               )}
             />
           </div>
+          <div className="md:grid md:grid-cols-2 md:gap-6">
+            <FormField
+              control={form.control}
+              name="preferredLanguage"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Language</FormLabel>
+                  <FormControl>
+                    <Select defaultValue="" {...field} onValueChange={field.onChange}>
+                      <SelectTrigger id="preferredLanguage" className="w-full">
+                        <SelectValue placeholder="Preferred Language" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {Object.keys(languagesMap).map((languageCode) => (
+                          <SelectItem key={languageCode} value={languageCode}>
+                            {languagesMap[languageCode]}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="spokenInVoice"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Want to be heard as</FormLabel>
+                  <FormControl>
+                    <RadioGroup orientation="horizontal" {...field} onValueChange={field.onChange}>
+                      <RadioGroupItem value="male" id="male" label="He" disabled={!hasMaleVoiceParticipant} />
+                      <RadioGroupItem value="female" id="female" label="She" disabled={!hasFemaleVoiceParticipant} />
+                    </RadioGroup>
+                  </FormControl>
+                  <FormMessage />
+                  <div className="text-red-500">
+                    {hasMaleVoiceParticipant && !hasFemaleVoiceParticipant && "Only male voice available"}
+                    {hasFemaleVoiceParticipant && !hasMaleVoiceParticipant && "Only female voice available"}
+                  </div>
+                </FormItem>
+              )}
+            />
+          </div>
           <div className="md:grid md:grid-cols-2 md:gap-3">
             <FormField
               control={form.control}
@@ -119,7 +196,6 @@ const EditProfileForm = ({ onSuccess }) => {
                   <FormMessage />
                 </FormItem>
               )}
-
             />
             <FormField
               control={form.control}
@@ -230,7 +306,6 @@ const EditProfileForm = ({ onSuccess }) => {
                 </FormItem>
               )}
             />
-
           </div>
           <Button className="mt-10 w-full" type="submit">
             Update

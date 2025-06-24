@@ -8,7 +8,6 @@ import UserMeetingPreferencesCard from "@/components/user-profile/UserMeetingPre
 
 export default function Profile() {
   const loginData = useUserStore.getState().loginData;
-  console.log("loginData::::", loginData)
   const userId = loginData.userId
   const { data: userInfo, isLoading, isSuccess } = useGetUserProfile(userId);
 
@@ -30,6 +29,8 @@ export default function Profile() {
           phoneNumber: usrData?.["phoneNumber"],
           nonVerbal: usrData?.["nonVerbal"],
           hearingImpaired: usrData?.["hearingImpaired"],
+          preferredLanguage: usrData?.["preferredLanguage"],
+          spokenInVoice: usrData?.["spokenInVoice"],
         },
       });
     }

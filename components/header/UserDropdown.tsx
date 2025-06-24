@@ -64,7 +64,7 @@ export default function UserDropdown() {
           <span className="block font-medium text-gray-700 text-theme-xl dark:text-gray-400">
             {firstName} {lastName}
           </span>
-          <span className="mt-0.5 block text-theme-xl text-gray-500 dark:text-gray-400 w-[260px] overflow-text-wrap">
+          <span className="mt-0.5 block text-theme-xl text-gray-500 dark:text-gray-400 w-[230px] overflow-text-wrap">
             {email}
           </span>
         </div>

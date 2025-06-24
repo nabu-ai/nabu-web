@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/form';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { awsStreamingLanguages, ibmStreamingLanguages } from '@/constants/languages';
+import { languagesMap } from '@/constants/languages';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { useEffect, useState } from 'react';
 import { getVoiceFromLanguageCode } from '@/constants/voiceMap';
@@ -41,10 +41,7 @@ const NewMeetingForm = ({ onSubmit }: NewMeetingFormProps) => {
         console.log('Meeting data:', data);
         onSubmit()
     };
-    const languagesMap = {
-        ...awsStreamingLanguages,
-        ...ibmStreamingLanguages,
-    };
+
 
     return (
         <Form {...form}>
