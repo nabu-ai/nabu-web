@@ -1,18 +1,27 @@
 "use client";
-import React from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { ClockFading, ListVideo } from "lucide-react";
 import { ApexOptions } from "apexcharts";
 import dynamic from "next/dynamic";
 import { useGetMeetingStats } from "./hooks/useGetMeetingStats";
+import { useUserStore } from "@/store/useUserStore";
+
+import { formatDuration, intervalToDuration } from "date-fns";
+import { formatTimeDuration } from "@/lib/utils";
+import { useMeetingStore } from "@/store/useMeetingStore";
 // Dynamically import the ReactApexChart component
 const ReactApexChart = dynamic(() => import("react-apexcharts"), {
   ssr: false,
 });
 
 export const DashboardMetrics = () => {
-  const { data: meetingStats, isLoading } = useGetMeetingStats();
-  const { minutesUsed, meetingsScheduled, percentage } = meetingStats || {}
-  const series = [percentage ?? 0];
+  const { data: meetingStats, isLoading, isSuccess, refetch } = useGetMeetingStats();
+  const { secondsUsed, meetingsScheduled, consumedPercentage } = meetingStats || {};
+
+  const hasInitialized = useRef(false); 
+  // let series = [consumedPercentage ?? 0];
+
+  const [series, setSeries] = useState<number[]>([0]);
   const options: ApexOptions = {
     colors: ["#465FFF"],
     chart: {
@@ -60,21 +69,47 @@ export const DashboardMetrics = () => {
     },
     labels: ["Progress"],
   };
+
+  useEffect(() => {
+     if (!hasInitialized.current) {
+      hasInitialized.current = true;
+      refetch();
+    }
+  }, [])
+
+  useEffect(() => {
+    if (
+      meetingStats &&
+      typeof meetingStats.consumedPercentage === "number" &&
+      !isNaN(meetingStats.consumedPercentage)
+    ) {
+      setSeries([meetingStats.consumedPercentage]);
+      useMeetingStore.setState({trialDuration: secondsUsed})
+    }
+  }, [meetingStats]);
+
+  useEffect(() => {
+    if (secondsUsed === 600) {
+      useUserStore.setState({ trialExpired: true });
+    } else {
+      //console.log("Setting trial state::::", secondsUsed)
+      useUserStore.setState({ trialExpired: false });
+    }
+  }, [isSuccess]);
+
   return (
     <div className="grid grid-cols-1 gap-4 sm:grid-cols-3 md:gap-6">
       {/* <!-- Metric Item Start --> */}
-      <div className="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03] md:p-6">
-        <div className="flex items-center justify-center w-12 h-12 bg-gray-100 rounded-xl dark:bg-gray-800">
-          <ClockFading className="text-gray-800 size-6 dark:text-white/90" />
+      <div className="rounded-2xl border border-gray-200 bg-white p-5 md:p-6 dark:border-gray-800 dark:bg-white/[0.03]">
+        <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gray-100 dark:bg-gray-800">
+          <ClockFading className="size-6 text-gray-800 dark:text-white/90" />
         </div>
 
-        <div className="flex items-end justify-between mt-5">
+        <div className="mt-5 flex items-end justify-between">
           <div>
-            <span className="text-theme-xl text-gray-500 dark:text-gray-400">
-              Minutes Used
-            </span>
-            <h4 className="mt-2 font-bold text-gray-800 text-title-sm dark:text-white/90">
-              {minutesUsed/60}
+            <span className="text-theme-xl text-gray-500 dark:text-gray-400">Minutes Used</span>
+            <h4 className="text-title-sm mt-2 font-bold text-gray-800 dark:text-white/90">
+              {secondsUsed ? formatTimeDuration(secondsUsed) : 0}
             </h4>
           </div>
           {/* <Badge color="success">
@@ -85,42 +120,29 @@ export const DashboardMetrics = () => {
       {/* <!-- Metric Item End --> */}
 
       {/* <!-- Metric Item Start --> */}
-      <div className="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03] md:p-6">
-        <div className="flex items-center justify-center w-12 h-12 bg-gray-100 rounded-xl dark:bg-gray-800">
+      <div className="rounded-2xl border border-gray-200 bg-white p-5 md:p-6 dark:border-gray-800 dark:bg-white/[0.03]">
+        <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gray-100 dark:bg-gray-800">
           <ListVideo className="text-gray-800 dark:text-white/90" />
         </div>
-        <div className="flex items-end justify-between mt-5">
+        <div className="mt-5 flex items-end justify-between">
           <div>
-            <span className="text-theme-xl text-gray-500 dark:text-gray-400">
-              Meetings Scheduled
-            </span>
-            <h4 className="mt-2 font-bold text-gray-800 text-title-sm dark:text-white/90">
-              {meetingsScheduled}
-            </h4>
+            <span className="text-theme-xl text-gray-500 dark:text-gray-400">Meetings Scheduled</span>
+            <h4 className="text-title-sm mt-2 font-bold text-gray-800 dark:text-white/90">{meetingsScheduled}</h4>
           </div>
         </div>
       </div>
       {/* <!-- Metric Item End --> */}
-      <div className="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03] md:p-6">
+      <div className="rounded-2xl border border-gray-200 bg-white p-5 md:p-6 dark:border-gray-800 dark:bg-white/[0.03]">
         <div className="flex justify-between">
           <div>
-            <h3 className="text-lg font-semibold text-gray-800 dark:text-white/90">
-              Usage
-            </h3>
-            <p className="mt-1 font-normal text-gray-500 text-theme-xl dark:text-gray-400">
-              Trial Minutes Consumed
-            </p>
+            <h3 className="text-lg font-semibold text-gray-800 dark:text-white/90">Usage</h3>
+            <p className="text-theme-xl mt-1 font-normal text-gray-500 dark:text-gray-400">Trial Minutes Consumed</p>
           </div>
         </div>
-        <div className="flex items-end justify-between mt-5">
-          <div className="relative ">
+        <div className="mt-5 flex items-end justify-between">
+          <div className="relative">
             <div className="max-h-[330px]">
-              <ReactApexChart
-                options={options}
-                series={series}
-                type="radialBar"
-                height={330}
-              />
+              <ReactApexChart key={series[0]} options={options} series={series} type="radialBar" height={330} />
             </div>
           </div>
         </div>

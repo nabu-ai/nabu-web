@@ -4,7 +4,7 @@ import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
 import Link from "next/link";
-import React from "react";
+import React, { useEffect } from "react";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/form";
 import { Input } from "../../ui/input";
 import { Button } from "../../ui/button";
@@ -17,8 +17,13 @@ import SVG from 'react-inlinesvg';
 import "@/styles/react-international-phone.css";
 import { SignUpFormSchema } from "./schema";
 import { cn } from "@/lib/utils";
+import { useNewRegistration } from "./hooks/useSignup";
+import { useRouter } from "next/navigation";
 
 const SignUpForm = () => {
+
+  const { mutate: handleRegistration, isSuccess } = useNewRegistration();
+  const router = useRouter()
 
   const form = useForm<z.infer<typeof SignUpFormSchema>>({
     resolver: zodResolver(SignUpFormSchema),
@@ -37,14 +42,38 @@ const SignUpForm = () => {
     },
   });
 
+  useEffect(() => {
+    if(isSuccess){
+      toast.success("Registration Success. Please signin to continue")
+      router.push("/signin")
+    }
+  }, [isSuccess])
+
   const onSubmit = async (data: z.infer<typeof SignUpFormSchema>) => {
-    toast("You submitted the following values", {
-      description: (
-        <pre className="mt-2 w-[320px] rounded-md bg-neutral-950 p-4">
-          <code className="text-white">{JSON.stringify(data, null, 2)}</code>
-        </pre>
-      ),
-    });
+    // toast("You submitted the following values", {
+    //   description: (
+    //     <pre className="mt-2 w-[320px] rounded-md bg-neutral-950 p-4">
+    //       <code className="text-white">{JSON.stringify(data, null, 2)}</code>
+    //     </pre>
+    //   ),
+    // });
+
+    const registrationPayload = {
+      firstName: data.firstName,
+      lastName: data.lastName,
+      email: data.email,
+      password: data.password,
+      confirmPassword: data.confirmPassword,
+      company: data.company,
+      phoneNumber: data.phoneNumber,
+      city: data.city,
+      state: data.state,
+      postalCode: data.postalCode,
+      country: data.country,
+     
+    };
+    await handleRegistration(registrationPayload);
+
   };
 
   return (

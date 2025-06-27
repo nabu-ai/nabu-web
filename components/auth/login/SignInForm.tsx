@@ -1,6 +1,6 @@
 "use client";
 import Link from "next/link";
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -11,10 +11,24 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useSignIn } from "./hooks/useSignIn";
 import { useRouter } from "next/navigation"
+import { useMeetingStore } from "@/store/useMeetingStore";
+import { useUserStore } from "@/store/useUserStore";
+
 
 const SignInForm = () => {
+    const hasInitialized = useRef(false);
   const router = useRouter();
   const { mutate: handleSignIn } = useSignIn({ router });
+
+  useEffect(() => {
+     if (!hasInitialized.current) {
+      hasInitialized.current = true;
+      useMeetingStore.setState(useMeetingStore.getInitialState())
+      useUserStore.setState(useUserStore.getInitialState())
+     }
+  })
+  // useMeetingStore.setState(useMeetingStore.getInitialState())
+  // useUserStore.setState(useUserStore.getInitialState())
   const form = useForm<z.infer<typeof SignInFormSchema>>({
     resolver: zodResolver(SignInFormSchema),
     defaultValues: {

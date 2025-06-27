@@ -5,6 +5,8 @@ type RaiseHandHandler = (uid: string, raised: boolean) => void;
 type ChatHandler = (uid: string, text: string, sourceLanguage: string) => void;
 type MuteHandler = (uid: string, mute: boolean) => void;
 type TranscriptHandler = (uid: string, text: string, sourceLanguage: string, audioHeardAs: string) => void;
+type ParticipantLeftHandler = (uid: string) => void;
+type HostLeftHandler = (uid: string) => void;
 
 let socket: WebSocket | null = null;
 
@@ -12,11 +14,13 @@ const raiseHandListeners: Set<RaiseHandHandler> = new Set();
 const chatListeners: Set<ChatHandler> = new Set();
 const muteListeners: Set<MuteHandler> = new Set();
 const transcriptListeners: Set<TranscriptHandler> = new Set();
+const participantLeftListeners: Set<ParticipantLeftHandler> = new Set();
+const hostLeftListeners: Set<HostLeftHandler> = new Set();
 
 export function connectWebSocket(roomId: string, uid: string): WebSocket | null {
     if (socket) return socket;
    
-    socket = new WebSocket(`${NABU_SERVER_HOST}?room=${roomId}&uid=${uid}`);
+    socket = new WebSocket(`${NABU_SERVER_HOST}/ws/room?room=${roomId}&uid=${uid}`);
 
     socket.onopen = () => {
         console.log(`[NABU WS] Connected to room ${roomId}`);
@@ -55,6 +59,12 @@ export function connectWebSocket(roomId: string, uid: string): WebSocket | null 
                 const store = useMeetingStore.getState();
                 store.setActiveSpeaker(msg.uid)
                 transcriptListeners.forEach((cb) => cb(msg.uid, msg.transcript, msg.sourceLanguage, msg.audioHeardAs));
+            }
+            else if (msg.type === 'participant_left') {
+                participantLeftListeners.forEach((cb) => cb(msg.uid));
+            }
+            else if (msg.type === 'host_left') {
+                hostLeftListeners.forEach((cb) => cb(msg.uid));
             }
             else if (msg.type === 'room-state') {
                 // ✅ Handle room-state sync for late joiners
@@ -99,6 +109,16 @@ export function sendTranscript(uid: string, transcript: string, sourceLanguage:s
     socket.send(JSON.stringify({ type: 'transcript', uid, transcript, sourceLanguage, audioHeardAs}));
 }
 
+export function sendParticipantLeft(uid: string) {
+    if (!socket || socket.readyState !== WebSocket.OPEN) return;
+    socket.send(JSON.stringify({ type: 'participant_left', uid}));
+}
+
+export function sendHostLeft(uid: string) {
+    if (!socket || socket.readyState !== WebSocket.OPEN) return;
+    socket.send(JSON.stringify({ type: 'host_left', uid}));
+}
+
 export function onRaiseHand(cb: RaiseHandHandler): () => void {
     raiseHandListeners.add(cb);
     return () => {
@@ -124,5 +144,19 @@ export function onTranscript(cb: TranscriptHandler): () => void {
     transcriptListeners.add(cb);
     return () => {
         transcriptListeners.delete(cb); // prevent memory leak
+    };
+}
+
+export function onParticipantLeft(cb: ParticipantLeftHandler): () => void {
+    participantLeftListeners.add(cb);
+    return () => {
+        participantLeftListeners.delete(cb); // prevent memory leak
+    };
+}
+
+export function onHostLeft(cb: HostLeftHandler): () => void {
+    hostLeftListeners.add(cb);
+    return () => {
+        hostLeftListeners.delete(cb); // prevent memory leak
     };
 }

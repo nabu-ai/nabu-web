@@ -22,14 +22,14 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { languagesMap } from "@/constants/languages";
 import { getVoiceFromLanguageCode } from "@/constants/voiceMap";
+import { toast } from "sonner";
 
 const EditProfileForm = ({ onSuccess }) => {
-  const userData = useUserStore.getState().userData;
+  const userData = useUserStore().getUserData();
   const {
     id,
     firstName,
     lastName,
-    phoneCode,
     phoneNumber,
     address,
     city,
@@ -41,7 +41,7 @@ const EditProfileForm = ({ onSuccess }) => {
     preferredLanguage,
     spokenInVoice,
   } = userData;
-  const { isPending, mutate: handleUpdateProfile, isSuccess, data } = useUpdateUserProfile();
+  const { isPending, mutateAsync: handleUpdateProfile, isSuccess, data } = useUpdateUserProfile();
   const [hasMaleVoiceParticipant, setHasMaleVoiceParticipant] = useState(false);
   const [hasFemaleVoiceParticipant, setHasFemaleVoiceParticipant] = useState(false);
 
@@ -51,7 +51,6 @@ const EditProfileForm = ({ onSuccess }) => {
       id,
       firstName,
       lastName,
-      phoneCode,
       phoneNumber,
       address,
       city,
@@ -81,7 +80,23 @@ const EditProfileForm = ({ onSuccess }) => {
   }, [isSuccess]);
 
   const onSubmit = async (data: z.infer<typeof ProfileUpdateSchema>) => {
-    handleUpdateProfile({ ...data });
+    const userData = {
+      id: data.id,
+      firstName: data.firstName,
+      lastName: data.lastName,
+      phoneNumber: data.phoneNumber,
+      address: data.address,
+      city: data.city,
+      state: data.state,
+      postalCode: data.postalCode,
+      country: data.country,
+      nonVerbal: data.nonVerbal,
+      hearingImpaired: data.hearingImpaired,
+      preferredLanguage: data.preferredLanguage,
+      spokenInVoice: data.spokenInVoice
+    }
+    await handleUpdateProfile(userData);
+
   };
 
   return (

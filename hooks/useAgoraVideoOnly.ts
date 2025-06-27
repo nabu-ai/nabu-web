@@ -6,6 +6,7 @@ import { useEffect, useRef, useState } from 'react';
 //import AgoraRTC, { IAgoraRTCRemoteUser } from 'agora-rtc-sdk-ng';
 
 //mport { client } from '@/lib/agoraClient';
+import { useStreamingStore } from '@/store/useStreamingStore';
 import { useMeetingStore } from '@/store/useMeetingStore';
 
 
@@ -18,8 +19,8 @@ export default function useAgora(
   camOn: boolean
 ) {
 
-  const AgoraRTC = useMeetingStore((s) => s.agoraInstance);
-  let client = useMeetingStore((s) => s.agoraClient);
+  const AgoraRTC = useStreamingStore((s) => s.agoraInstance);
+  let client = useStreamingStore((s) => s.agoraClient);
 
   const camTrackRef = useRef<any>(null);
   const [localTracks, setLocalTracks] = useState<any[]>([]);

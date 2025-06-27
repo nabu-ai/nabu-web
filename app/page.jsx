@@ -17,7 +17,7 @@ const DashboardPage = () => {
           >
             ☰
           </button>
-          <img className="h-20" src="/nabu-web/Nabu-Logo.jpg"></img>
+          <img className="h-20" src="/nabu-web/Nabu-Logo.png"></img>
           {/* Desktop Navigation */}
           <nav className="hidden lg:flex space-x-6">
             <a href="#" className="hover:text-blue-600">
@@ -71,7 +71,7 @@ const DashboardPage = () => {
           <p className="mt-2 text-gray-600">
             Supports over 40 languages with transcriptions and translations.
           </p>
-          <a href="/nabu-web/lobby" target="_blank">
+          <a href="/nabu-web/signin" target="">
           <button className="mt-6 bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-500">
             Get Started
           </button>

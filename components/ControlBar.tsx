@@ -15,27 +15,21 @@ import {
   VideoOffIcon,
 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
-import {
-  onRaiseHand,
-  sendRaiseHand,
-  onMute,
-  sendMute,
-  onTranscript,
-  sendTranscript,
-} from "@/services/websocket";
+import { onRaiseHand, sendRaiseHand, onMute, sendMute, onTranscript, sendTranscript, onHostLeft, onParticipantLeft, sendHostLeft } from "@/services/websocket";
+import { NABU_SERVER_HOST } from "@/constants/consts";
+import { useEndMeeting } from "@/hooks/useEndMeeting";
+import { useUserStore } from "@/store/useUserStore";
+import { useLeaveMeeting } from "@/hooks/useLeaveMeeting";
+import { toast } from "sonner";
 
 const { processMicrophone, stopMicrophoneRecording, terminateStreaming } = nabuTranslator;
 
-export default function ControlBar({
-  uid,
-  roomName,
-}: {
-  uid: string;
-  roomName: string;
-}) {
+export default function ControlBar({ uid, roomName }: { uid: string; roomName: string }) {
   const { raiseHand, muteUser } = useMeetingStore();
 
   const meetingInfo = useMeetingStore((s) => s.meetingInfo);
+  const userData = useUserStore((s) => s.userData);
+  const userLoginData = useUserStore((s) => s.loginData);
 
   const isRaised = useMeetingStore((s) => s.raisedHands[uid]);
   const isMuted = useMeetingStore((s) => s.mutedUsers[uid]);
@@ -52,15 +46,25 @@ export default function ControlBar({
 
   const hasInitialized = useRef(false);
   const [duration, setDuration] = useState(0);
-  const [isMuteProcessing, setIsMuteProcessing] = useState(true)
+  const [trialDuration, setTrialDuration] = useState(useMeetingStore((s) => s.trialDuration))
+  const [isMuteProcessing, setIsMuteProcessing] = useState(true);
+  const { isPending, mutate: handleEndMeeting, isSuccess, data } = useEndMeeting();
+  const {
+    isPending: isGuestPending,
+    mutate: handleLeaveMeeting,
+    isSuccess: isGuestSuccess,
+    data: guestData,
+  } = useLeaveMeeting();
 
   useEffect(() => {
     if (!hasInitialized.current) {
       hasInitialized.current = true;
 
+      //setTrialDuration(useMeetingStore((s) => s.trialDuration))
+
       if (muted) {
         muteUser(uid);
-        console.log(`[NABU] Muting user, ${uid} by default`)
+        console.log(`[NABU] Muting user, ${uid} by default`);
         sendMute(uid, true);
       }
     }
@@ -73,18 +77,32 @@ export default function ControlBar({
       useMeetingStore.getState().setMuteState(uid, mute);
     });
 
+     const unsubHostLeft = onHostLeft((uid) => {
+      console.log("HOST LEFT::::", uid)
+      handleLeave()
+    });
+
     return () => {
       unsubRaise();
       unsubMute();
+      unsubHostLeft();
     };
   }, []);
 
   useEffect(() => {
     const interval = setInterval(() => {
       setDuration((prev) => prev + 1);
+      setTrialDuration((prev) => prev + 1)
     }, 1000);
     return () => clearInterval(interval);
   }, []);
+
+  useEffect(() => {
+    if (trialDuration === 600) {
+      toast.warning("You have completed your free trial minutes. Please upgrade the account to continue")
+      handleLeave();
+    }
+  }, [trialDuration]);
 
   const formatDuration = (seconds: number) => {
     const m = Math.floor(seconds / 60)
@@ -101,29 +119,19 @@ export default function ControlBar({
 
   const onAudioProcessed = (data) => {
     const store = useMeetingStore.getState();
-    store.setActiveSpeaker(uid)
+    store.setActiveSpeaker(uid);
     console.log("Data response::", data);
     if (data?.transcript) {
       // Call BE to submit, transcript, sourceLanguage and audioHeardas
-      sendTranscript(
-        uid,
-        data.transcript,
-        meetingInfo.language,
-        meetingInfo.gender
-      );
-      addTranscript(
-        uid,
-        data.transcript,
-        meetingInfo.language,
-        meetingInfo.gender
-      );
+      sendTranscript(uid, data.transcript, meetingInfo.language, meetingInfo.gender);
+      addTranscript(uid, data.transcript, meetingInfo.language, meetingInfo.gender);
     }
   };
 
   const onConnectedToStreaming = () => {
-    console.log("[NABU] Connected callback")
-    setIsMuteProcessing(false)
-  }
+    console.log("[NABU] Connected callback");
+    setIsMuteProcessing(false);
+  };
 
   const onAudioError = () => {};
 
@@ -132,60 +140,71 @@ export default function ControlBar({
   };
 
   const handleMute = () => {
-    
     //toggleMute();
     if (isMuted) {
-      setIsMuteProcessing(true)
+      setIsMuteProcessing(true);
       const output = "transcriptOnly";
       const options = {
         sourceLanguage: meetingInfo.language,
         targetLanguage: null,
         audioHeardAs: meetingInfo.gender,
         output,
+        accessToken: userLoginData.accessToken,
         onProcessed: onAudioProcessed,
         onError: onAudioError,
-        onConnected: onConnectedToStreaming
+        onConnected: onConnectedToStreaming,
       };
       processMicrophone(options);
     } else {
-      setIsMuteProcessing(false)
+      setIsMuteProcessing(false);
       stopMicrophoneRecording({ onStopped: onAudioRecordingStopped });
     }
     muteUser(uid);
     sendMute(uid, !isMuted);
   };
 
-  const handleLeave = () => {
-    setIsMuteProcessing(false)
+  const handleLeave = async () => {
+    setIsMuteProcessing(false);
     stopMicrophoneRecording({ onStopped: onAudioRecordingStopped });
-    terminateStreaming();
-    window.location.href = "/nabu-web/lobby";
+    terminateStreaming(meetingInfo.language);
+    userData?.id ? await endMeeting() : await leaveMeeting();
+
+    window.location.href = userData?.id ? "/nabu-web/dashboard" : "/nabu-web";
+  };
+
+  const endMeeting = async () => {
+    sendHostLeft(uid)
+    handleEndMeeting({ meetingId: meetingInfo.meetingId, duration });
+  };
+
+  const leaveMeeting = async () => {
+    handleLeaveMeeting({ meetingId: meetingInfo.meetingId, duration, participantId: meetingInfo.participants?.[0].id });
+    useMeetingStore.setState(useMeetingStore.getInitialState())
   };
 
   return (
-    <div className="fixed top-1/2 right-4 transform -translate-y-1/2 flex flex-col items-center space-y-4 z-50 text-white">
+    <div className="fixed top-1/2 right-4 z-50 flex -translate-y-1/2 transform flex-col items-center space-y-4 text-white">
       {/* Room name (at top of control bar) */}
-      <div className="mb-6 text-theme-xl font-semibold text-gray-300">{roomName}</div>
+      <div className="text-theme-xl mb-6 font-semibold text-gray-300">{roomName}</div>
 
       {/* Mic */}
-      { !meetingInfo.nonVerbal && (<button
-        title={isMuted ? "Unmute" : "Mute"}
-        onClick={handleMute}
-        className={`p-3 hover:bg-gray-600 rounded-full text-white ${
-          isMuted ? "bg-red-600" : (isMuteProcessing?"bg-gray-700":"bg-green-700")
-        }`}
-      >
-        {isMuted ? <MicOffIcon /> : <MicIcon />}
-      </button>
+      {!meetingInfo.nonVerbal && (
+        <button
+          title={isMuted ? "Unmute" : "Mute"}
+          onClick={handleMute}
+          className={`rounded-full p-3 text-white hover:bg-gray-600 ${
+            isMuted ? "bg-red-600" : isMuteProcessing ? "bg-gray-700" : "bg-green-700"
+          }`}
+        >
+          {isMuted ? <MicOffIcon /> : <MicIcon />}
+        </button>
       )}
 
       {/* Video */}
       <button
         title={videoEnabled ? "Video On" : "Video Off"}
         onClick={toggleVideo}
-        className={`p-3 hover:bg-gray-600 rounded-full text-white ${
-          videoEnabled ? "bg-green-700" : "bg-red-600"
-        }`}
+        className={`rounded-full p-3 text-white hover:bg-gray-600 ${videoEnabled ? "bg-green-700" : "bg-red-600"}`}
       >
         {videoEnabled ? <VideoIcon /> : <VideoOffIcon />}
       </button>
@@ -194,9 +213,7 @@ export default function ControlBar({
       <button
         title={isRaised ? "Put hand down" : "Raise Hand"}
         onClick={handleRaiseHand}
-        className={`p-3 hover:bg-gray-600 rounded-full text-white ${
-          isRaised ? "bg-yellow-600" : "bg-gray-700"
-        }`}
+        className={`rounded-full p-3 text-white hover:bg-gray-600 ${isRaised ? "bg-yellow-600" : "bg-gray-700"}`}
       >
         <HandIcon />
       </button>
@@ -207,23 +224,15 @@ export default function ControlBar({
       </button> */}
 
       {/* Leave */}
-      <button
-        title="Leave"
-        onClick={handleLeave}
-        className="p-3 bg-red-600 hover:bg-red-500 rounded-full text-white"
-      >
+      <button title="Leave" onClick={handleLeave} className="rounded-full bg-red-600 p-3 text-white hover:bg-red-500">
         <PhoneOffIcon />
       </button>
 
       {/* Divider */}
-      <div className="border-t border-gray-500 w-8 my-4" />
+      <div className="my-4 w-8 border-t border-gray-500" />
 
       {/* Chat */}
-      <button
-        onClick={toggleChat}
-        title="Chat"
-        className="p-3 bg-gray-700 hover:bg-gray-600 rounded-full text-white"
-      >
+      <button onClick={toggleChat} title="Chat" className="rounded-full bg-gray-700 p-3 text-white hover:bg-gray-600">
         <MessageCircleMoreIcon />
       </button>
 
@@ -231,7 +240,7 @@ export default function ControlBar({
       <button
         onClick={toggleTranscript}
         title="Transcripts"
-        className="p-3 bg-gray-700 hover:bg-gray-600 rounded-full text-white"
+        className="rounded-full bg-gray-700 p-3 text-white hover:bg-gray-600"
       >
         <MessageSquareTextIcon />
       </button>
@@ -240,15 +249,13 @@ export default function ControlBar({
       <button
         onClick={toggleParticipants}
         title="Participants"
-        className="p-3 bg-gray-700 hover:bg-gray-600 rounded-full text-white"
+        className="rounded-full bg-gray-700 p-3 text-white hover:bg-gray-600"
       >
         <UsersIcon />
       </button>
 
       {/* Room name (at top of control bar) */}
-      <div className="mt-auto text-theme-xl text-gray-400 pt-6">
-        {formatDuration(duration)}
-      </div>
+      <div className="text-theme-xl mt-auto pt-6 text-gray-400">{formatDuration(duration)}</div>
     </div>
   );
 }

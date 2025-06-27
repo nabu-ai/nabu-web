@@ -8,30 +8,58 @@ import NewMeetingForm from "./components/NewMeetingForm";
 import { useGetMeetings } from "./hooks/useGetMeetings";
 import { Button } from "../ui/button";
 import { toast } from "sonner";
+import { ExternalLinkIcon } from "lucide-react";
+import { languagesMap } from "@/constants/languages";
+import { cn, formatTimeDuration, titleCase } from "@/lib/utils";
+import { useCancelMeeting } from "./hooks/useCancelMeeting";
+import ModalComponent from "../modal";
+import { useUserStore } from "@/store/useUserStore";
+import { useEffect, useRef } from "react";
+import { useMeetingStore } from "@/store/useMeetingStore";
+import { useRouter } from "next/navigation";
+import { intervalToDuration } from "date-fns";
 
 
 export default function MeetingsTable() {
-  const { data: meetings, isLoading } = useGetMeetings();
+    const router = useRouter();
+  const { data: meetings, isLoading, refetch } = useGetMeetings();
+   const { mutateAsync: cancelMeeting } = useCancelMeeting();
+  const { isOpen, openModal, closeModal } = useModal();
+  const hasInitialized = useRef(false); 
+  const tenantId = useUserStore().getLoginData().tenantId
+
   const meetingList = meetings?.data || [];
 
-  const { isOpen, openModal, closeModal } = useModal();
+  //const { isConfirmOpen: isOpen, isConfirmOpenModal: openModal, isConfirmCloseModal: closeModal } = useModal();
+
+  useEffect(() => {
+       if (!hasInitialized.current) {
+        hasInitialized.current = true;
+        refetch();
+      }
+    }, [])
 
   const handleSave = () => {
     closeModal();
   };
 
+  const handleCancelMeeting = async (meetingId: string) => {
+    
+   await cancelMeeting(meetingId)
+  }
+
   const getMeetingStatusColor = (status: string) => {
     switch (status) {
-      case "Active":
+      case "ACTIVE":
         return "primary"
         break;
-      case "Ongoing":
+      case "ONGOING":
         return "success"
         break;
-      case "Completed":
+      case "COMPLETED":
         return "error"
         break;
-      case "Cancelled":
+      case "CANCELLED":
         return "warning"
         break;
       default:
@@ -40,12 +68,33 @@ export default function MeetingsTable() {
     }
   }
 
-  const copyToClipboard = (text: string) => {
-    navigator.clipboard.writeText(text);
-    toast.success("Meeting link copied");
+  const copyToClipboard = (text: string, status: string) => {
+    if(status === "CANCELLED"){
+      toast.warning("Meeting link expired", {
+        className: "bg-red-500 text-white px-6 py-5 text-lg",
+      });
+    }
+    else{
+      navigator.clipboard.writeText(text);
+      toast.success("Meeting link copied", {
+        className: "bg-green-500 text-white px-6 py-5 text-lg",
+      });
+    }
   };
+
+  const handleStartMeeting = (meeting: any) => {
+     useMeetingStore.setState({
+          meetingInfo: meeting
+        })
+        setTimeout(() => {
+      router.push(`/lobby`);
+    }, 1000);
+  }
+
   const headerCSS = "py-3 font-semibold text-gray-800 text-start text-theme-xl dark:text-gray-400";
   const cellCSS = "py-3 text-gray-700 text-theme-xl dark:text-gray-400";
+  
+
   return (
     <>
       <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white px-4 pt-4 pb-3 sm:px-6 dark:border-gray-800 dark:bg-white/[0.03]">
@@ -57,7 +106,7 @@ export default function MeetingsTable() {
           <div className="flex items-center gap-3">
             <button
               onClick={openModal}
-              disabled={false}
+              disabled={useUserStore.getState().trialExpired}
               className="text-theme-xl bg-brand-500 shadow-theme-md hover:bg-brand-600 disabled:bg-brand-300 inline-flex w-full items-center justify-center gap-2 rounded-lg px-4 py-3 font-medium text-white transition"
             >
               New Instant Meeting
@@ -91,55 +140,68 @@ export default function MeetingsTable() {
                   Meeting
                   <br /> Status
                 </TableCell>
+                 <TableCell isHeader className={headerCSS}>
+                  Duration
+                  <br /> Consumed
+                </TableCell>
                 <TableCell isHeader className={headerCSS}>
                   Meeting Link
                 </TableCell>
-                <TableCell isHeader>{""}</TableCell>
+                <TableCell isHeader className={headerCSS}>Actions</TableCell>
               </TableRow>
             </TableHeader>
             {/* Table Body */}
             <TableBody className="divide-y divide-gray-100 dark:divide-gray-800">
               {meetingList.map(
-                ({
-                  meetingId,
-                  agenda,
-                  hostLanguage,
-                  participants,
-                  participantLanguage,
-                  duration,
-                  status,
-                }) => {
-                  const partName = participants[0]?.name
-                  const partLang = participants[0]?.language
-                  const partVoice = participants[0]?.voiceHeardAs
-                  const meetingLink = `http://localhost:3000/nabu-web/guest?mid=${meetingId}`
+                (meeting:any) => {
+                  const partName = meeting.participants[0]?.name
+                  const partLang = meeting.participants[0]?.language
+                  const partVoice = meeting.participants[0]?.voiceHeardAs
+                  const meetingLink = `http://localhost:3000/nabu-web/guest?mid=${meeting.meetingId}&oid=${tenantId}`
                   return (
-                    <TableRow key={meetingId} className="">
-                      <TableCell className={cellCSS}>{agenda}</TableCell>
-                      <TableCell className={cellCSS}>{hostLanguage}</TableCell>
+                    <TableRow key={meeting.meetingId} className="">
+                      <TableCell className={cellCSS}>{meeting.agenda}</TableCell>
+                      <TableCell className={cellCSS}>{languagesMap[meeting.hostLanguage]}</TableCell>
                       <TableCell className={cellCSS}>{partName}</TableCell>
-                      <TableCell className={cellCSS}>{partLang} ( {partVoice} )</TableCell>
-                      <TableCell className={cellCSS}>{duration/60}</TableCell>
+                      <TableCell className={cellCSS}>{languagesMap[partLang]} ( { titleCase(partVoice)} )</TableCell>
+                      <TableCell className={cellCSS}>{formatTimeDuration(meeting.duration)}</TableCell>
                       <TableCell className={cellCSS}>
                         <Badge
                           size="sm"
-                          color={getMeetingStatusColor(status)}
+                          color={getMeetingStatusColor(meeting.status)}
                         >
-                          {status}
+                          {meeting.status}
                         </Badge>
                       </TableCell>
-                      <TableCell className="w-100 text-theme-xl overflow-text-wrap gap-3 py-3 text-gray-500 dark:text-gray-400">
-                        <button onClick={() => copyToClipboard(meetingLink)}>
-                          {meetingLink}
+                      <TableCell className={cellCSS}>{formatTimeDuration(meeting.consumedDuration)}</TableCell>
+                      <TableCell className="w-50 text-theme-xl overflow-text-wrap gap-3 py-3 text-gray-500 dark:text-gray-400">
+                        {/* <button onClick={() => copyToClipboard(meetingLink)}>
+                         <ExternalLinkIcon/> Copy Link
+                        </button> */}
+                        <button
+                          onClick={() => copyToClipboard(meetingLink, meeting.status)}
+                          className="flex items-center gap-2 hover:text-primary transition"
+                          title={meetingLink}
+                        >
+                          <ExternalLinkIcon className="w-4 h-4" />
+                          <span>Copy Link</span>
                         </button>
                       </TableCell>
-                      <TableCell >
-                        <Link href={meetingLink} target="_blank">
-                          <Button variant="primary" size="sm" className="text-theme-lg w-20 py-1">
-                            {" "}
-                            Join
+                      <TableCell className="flex gap-3">
+                         {meeting.status === "ACTIVE" && (
+                        
+                          <Button onClick={() => handleStartMeeting(meeting)} variant="primary" size="xs" className="text-theme-lg w-20 py-1">
+                           
+                            Start
                           </Button>
-                        </Link>
+                       
+                         )}
+                        {(meeting.status === "ACTIVE" || meeting.status === "CANCELLED") && (
+                          <Button onClick={ () => handleCancelMeeting(meeting.meetingId)} disabled={meeting.status === "CANCELLED"} variant="primary" size="xs" className={cn("bg-error-500 text-theme-lg w-20 py-1 hover:bg-error-700", meeting.status === "CANCELLED"?"disabled:bg-error-400":"")}>
+                           
+                            Cancel
+                          </Button>
+                        )}
                       </TableCell>
                     </TableRow>
                   );
@@ -160,6 +222,15 @@ export default function MeetingsTable() {
           <NewMeetingForm onSubmit={handleSave} />
         </div>
       </Modal>
+
+      {/* <ModalComponent heading="Meeting Confirmation" description="Are you sure to cancel the meeting?" isOpen={isOpen} closeModal={closeModal}>
+        <Button onClick={} variant="primary" size="xs" className="text-theme-lg w-20 py-1">
+                        Yes
+                       </Button>
+                       <Button onClick={closeModal} variant="primary" size="xs" className="text-theme-lg w-20 py-1">
+                        No
+                       </Button>
+      </ModalComponent> */}
     </>
   );
 }

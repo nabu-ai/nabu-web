@@ -14,8 +14,9 @@ const axiosInstance = axios.create({
   // baseURL: envBaseURL,
   headers: {
     "Content-Type": "application/json",
-    "Authorization": "Bearer "+useUserStore.getState().loginData.accessToken,
-    "X-Tenant-Id": useUserStore.getState().loginData.tenantId
+    "Authorization": useUserStore.getState().loginData.accessToken?"Bearer "+useUserStore.getState().loginData.accessToken:null,
+    "X-Tenant-Id": useUserStore.getState().loginData.tenantId,
+  //  "X-User-Id": useUserStore.getState().loginData.userId
   },
   ...(!!publicApi && { withCredentials: true }),
 });

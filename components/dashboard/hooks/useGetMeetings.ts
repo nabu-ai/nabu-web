@@ -9,11 +9,19 @@ type MeetingTypesResponse = {
 }
 
 export const useGetMeetings = () => {
-     const userInfo = useUserStore.getState().loginData;
+     const loginInfo = useUserStore().getLoginData();
     return useQuery<MeetingTypesResponse>({
         queryKey: ["get-meetings"],
         queryFn: async () => {
-            return axiosInstance.get(`${NABU_MEETING_API_ENDPOINT}meetings/list/${userInfo.userId}`);
-        }
+            return axiosInstance.get(`${NABU_MEETING_API_ENDPOINT}/list/${loginInfo.userId}`,
+                {
+                    headers: { 
+                        "X-User-Id": loginInfo.userId,
+                        "Authorization": "Bearer "+loginInfo.accessToken,
+                        "X-Tenant-Id": loginInfo.tenantId
+                    },
+                }
+            );
+        }, enabled:Boolean(loginInfo.accessToken)
     });
 };

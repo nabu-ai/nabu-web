@@ -7,7 +7,7 @@ interface UserState {
   loginData: Record<string, any>;
   userData: Record<string, any>;
   trialExpired: boolean;
-
+  getLoginData: () => Record<string, any>;
   getUserData: () => Record<string, any>;
   setLoginData: (loginData: Record<string, any>) => void;
   setTrialExpired: (trialExpired: any) => void;
@@ -21,7 +21,7 @@ export const useUserStore = create<UserState>()(
       loginData: {},
       trialExpired: false,
       userData: {},
-
+      getLoginData: () => {return get().loginData;},
       getUserData: () => {return get().userData;},
       setUserData: (_userData) => set(() => ({ userData: _userData })),
       setLoginData: (_loginData) => set(() => ({loginData: _loginData})),

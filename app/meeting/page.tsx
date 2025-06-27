@@ -7,9 +7,11 @@ import ChatPanel from "@/components/ChatPanel";
 import ParticipantsPanel from "@/components/ParticipantsPanel";
 import { useMeetingStore } from "@/store/useMeetingStore";
 import TranscriptPanel from "@/components/TranscriptPanel";
+import { useUserStore } from "@/store/useUserStore";
 
 export default function MeetingPage() {
   const meetingInfo = useMeetingStore((s) => s.meetingInfo);
+  const userData = useUserStore((s) => s.userData);
 
   const name = meetingInfo.name || "Guest";
   const camOn = false;   // Default to true for video-only mode
@@ -22,8 +24,8 @@ export default function MeetingPage() {
   const { localTracks, remoteUsers } = useAgora(
     meetingInfo.appId,
     meetingInfo.token,
-    room,
-    name,
+    meetingInfo.meetingId,
+    meetingInfo.name,
     camOn
   );
 

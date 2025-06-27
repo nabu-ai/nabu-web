@@ -11,6 +11,7 @@ import {
 import { useEffect, useRef, useState } from "react";
 import { AudioQueue } from "@/utils/AudioQueue";
 import { SendHorizontalIcon, XIcon } from "lucide-react";
+import { useUserStore } from "@/store/useUserStore";
 
 export default function TranscriptPanel({ uid }: { uid: string }) {
   const isTranscriptOpen = useMeetingStore((s) => s.isTranscriptOpen);
@@ -19,6 +20,7 @@ export default function TranscriptPanel({ uid }: { uid: string }) {
   const addTranscript = useMeetingStore((s) => s.addTranscript);
   const isMuted = useMeetingStore((s) => s.mutedUsers[uid]);
   const transcriptsWindowRef = useRef(null); // Reference to scroll the transcripts window
+  const userLoginData = useUserStore((s) => s.loginData);
 
   const audioQueue = new AudioQueue();
   const toggleTranscript = useMeetingStore((s) => s.toggleTranscript);
@@ -38,6 +40,7 @@ export default function TranscriptPanel({ uid }: { uid: string }) {
             text: transcript,
             sourceLanguage,
             targetLanguage: meetingInfo.language,
+            accessToken: userLoginData.accessToken,
             onProcessed: (data) => {
               const { translation } = data;
               useMeetingStore
@@ -61,6 +64,7 @@ export default function TranscriptPanel({ uid }: { uid: string }) {
             sourceLanguage,
             targetLanguage: meetingInfo.language,
             audioHeardAs,
+            accessToken: userLoginData.accessToken,
             onTranslated: (data) => {
               const { translation } = data;
               useMeetingStore

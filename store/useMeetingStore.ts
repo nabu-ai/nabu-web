@@ -1,8 +1,16 @@
 "use client";
 
 import { create } from "zustand";
+import { createJSONStorage, persist } from "zustand/middleware";
 
 interface MeetingState {
+  meetingId: string;
+  duration: number;
+  trialDuration: number;
+  setMeetingId: (meetingId: string) => void;
+  setDuration: (duration: number) => void;
+  setTrialDuration: (trialDuration: number) => void;
+
   muted: boolean;
   videoEnabled: boolean;
   raisedHands: Record<string, boolean>;
@@ -13,11 +21,6 @@ interface MeetingState {
   raiseHand: (uid: string) => void;
   muteUser: (uid: string) => void;
   setActiveSpeaker: (uid: string) => void;
-
-  agoraInstance: any;
-  agoraClient: any;
-  setAgoraInstance: (agoraInstance: any) => void;
-  setAgoraClient: (agoraClient: any) => void;
 
   isChatOpen: boolean;
   isTranscriptOpen: boolean;
@@ -36,9 +39,19 @@ interface MeetingState {
 
   setHandState: (uid: string, raised: boolean) => void;
   setMuteState: (uid: string, mute: boolean) => void;
+  
 }
 
-export const useMeetingStore = create<MeetingState>((set) => ({
+
+export const useMeetingStore = create<MeetingState>()(
+  persist(
+    (set, get) => ({
+      meetingId: "",
+  duration: 0,
+  trialDuration: 0,
+  setMeetingId: (_meetingId) => set(() => ({meetingId: _meetingId})),
+  setDuration: (_duration) => set(() => ({duration: _duration})),
+  setTrialDuration: (_trialDuration) => set(() => ({trialDuration: _trialDuration})),
   muted: true,
   videoEnabled: false,
   raisedHands: {},
@@ -67,11 +80,7 @@ export const useMeetingStore = create<MeetingState>((set) => ({
       };
     }),
   setActiveSpeaker: (uid) => set(() => ({ activeSpeakerUid: uid })),
-  agoraInstance: null,
-  agoraClient: null,
-  setAgoraInstance: (_agoraInstance) => set(() => ({agoraInstance: _agoraInstance})),
-  setAgoraClient: (_agoraClient) => set(() => ({agoraInstance: _agoraClient})),
-  isChatOpen: false,
+ isChatOpen: false,
   isTranscriptOpen: false,
   isParticipantsOpen: false,
   toggleChat: () =>
@@ -124,4 +133,10 @@ export const useMeetingStore = create<MeetingState>((set) => ({
         ? { ...s.mutedUsers, [uid]: true }
         : Object.fromEntries(Object.entries(s.mutedUsers).filter(([k]) => k !== uid)),
     })),
-}));
+    }),
+    {
+      name: 'nabu-meeting-storage', // name of the item in the storage (must be unique)
+      storage: createJSONStorage(() => sessionStorage), // (optional) by default, 'localStorage' is used
+    },
+  ),
+)

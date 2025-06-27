@@ -5,10 +5,11 @@ import { useRouter } from "next/navigation";
 import { useUserStore } from "@/store/useUserStore";
 
 export function useAuthGuard() {
+  const loginData = useUserStore().getLoginData();
   const router = useRouter();
   const isAuthenticated = () => {
-    const loginData = useUserStore.getState().loginData;
-    return true;//Boolean(loginData.accessToken);
+    
+    return Boolean(loginData.accessToken);
   };
   useEffect(() => {
     if (!isAuthenticated()) {
