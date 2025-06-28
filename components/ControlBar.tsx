@@ -16,11 +16,11 @@ import {
 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { onRaiseHand, sendRaiseHand, onMute, sendMute, onTranscript, sendTranscript, onHostLeft, onParticipantLeft, sendHostLeft } from "@/services/websocket";
-import { NABU_SERVER_HOST } from "@/constants/consts";
 import { useEndMeeting } from "@/hooks/useEndMeeting";
 import { useUserStore } from "@/store/useUserStore";
 import { useLeaveMeeting } from "@/hooks/useLeaveMeeting";
 import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 const { processMicrophone, stopMicrophoneRecording, terminateStreaming } = nabuTranslator;
 
@@ -48,13 +48,16 @@ export default function ControlBar({ uid, roomName }: { uid: string; roomName: s
   const [duration, setDuration] = useState(0);
   const [trialDuration, setTrialDuration] = useState(useMeetingStore((s) => s.trialDuration))
   const [isMuteProcessing, setIsMuteProcessing] = useState(true);
-  const { isPending, mutate: handleEndMeeting, isSuccess, data } = useEndMeeting();
+   const router = useRouter()
+  const { isPending, mutate: handleEndMeeting, isSuccess, data } = useEndMeeting({router});
   const {
     isPending: isGuestPending,
     mutate: handleLeaveMeeting,
     isSuccess: isGuestSuccess,
     data: guestData,
   } = useLeaveMeeting();
+
+ 
 
   useEffect(() => {
     if (!hasInitialized.current) {
@@ -169,7 +172,9 @@ export default function ControlBar({ uid, roomName }: { uid: string; roomName: s
     terminateStreaming(meetingInfo.language);
     userData?.id ? await endMeeting() : await leaveMeeting();
 
-    window.location.href = userData?.id ? "/nabu-web/dashboard" : "/nabu-web";
+    //window.location.href = userData?.id ? "/nabu-web/dashboard" : "/";
+    // const path = userData?.id ? "/dashboard" : "/"
+    // router.push(path)
   };
 
   const endMeeting = async () => {

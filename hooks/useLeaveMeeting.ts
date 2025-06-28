@@ -35,7 +35,7 @@ export const useLeaveMeeting = () => {
         },
         onSuccess: async (data, variables) => {
             const results = data.data;
-           
+           window.location.href = "nabu-io.com";
         },
     });
 };

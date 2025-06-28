@@ -18,6 +18,7 @@ import { useEffect, useRef } from "react";
 import { useMeetingStore } from "@/store/useMeetingStore";
 import { useRouter } from "next/navigation";
 import { intervalToDuration } from "date-fns";
+import { NABU_DOMAIN } from "@/constants/environmentVariables";
 
 
 export default function MeetingsTable() {
@@ -157,7 +158,7 @@ export default function MeetingsTable() {
                   const partName = meeting.participants[0]?.name
                   const partLang = meeting.participants[0]?.language
                   const partVoice = meeting.participants[0]?.voiceHeardAs
-                  const meetingLink = `http://localhost:3000/nabu-web/guest?mid=${meeting.meetingId}&oid=${tenantId}`
+                  const meetingLink = `${NABU_DOMAIN}/nabu-web/guest?mid=${meeting.meetingId}&oid=${tenantId}`
                   return (
                     <TableRow key={meeting.meetingId} className="">
                       <TableCell className={cellCSS}>{meeting.agenda}</TableCell>

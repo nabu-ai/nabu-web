@@ -37,7 +37,9 @@ export const useSignIn = ({router}) => {
         `${NABU_AUTH_API_ENDPOINT}/login`,
         { email, password },
         {
-          headers: { "Content-Type": undefined },
+          headers: { 
+            "Content-Type": undefined ,
+          },
         },
       );
     },

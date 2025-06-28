@@ -15,7 +15,7 @@ export type EndMeetingPayload = {
     duration: number;
 };
 
-export const useEndMeeting = () => {
+export const useEndMeeting = ({router}) => {
     const meetingId = useMeetingStore.getState().meetingId;
     const duration = useMeetingStore.getState().duration;
     const userId =  useUserStore().getLoginData().userId 
@@ -34,8 +34,7 @@ export const useEndMeeting = () => {
             toast.error("Failed to end meeting");
         },
         onSuccess: async (data, variables) => {
-            const results = data.data;
-           
+            router.push("/dashboard")
         },
     });
 };

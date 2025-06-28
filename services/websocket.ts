@@ -1,5 +1,5 @@
 import { useMeetingStore } from '@/store/useMeetingStore';
-import { NABU_SERVER_HOST } from '@/constants/consts';
+import { NABU_MEETING_HOST } from '@/constants/environmentVariables';
 
 type RaiseHandHandler = (uid: string, raised: boolean) => void;
 type ChatHandler = (uid: string, text: string, sourceLanguage: string) => void;
@@ -20,7 +20,7 @@ const hostLeftListeners: Set<HostLeftHandler> = new Set();
 export function connectWebSocket(roomId: string, uid: string): WebSocket | null {
     if (socket) return socket;
    
-    socket = new WebSocket(`${NABU_SERVER_HOST}/ws/room?room=${roomId}&uid=${uid}`);
+    socket = new WebSocket(`${NABU_MEETING_HOST}/ws/room?room=${roomId}&uid=${uid}`);
 
     socket.onopen = () => {
         console.log(`[NABU WS] Connected to room ${roomId}`);
@@ -36,7 +36,7 @@ export function connectWebSocket(roomId: string, uid: string): WebSocket | null 
         socket.close()
         socket = null;
         console.error('[NABU WS] WebSocket Reconnecting', err);
-        socket = new WebSocket(`${NABU_SERVER_HOST}?room=${roomId}&uid=${uid}`);
+        socket = new WebSocket(`${NABU_MEETING_HOST}?room=${roomId}&uid=${uid}`);
     };
 
     socket.onclose = () => {

@@ -5,7 +5,7 @@ const nabuTranslator = require("nabu-translator/src");
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { ChevronDownIcon } from "lucide-react";
-import { NABU_SERVER_HOST } from "@/constants/consts";
+import { NABU_MEETING_HOST } from "@/constants/environmentVariables";
 import {
   languagesMap,
 } from "@/constants/languages";
@@ -118,7 +118,7 @@ export default function LobbyPage() {
   const fetchToken = async () => {
     console.log("in fetch token API")
     const response = await fetch(
-      `${NABU_SERVER_HOST}/api/streaming/token?channel=${meetingInfo.meetingId.trim()}&uid=${(userData.firstName + " " + userData.lastName).trim()}`,
+      `${NABU_MEETING_HOST}/api/streaming/token?channel=${meetingInfo.meetingId.trim()}&uid=${(userData.firstName + " " + userData.lastName).trim()}`,
       {
         method: "GET",
         headers: {
@@ -134,7 +134,7 @@ export default function LobbyPage() {
   const fetchGuestToken = async () => {
     console.log("in guest fetch token API")
     const response = await fetch(
-      `${NABU_SERVER_HOST}/api/guest/meetings/token?channel=${meetingInfo.meetingId.trim()}&uid=${meetingInfo.participants?.[0]?.name}`,
+      `${NABU_MEETING_HOST}/api/guest/meetings/token?channel=${meetingInfo.meetingId.trim()}&uid=${meetingInfo.participants?.[0]?.name}`,
       {
         method: "GET",
         headers: {
