@@ -43,11 +43,11 @@ function TabsTrigger({
         <TabsPrimitive.Trigger
             data-slot="tabs-trigger"
             className={cn(
-                "data-[state=active]:bg-gray-200 dark:data-[state=active]:text-white focus:border-gray-300 focus:ring-brand-500/10 ",
-                "focus:outline-ring dark:data-[state=active]:border-gray-300 dark:data-[state=active]:bg-white/30 text-gray-800 dark:text-white/90 ",
-                "inline-flex h-[calc(100%-1px)] flex-1 items-center justify-center gap-1.5 rounded-md border border-transparent px-2 py-1 text-md font-medium ",
-                "whitespace-nowrap transition-[color,box-shadow] focus:ring-[3px] focus:outline-1 disabled:pointer-events-none disabled:opacity-50 ",
-                "data-[state=active]:shadow-sm [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
+                "data-[state=active]:border-b-4 data-[state=active]:border-b-brand-500 dark:data-[state=active]:text-white focus:border-b-gray-300 ",
+                " dark:data-[state=active]:border-b-gray-300 dark:data-[state=active]:bg-white/30 text-gray-800 dark:text-white/90 ",
+                "inline-flex h-[calc(100%-1px)] flex-1 items-center justify-center gap-1.5  px-2 py-1 text-md font-medium ",
+                "whitespace-nowrap transition-[color,box-shadow] disabled:pointer-events-none disabled:opacity-50 ",
+                " [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
                 className
             )}
             {...props}

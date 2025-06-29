@@ -2,9 +2,6 @@
 import { Table, TableBody, TableCell, TableHeader, TableRow } from "../ui/table";
 import Badge from "../ui/badge/Badge";
 import { useModal } from "@/hooks/useModal";
-import { Modal } from "../ui/modal";
-import NewMeetingForm from "./components/NewMeetingForm";
-import { useGetMeetings } from "./hooks/useGetMeetings";
 import { Button } from "../ui/button";
 import { toast } from "sonner";
 import { ExternalLinkIcon } from "lucide-react";
@@ -13,15 +10,15 @@ import { cn, formatTimeDuration, titleCase } from "@/lib/utils";
 import { useCancelMeeting } from "./hooks/useCancelMeeting";
 import ModalComponent from "../modal";
 import { useUserStore } from "@/store/useUserStore";
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 import { useMeetingStore } from "@/store/useMeetingStore";
 import { useRouter } from "next/navigation";
 import { NABU_DOMAIN } from "@/constants/environmentVariables";
+import { format } from 'date-fns';
 
 export default function MeetingsTable({ heading, meetingData }: { heading: string, meetingData: any }) {
   const router = useRouter();
   const { mutateAsync: cancelMeeting } = useCancelMeeting();
-  const { isOpen, openModal, closeModal } = useModal();
   const {
     isOpen: isConfirmationOpen,
     openModal: openConfirmationModeal,
@@ -32,12 +29,6 @@ export default function MeetingsTable({ heading, meetingData }: { heading: strin
   const [selectedMeeting, setSelectedMeeting] = useState("");
 
   const meetingList = meetingData || [];
-
-
-
-  const handleSave = () => {
-    closeModal();
-  };
 
   const handleCancelMeeting = async (meetingId: string) => {
     setSelectedMeeting(meetingId);
@@ -101,138 +92,109 @@ export default function MeetingsTable({ heading, meetingData }: { heading: strin
 
   return (
     <>
-      <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white px-4 pt-4 pb-3 sm:px-6 dark:border-gray-800 dark:bg-white/[0.03]">
-        <div className="mb-4 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-          <div>
-            <h3 className="text-2xl font-semibold text-gray-800 dark:text-white/90">{heading}</h3>
-          </div>
-
-          <div className="flex items-center gap-3">
-            <Button
-              onClick={openModal}
-              disabled={useUserStore.getState().trialExpired}
-              size="sm"
-            >
-              New Instant Meeting
-            </Button>
-          </div>
-        </div>
-        <div className="max-w-full overflow-x-auto lg:overflow-auto lg:h-[60%]">
-          <Table className="table-auto md:table-fixed">
-            {/* Table Header */}
-            <TableHeader className="border-y border-gray-100 dark:border-gray-800">
-              <TableRow>
-                <TableCell isHeader className={headerCSS}>
-                  Agenda
-                </TableCell>
-                <TableCell isHeader className={headerCSS}>
-                  Host
-                  <br /> language
-                </TableCell>
-                <TableCell isHeader className={headerCSS}>
-                  Participant
-                  <br /> Name
-                </TableCell>
-                <TableCell isHeader className={headerCSS}>
-                  Participant
-                  <br /> Language
-                </TableCell>
-                <TableCell isHeader className={headerCSS}>
-                  Duration
-                </TableCell>
-                <TableCell isHeader className={headerCSS}>
-                  Meeting
-                  <br /> Status
-                </TableCell>
-                <TableCell isHeader className={headerCSS}>
-                  Duration
-                  <br /> Consumed
-                </TableCell>
-                <TableCell isHeader className={headerCSS}>
-                  Meeting Link
-                </TableCell>
-                <TableCell isHeader className={headerCSS}>
-                  Actions
-                </TableCell>
-              </TableRow>
-            </TableHeader>
-            {/* Table Body */}
-            <TableBody className="divide-y divide-gray-100 dark:divide-gray-800">
-              {meetingList.map((meeting: any) => {
-                const partName = meeting.participants[0]?.name;
-                const partLang = meeting.participants[0]?.language;
-                const partVoice = meeting.participants[0]?.voiceHeardAs;
-                const meetingLink = `${NABU_DOMAIN}/nabu-web/guest?mid=${meeting.meetingId}&oid=${tenantId}`;
-                return (
-                  <TableRow key={meeting.meetingId} className="">
-                    <TableCell className={cellCSS}>{meeting.agenda}</TableCell>
-                    <TableCell className={cellCSS}>{languagesMap[meeting.hostLanguage]}</TableCell>
-                    <TableCell className={cellCSS}>{partName}</TableCell>
-                    <TableCell className={cellCSS}>
-                      {languagesMap[partLang]} {(partVoice ? titleCase(partVoice) : "-")}
-                    </TableCell>
-                    <TableCell className={cellCSS}>{formatTimeDuration(meeting.duration)}</TableCell>
-                    <TableCell className={cellCSS}>
-                      <Badge color={getMeetingStatusColor(meeting.status)}>
-                        {meeting.status}
-                      </Badge>
-                    </TableCell>
-                    <TableCell className={cellCSS}>{formatTimeDuration(meeting.consumedDuration)}</TableCell>
-                    <TableCell className="text-theme-xl overflow-text-wrap w-50 gap-3 py-3 text-gray-500 dark:text-gray-400">
-                      <button
-                        onClick={() => copyToClipboard(meetingLink, meeting.status)}
-                        className="hover:text-primary flex items-center gap-2 transition"
-                        title={meetingLink}
+      <div className="max-w-full overflow-x-auto lg:overflow-auto lg:h-[60%]">
+        <Table className="table-auto md:table-fixed">
+          {/* Table Header */}
+          <TableHeader className="border-y border-gray-100 dark:border-gray-800">
+            <TableRow>
+              <TableCell isHeader className={headerCSS}>
+                Agenda
+              </TableCell>
+              <TableCell isHeader className={headerCSS}>
+                Host
+                <br /> language
+              </TableCell>
+              <TableCell isHeader className={headerCSS}>
+                Participant
+                <br /> Name
+              </TableCell>
+              <TableCell isHeader className={headerCSS}>
+                Participant
+                <br /> Language
+              </TableCell>
+              <TableCell isHeader className={headerCSS}>
+                Created On
+              </TableCell>
+              <TableCell isHeader className={headerCSS}>
+                Meeting
+                <br /> Status
+              </TableCell>
+              <TableCell isHeader className={headerCSS}>
+                Duration
+                <br /> Consumed
+              </TableCell>
+              <TableCell isHeader className={headerCSS}>
+                Meeting Link
+              </TableCell>
+              <TableCell isHeader className={headerCSS}>
+                Actions
+              </TableCell>
+            </TableRow>
+          </TableHeader>
+          {/* Table Body */}
+          <TableBody className="divide-y divide-gray-100 dark:divide-gray-800">
+            {meetingList.map((meeting: any) => {
+              const partName = meeting.participants[0]?.name;
+              const partLang = meeting.participants[0]?.language;
+              const partVoice = meeting.participants[0]?.voiceHeardAs;
+              const meetingLink = `${NABU_DOMAIN}/nabu-web/guest?mid=${meeting.meetingId}&oid=${tenantId}`;
+              return (
+                <TableRow key={meeting.meetingId} className="">
+                  <TableCell className={cellCSS}>{meeting.agenda}</TableCell>
+                  <TableCell className={cellCSS}>{languagesMap[meeting.hostLanguage]}</TableCell>
+                  <TableCell className={cellCSS}>{partName}</TableCell>
+                  <TableCell className={cellCSS}>
+                    {languagesMap[partLang]} {(partVoice ? titleCase(partVoice) : "-")}
+                  </TableCell>
+                  <TableCell className={cellCSS}>{format(meeting.createdOn, "MM-dd-yyyy HH:mm:ss a")}</TableCell>
+                  <TableCell className={cellCSS}>
+                    <Badge color={getMeetingStatusColor(meeting.status)}>
+                      {meeting.status}
+                    </Badge>
+                  </TableCell>
+                  <TableCell className={cellCSS}>{formatTimeDuration(meeting.consumedDuration)}</TableCell>
+                  <TableCell className="text-theme-xl overflow-text-wrap w-50 gap-3 py-3 text-gray-500 dark:text-gray-400">
+                    <button
+                      onClick={() => copyToClipboard(meetingLink, meeting.status)}
+                      className="hover:text-primary flex items-center gap-2 transition"
+                      title={meetingLink}
+                    >
+                      <ExternalLinkIcon className="h-4 w-4" />
+                      <span>Copy Link</span>
+                    </button>
+                  </TableCell>
+                  <TableCell className="flex gap-3">
+                    {meeting.status === "ACTIVE" && (
+                      <Button
+                        onClick={() => handleStartMeeting(meeting)}
+                        variant="primary"
+                        size="xs"
+                        className="text-theme-lg w-20 py-1"
                       >
-                        <ExternalLinkIcon className="h-4 w-4" />
-                        <span>Copy Link</span>
-                      </button>
-                    </TableCell>
-                    <TableCell className="flex gap-3">
-                      {meeting.status === "ACTIVE" && (
-                        <Button
-                          onClick={() => handleStartMeeting(meeting)}
-                          variant="primary"
-                          size="xs"
-                          className="text-theme-lg w-20 py-1"
-                        >
-                          Start
-                        </Button>
-                      )}
-                      {(meeting.status === "ACTIVE" || meeting.status === "CANCELLED") && (
-                        <Button
-                          onClick={() => handleCancelMeeting(meeting.meetingId)}
-                          disabled={meeting.status === "CANCELLED"}
-                          variant="primary"
-                          size="xs"
-                          className={cn(
-                            "bg-error-500 text-theme-lg hover:bg-error-700 w-20 py-1",
-                            meeting.status === "CANCELLED" ? "disabled:bg-error-400" : "",
-                          )}
-                        >
-                          Cancel
-                        </Button>
-                      )}
-                    </TableCell>
-                  </TableRow>
-                );
-              })}
-            </TableBody>
-          </Table>
-        </div>
+                        Start
+                      </Button>
+                    )}
+                    {(meeting.status === "ACTIVE" || meeting.status === "CANCELLED") && (
+                      <Button
+                        onClick={() => handleCancelMeeting(meeting.meetingId)}
+                        disabled={meeting.status === "CANCELLED"}
+                        variant="primary"
+                        size="xs"
+                        className={cn(
+                          "bg-error-500 text-theme-lg hover:bg-error-700 w-20 py-1",
+                          meeting.status === "CANCELLED" ? "disabled:bg-error-400" : "",
+                        )}
+                      >
+                        Cancel
+                      </Button>
+                    )}
+                  </TableCell>
+                </TableRow>
+              );
+            })}
+          </TableBody>
+        </Table>
       </div>
-      <Modal isOpen={isOpen} onClose={closeModal} className="m-4 max-w-[700px]">
-        <div className="no-scrollbar relative w-full max-w-[700px] overflow-y-auto rounded-3xl bg-white p-4 lg:p-11 dark:bg-gray-900">
-          <div className="px-2 pr-14">
-            <h4 className="mb-2 text-2xl font-semibold text-gray-800 dark:text-white/90">New Meeting</h4>
-            <p className="text-theme-xl mb-6 text-gray-500 lg:mb-7 dark:text-gray-400">
-              This is a trial meeting with only 10 minutes duration
-            </p>
-          </div>
-          <NewMeetingForm onSubmit={handleSave} />
-        </div>
-      </Modal>
-
       <ModalComponent
         heading="Meeting Confirmation"
         description="Are you sure to cancel the meeting?"
