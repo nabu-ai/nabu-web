@@ -98,7 +98,7 @@ function FormLabel({
     <Label
       data-slot="form-label"
       data-error={!!error}
-      className={cn("data-[error=true]:text-error-500 text-lg text-gray-700 dark:text-gray-400 dark:data-[error=true]:text-error-500", className)}
+      className={cn("data-[error=true]:text-error-500 text-theme-sm text-gray-700 dark:text-gray-400 dark:data-[error=true]:text-error-500", className)}
       htmlFor={formItemId}
       {...props}
     />

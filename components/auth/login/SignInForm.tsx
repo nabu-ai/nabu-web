@@ -85,7 +85,7 @@ const SignInForm = () => {
       </form>
     </Form>
     <div className="mt-5">
-      <p className="text-lg font-normal text-gray-700 dark:text-gray-400 sm:text-start">
+      <p className="text-theme-xl font-normal text-gray-700 dark:text-gray-400 sm:text-start">
         Don&apos;t have an account? {""}
         <Link
           href="/signup"

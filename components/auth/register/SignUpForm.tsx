@@ -50,14 +50,6 @@ const SignUpForm = () => {
   }, [isSuccess])
 
   const onSubmit = async (data: z.infer<typeof SignUpFormSchema>) => {
-    // toast("You submitted the following values", {
-    //   description: (
-    //     <pre className="mt-2 w-[320px] rounded-md bg-neutral-950 p-4">
-    //       <code className="text-white">{JSON.stringify(data, null, 2)}</code>
-    //     </pre>
-    //   ),
-    // });
-
     const registrationPayload = {
       firstName: data.firstName,
       lastName: data.lastName,
@@ -270,7 +262,7 @@ const SignUpForm = () => {
       </Form>
 
       <div className="mt-5">
-        <p className="text-lg font-normal text-gray-700 dark:text-gray-400 sm:text-start">
+        <p className="text-theme-lg font-normal text-gray-700 dark:text-gray-400 sm:text-start">
           Already have an account? {""}
           <Link
             href="/signin"
