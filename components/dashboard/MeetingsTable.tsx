@@ -74,6 +74,10 @@ export default function MeetingsTable() {
       toast.warning("Meeting link expired", {
         className: "bg-red-500 text-white px-6 py-5 text-lg",
       });
+    } else if(status === "COMPLETED"){
+       toast.warning("Meeting completed", {
+        className: "bg-red-500 text-white px-6 py-5 text-lg",
+      });
     }
     else{
       navigator.clipboard.writeText(text);

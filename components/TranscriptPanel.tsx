@@ -79,10 +79,10 @@ export default function TranscriptPanel({ uid }: { uid: string }) {
             onProcessed: (data) => {
               const { audio } = data;
               if (audio) {
-                console.log(
-                  "Audio received on:::",
-                  new Date().toLocaleTimeString()
-                );
+                // console.log(
+                //   "Audio received on:::",
+                //   new Date().toLocaleTimeString()
+                // );
                 const audioElement = new Audio(URL.createObjectURL(audio));
                 //audioElement.play();
                 audioQueue.enqueue(audioElement);

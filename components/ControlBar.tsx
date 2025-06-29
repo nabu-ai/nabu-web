@@ -81,7 +81,7 @@ export default function ControlBar({ uid, roomName }: { uid: string; roomName: s
     });
 
      const unsubHostLeft = onHostLeft((uid) => {
-      console.log("HOST LEFT::::", uid)
+      console.log("[NABU] HOST LEFT::::", uid)
       handleLeave()
     });
 
@@ -123,7 +123,7 @@ export default function ControlBar({ uid, roomName }: { uid: string; roomName: s
   const onAudioProcessed = (data) => {
     const store = useMeetingStore.getState();
     store.setActiveSpeaker(uid);
-    console.log("Data response::", data);
+    console.log("[NABU] Audio Data::", data);
     if (data?.transcript) {
       // Call BE to submit, transcript, sourceLanguage and audioHeardas
       sendTranscript(uid, data.transcript, meetingInfo.language, meetingInfo.gender);
@@ -139,7 +139,7 @@ export default function ControlBar({ uid, roomName }: { uid: string; roomName: s
   const onAudioError = () => {};
 
   const onAudioRecordingStopped = () => {
-    console.log("microphone stopped");
+    console.log("[NABU] microphone stopped");
   };
 
   const handleMute = () => {

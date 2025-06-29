@@ -15,6 +15,7 @@ import { connectWebSocket } from "@/services/websocket";
 import MediaPermissionPrompt from "@/components/MediaPermissionPrompt";
 import { useUserStore } from "@/store/useUserStore";
 import { useStreamingStore } from "@/store/useStreamingStore";
+import { useJoinMeeting } from "@/components/dashboard/hooks/useJoinMeeting";
 
 export default function LobbyPage() {
   // const [name, setName] = useState("");
@@ -28,6 +29,7 @@ export default function LobbyPage() {
   //   ...{ "": "Preferred Language" },
   //   ...languagesMap,
   // };
+   const { mutateAsync: joinMeeting } = useJoinMeeting()
   const meetingInfo = useMeetingStore.getState().meetingInfo;
   const userData = useUserStore.getState().getUserData()
   const { prepareStreaming } = nabuTranslator;
@@ -50,16 +52,11 @@ export default function LobbyPage() {
 
   const handleJoin = async () => {
     
-    // if (!name.trim()) return alert("Please enter your name");
-    // if (!language) return alert("Please select a language");
-    // if (!room.trim()) return alert("Please enter a room name");
-    // if (!selectedVoice.trim()) return alert("Please select a voice option");
+    // Host Join meeting
+    if(userData?.firstName){
+      await joinMeeting(meetingInfo.meetingId)
+    }
 
-    // if (!mediaPermissionGranted)
-    //   return alert(
-    //     "Please grant permissions for accessing microphone and camera"
-    //   );
-    console.log("mmetingInfo:::", meetingInfo)
     let { token, appId } = userData?.firstName?await fetchToken(): await fetchGuestToken();
 
     if (!token || !appId) {
@@ -67,7 +64,7 @@ export default function LobbyPage() {
       token = "";
       appId = "";
     }
-    console.log("appId:::", appId)
+    // console.log("appId:::", appId)
     const userName = userData?.firstName?(userData.firstName + " " + userData.lastName):meetingInfo.participants?.[0]?.name
     const gender = userData?.spokenInVoice?userData.spokenInVoice:meetingInfo.participants?.[0]?.voiceHeardAs
     const nonVerbal = userData?.nonVerbal?userData.nonVerbal:meetingInfo.participants?.[0]?.nonVerbal
@@ -116,7 +113,7 @@ export default function LobbyPage() {
 
   // Update to handle guest logic
   const fetchToken = async () => {
-    console.log("in fetch token API")
+    // console.log("in fetch token API")
     const response = await fetch(
       `${NABU_MEETING_HOST}/api/streaming/token?channel=${meetingInfo.meetingId.trim()}&uid=${(userData.firstName + " " + userData.lastName).trim()}`,
       {
@@ -132,7 +129,7 @@ export default function LobbyPage() {
   };
 
   const fetchGuestToken = async () => {
-    console.log("in guest fetch token API")
+    // console.log("in guest fetch token API")
     const response = await fetch(
       `${NABU_MEETING_HOST}/api/guest/meetings/token?channel=${meetingInfo.meetingId.trim()}&uid=${meetingInfo.participants?.[0]?.name}`,
       {

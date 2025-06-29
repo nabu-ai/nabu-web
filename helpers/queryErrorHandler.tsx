@@ -45,7 +45,7 @@ function handleAxiosError(error: AxiosError) {
 }
 
 export function handleQueryError(error: DefaultError) {
-    console.log("⛔ ~ handleQueryError ~ error:", error);
+    // console.log("⛔ ~ handleQueryError ~ error:", error);
     if (error instanceof AxiosError) {
         handleAxiosError(error);
         return;

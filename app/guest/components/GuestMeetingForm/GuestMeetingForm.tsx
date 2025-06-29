@@ -52,12 +52,6 @@ const GuestMeetingForm = () => {
     setHasFemaleVoiceParticipant(Boolean(voices?.female));
   }, [form.watch("language")]);
 
-  useEffect(() => {
-    if(meetingInfo?.status !== "ONGOING"){
-        toast.warning("Host has not started the meeting yet")
-    }
-    
-  }, [])
 
   useEffect(() => {
     form.setValue("name", meetingInfo.participants?.[0].name)
@@ -196,7 +190,7 @@ const GuestMeetingForm = () => {
             )}
           />
         </div>
-        <Button className="mt-15 w-full" type="submit" disabled={meetingInfo?.status === "ONGOING"}>
+        <Button className="mt-15 w-full" type="submit" disabled={meetingInfo?.status !== "ONGOING"}>
           Join Meeting
         </Button>
       </form>

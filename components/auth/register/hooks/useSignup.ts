@@ -31,8 +31,9 @@ export const useNewRegistration = () => {
                 },
             );
         },
-        onError: () => {
-            toast.error("Failed registration");
+        onError: (data) => {
+            const errorMsg = data?.response?.data?.error?": "+data?.response?.data?.error:""
+            toast.error("Failed registration" + errorMsg);
         },
         onSuccess: async (data, variables) => {
             toast.success("User registered successfully")

@@ -43,7 +43,7 @@ function interceptorResponseFulfilled(response: AxiosResponse): AxiosResponse {
  * @returns A promise that rejects with the provided Axios error.
  */
 function interceptorResponseRejected(error: AxiosError): Promise<never> | undefined {
-    console.log("🚫 ~ interceptorResponseRejected ~ error:", error);
+   // console.log("🚫 ~ interceptorResponseRejected ~ error:", error);
     if (typeof window !== "undefined" && error instanceof AxiosError) {
         const status = error?.response?.status;
 

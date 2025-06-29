@@ -41,7 +41,7 @@ const NewMeetingForm = ({ onSubmit }: NewMeetingFormProps) => {
   }, [form.watch("hostLanguage")]);
 
   const handleSubmit = async (data: z.infer<typeof newMeetingSchema>) => {
-    console.log("Meeting data:", data);
+    // console.log("Meeting data:", data);
     const meetingPayload = {
       agenda: data.agenda,
       hostLanguage: data.hostLanguage,

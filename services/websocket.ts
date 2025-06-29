@@ -1,5 +1,5 @@
 import { useMeetingStore } from '@/store/useMeetingStore';
-import { NABU_MEETING_HOST } from '@/constants/environmentVariables';
+import { NABU_SERVER_HOST } from '@/constants/environmentVariables';
 
 type RaiseHandHandler = (uid: string, raised: boolean) => void;
 type ChatHandler = (uid: string, text: string, sourceLanguage: string) => void;
@@ -20,7 +20,7 @@ const hostLeftListeners: Set<HostLeftHandler> = new Set();
 export function connectWebSocket(roomId: string, uid: string): WebSocket | null {
     if (socket) return socket;
    
-    socket = new WebSocket(`${NABU_MEETING_HOST}/ws/room?room=${roomId}&uid=${uid}`);
+    socket = new WebSocket(`${NABU_SERVER_HOST}/ws/room?room=${roomId}&uid=${uid}`);
 
     socket.onopen = () => {
         console.log(`[NABU WS] Connected to room ${roomId}`);
@@ -100,7 +100,7 @@ export function sendChatMessage(uid: string, text: string, sourceLanguage: strin
 
 export function sendMute(uid: string, muted: boolean) {
     if (!socket || socket.readyState !== WebSocket.OPEN) return;
-    console.log(`[NABU] Sending Mute for user, ${uid} with state: ${muted}`)
+    // console.log(`[NABU] Sending Mute for user, ${uid} with state: ${muted}`)
     socket.send(JSON.stringify({ type: 'mute', uid, muted }));
 }
 

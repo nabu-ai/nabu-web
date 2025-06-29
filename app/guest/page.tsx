@@ -5,6 +5,7 @@ import { GuestMeetingForm } from "./components/GuestMeetingForm";
 import { useGuestGetMeetings } from "@/components/guest/hooks/useGuestGetMeeting";
 import { useMeetingStore } from "@/store/useMeetingStore";
 import { useUserStore } from "@/store/useUserStore";
+import { toast } from "sonner";
 
 export default function MeetingPage() {
 
@@ -29,6 +30,17 @@ export default function MeetingPage() {
             useMeetingStore.setState({
                       meetingInfo: meetingInfo.data
                     })
+            
+             if(meetingInfo?.data?.status === "ACTIVE"){
+                toast.warning("Host has not started the meeting yet")
+            }
+            else if(meetingInfo?.data?.status === "COMPLETED"){
+                toast.warning("Meeting is no longer available")
+            }
+            else if(meetingInfo?.data?.status === "CANCELLED"){
+                toast.warning("Host has cancelled the meeting")
+            }
+
         }
     }, [isSuccess])
 

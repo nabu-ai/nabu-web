@@ -1,14 +1,15 @@
 "use client"
-import type { Metadata } from "next";
 import { DashboardMetrics } from "@/components/dashboard/DashboardMetrics";
 import React, { useEffect } from "react";
 import MeetingsTable from "@/components/dashboard/MeetingsTable";
 import { useUserStore } from "@/store/useUserStore";
 import { useGetUserProfile } from "@/components/user-profile/hooks/useGetUserProfile";
+import { useRouter } from "next/navigation";
 
 export default function DashboardPage() {
 
     //const loginData = useUserStore((s) => s.loginData);
+    const router = useRouter()
      const loginData = useUserStore().getLoginData()
       const userId = loginData.userId
       const { data: userInfo, isLoading, isSuccess } = useGetUserProfile(userId);
@@ -35,6 +36,8 @@ export default function DashboardPage() {
                 spokenInVoice: usrData?.["spokenInVoice"],
               },
             });
+            
+            router.refresh()
           }
         }, [isLoading, userInfo]);
 
