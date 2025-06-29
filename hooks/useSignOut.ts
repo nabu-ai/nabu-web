@@ -12,7 +12,7 @@ export const useSignOut = ({ router }) => {
   const queryClient = useQueryClient()
   return useMutation({
     mutationFn: () => {
-      return axiosInstance.post(`${NABU_AUTH_API_ENDPOINT}/logout`, {
+      return axiosInstance.post(`${NABU_AUTH_API_ENDPOINT}/logout`, {}, {
         headers: {
           "X-User-Id": userId,
           "X-Tenant-Id": tenantId,
