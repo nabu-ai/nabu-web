@@ -14,72 +14,82 @@ import { cn, formatTimeDuration, titleCase } from "@/lib/utils";
 import { useCancelMeeting } from "./hooks/useCancelMeeting";
 import ModalComponent from "../modal";
 import { useUserStore } from "@/store/useUserStore";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useMeetingStore } from "@/store/useMeetingStore";
 import { useRouter } from "next/navigation";
 import { intervalToDuration } from "date-fns";
 import { NABU_DOMAIN } from "@/constants/environmentVariables";
 
-
 export default function MeetingsTable() {
-    const router = useRouter();
+  const router = useRouter();
   const { data: meetings, isLoading, refetch } = useGetMeetings();
-   const { mutateAsync: cancelMeeting } = useCancelMeeting();
+  const { mutateAsync: cancelMeeting } = useCancelMeeting();
   const { isOpen, openModal, closeModal } = useModal();
-  const hasInitialized = useRef(false); 
-  const tenantId = useUserStore().getLoginData().tenantId
+  const {
+    isOpen: isConfirmationOpen,
+    openModal: openConfirmationModeal,
+    closeModal: closeConfirmationModal,
+  } = useModal();
+  const hasInitialized = useRef(false);
+  const tenantId = useUserStore().getLoginData().tenantId;
+  const [selectedMeeting, setSelectedMeeting] = useState("");
 
   const meetingList = meetings?.data || [];
 
   //const { isConfirmOpen: isOpen, isConfirmOpenModal: openModal, isConfirmCloseModal: closeModal } = useModal();
 
   useEffect(() => {
-       if (!hasInitialized.current) {
-        hasInitialized.current = true;
-        refetch();
-      }
-    }, [])
+    if (!hasInitialized.current) {
+      hasInitialized.current = true;
+      refetch();
+    }
+  }, []);
 
   const handleSave = () => {
     closeModal();
   };
 
   const handleCancelMeeting = async (meetingId: string) => {
-    
-   await cancelMeeting(meetingId)
-  }
+    setSelectedMeeting(meetingId);
+    //
+    openConfirmationModeal();
+  };
+
+  const confCancelMeeting = async () => {
+    await cancelMeeting(selectedMeeting);
+    closeConfirmationModal()
+  };
 
   const getMeetingStatusColor = (status: string) => {
     switch (status) {
       case "ACTIVE":
-        return "primary"
+        return "primary";
         break;
       case "ONGOING":
-        return "success"
+        return "success";
         break;
       case "COMPLETED":
-        return "error"
+        return "error";
         break;
       case "CANCELLED":
-        return "warning"
+        return "warning";
         break;
       default:
-        return "primary"
+        return "primary";
         break;
     }
-  }
+  };
 
   const copyToClipboard = (text: string, status: string) => {
-    if(status === "CANCELLED"){
+    if (status === "CANCELLED") {
       toast.warning("Meeting link expired", {
         className: "bg-red-500 text-white px-6 py-5 text-lg",
       });
-    } else if(status === "COMPLETED"){
-       toast.warning("Meeting completed", {
+    } else if (status === "COMPLETED") {
+      toast.warning("Meeting completed", {
         className: "bg-red-500 text-white px-6 py-5 text-lg",
       });
-    }
-    else{
+    } else {
       navigator.clipboard.writeText(text);
       toast.success("Meeting link copied", {
         className: "bg-green-500 text-white px-6 py-5 text-lg",
@@ -88,17 +98,16 @@ export default function MeetingsTable() {
   };
 
   const handleStartMeeting = (meeting: any) => {
-     useMeetingStore.setState({
-          meetingInfo: meeting
-        })
-        setTimeout(() => {
+    useMeetingStore.setState({
+      meetingInfo: meeting,
+    });
+    setTimeout(() => {
       router.push(`/lobby`);
     }, 1000);
-  }
+  };
 
   const headerCSS = "py-3 font-semibold text-gray-800 text-start text-theme-xl dark:text-gray-400";
   const cellCSS = "py-3 text-gray-700 text-theme-xl dark:text-gray-400";
-  
 
   return (
     <>
@@ -145,73 +154,82 @@ export default function MeetingsTable() {
                   Meeting
                   <br /> Status
                 </TableCell>
-                 <TableCell isHeader className={headerCSS}>
+                <TableCell isHeader className={headerCSS}>
                   Duration
                   <br /> Consumed
                 </TableCell>
                 <TableCell isHeader className={headerCSS}>
                   Meeting Link
                 </TableCell>
-                <TableCell isHeader className={headerCSS}>Actions</TableCell>
+                <TableCell isHeader className={headerCSS}>
+                  Actions
+                </TableCell>
               </TableRow>
             </TableHeader>
             {/* Table Body */}
             <TableBody className="divide-y divide-gray-100 dark:divide-gray-800">
-              {meetingList.map(
-                (meeting:any) => {
-                  const partName = meeting.participants[0]?.name
-                  const partLang = meeting.participants[0]?.language
-                  const partVoice = meeting.participants[0]?.voiceHeardAs
-                  const meetingLink = `${NABU_DOMAIN}/nabu-web/guest?mid=${meeting.meetingId}&oid=${tenantId}`
-                  return (
-                    <TableRow key={meeting.meetingId} className="">
-                      <TableCell className={cellCSS}>{meeting.agenda}</TableCell>
-                      <TableCell className={cellCSS}>{languagesMap[meeting.hostLanguage]}</TableCell>
-                      <TableCell className={cellCSS}>{partName}</TableCell>
-                      <TableCell className={cellCSS}>{languagesMap[partLang]} ( { titleCase(partVoice)} )</TableCell>
-                      <TableCell className={cellCSS}>{formatTimeDuration(meeting.duration)}</TableCell>
-                      <TableCell className={cellCSS}>
-                        <Badge
-                          size="sm"
-                          color={getMeetingStatusColor(meeting.status)}
-                        >
-                          {meeting.status}
-                        </Badge>
-                      </TableCell>
-                      <TableCell className={cellCSS}>{formatTimeDuration(meeting.consumedDuration)}</TableCell>
-                      <TableCell className="w-50 text-theme-xl overflow-text-wrap gap-3 py-3 text-gray-500 dark:text-gray-400">
-                        {/* <button onClick={() => copyToClipboard(meetingLink)}>
+              {meetingList.map((meeting: any) => {
+                const partName = meeting.participants[0]?.name;
+                const partLang = meeting.participants[0]?.language;
+                const partVoice = meeting.participants[0]?.voiceHeardAs;
+                const meetingLink = `${NABU_DOMAIN}/nabu-web/guest?mid=${meeting.meetingId}&oid=${tenantId}`;
+                return (
+                  <TableRow key={meeting.meetingId} className="">
+                    <TableCell className={cellCSS}>{meeting.agenda}</TableCell>
+                    <TableCell className={cellCSS}>{languagesMap[meeting.hostLanguage]}</TableCell>
+                    <TableCell className={cellCSS}>{partName}</TableCell>
+                    <TableCell className={cellCSS}>
+                      {languagesMap[partLang]} ( {titleCase(partVoice)} )
+                    </TableCell>
+                    <TableCell className={cellCSS}>{formatTimeDuration(meeting.duration)}</TableCell>
+                    <TableCell className={cellCSS}>
+                      <Badge size="sm" color={getMeetingStatusColor(meeting.status)}>
+                        {meeting.status}
+                      </Badge>
+                    </TableCell>
+                    <TableCell className={cellCSS}>{formatTimeDuration(meeting.consumedDuration)}</TableCell>
+                    <TableCell className="text-theme-xl overflow-text-wrap w-50 gap-3 py-3 text-gray-500 dark:text-gray-400">
+                      {/* <button onClick={() => copyToClipboard(meetingLink)}>
                          <ExternalLinkIcon/> Copy Link
                         </button> */}
-                        <button
-                          onClick={() => copyToClipboard(meetingLink, meeting.status)}
-                          className="flex items-center gap-2 hover:text-primary transition"
-                          title={meetingLink}
+                      <button
+                        onClick={() => copyToClipboard(meetingLink, meeting.status)}
+                        className="hover:text-primary flex items-center gap-2 transition"
+                        title={meetingLink}
+                      >
+                        <ExternalLinkIcon className="h-4 w-4" />
+                        <span>Copy Link</span>
+                      </button>
+                    </TableCell>
+                    <TableCell className="flex gap-3">
+                      {meeting.status === "ACTIVE" && (
+                        <Button
+                          onClick={() => handleStartMeeting(meeting)}
+                          variant="primary"
+                          size="xs"
+                          className="text-theme-lg w-20 py-1"
                         >
-                          <ExternalLinkIcon className="w-4 h-4" />
-                          <span>Copy Link</span>
-                        </button>
-                      </TableCell>
-                      <TableCell className="flex gap-3">
-                         {meeting.status === "ACTIVE" && (
-                        
-                          <Button onClick={() => handleStartMeeting(meeting)} variant="primary" size="xs" className="text-theme-lg w-20 py-1">
-                           
-                            Start
-                          </Button>
-                       
-                         )}
-                        {(meeting.status === "ACTIVE" || meeting.status === "CANCELLED") && (
-                          <Button onClick={ () => handleCancelMeeting(meeting.meetingId)} disabled={meeting.status === "CANCELLED"} variant="primary" size="xs" className={cn("bg-error-500 text-theme-lg w-20 py-1 hover:bg-error-700", meeting.status === "CANCELLED"?"disabled:bg-error-400":"")}>
-                           
-                            Cancel
-                          </Button>
-                        )}
-                      </TableCell>
-                    </TableRow>
-                  );
-                },
-              )}
+                          Start
+                        </Button>
+                      )}
+                      {(meeting.status === "ACTIVE" || meeting.status === "CANCELLED") && (
+                        <Button
+                          onClick={() => handleCancelMeeting(meeting.meetingId)}
+                          disabled={meeting.status === "CANCELLED"}
+                          variant="primary"
+                          size="xs"
+                          className={cn(
+                            "bg-error-500 text-theme-lg hover:bg-error-700 w-20 py-1",
+                            meeting.status === "CANCELLED" ? "disabled:bg-error-400" : "",
+                          )}
+                        >
+                          Cancel
+                        </Button>
+                      )}
+                    </TableCell>
+                  </TableRow>
+                );
+              })}
             </TableBody>
           </Table>
         </div>
@@ -228,14 +246,24 @@ export default function MeetingsTable() {
         </div>
       </Modal>
 
-      {/* <ModalComponent heading="Meeting Confirmation" description="Are you sure to cancel the meeting?" isOpen={isOpen} closeModal={closeModal}>
-        <Button onClick={} variant="primary" size="xs" className="text-theme-lg w-20 py-1">
-                        Yes
-                       </Button>
-                       <Button onClick={closeModal} variant="primary" size="xs" className="text-theme-lg w-20 py-1">
-                        No
-                       </Button>
-      </ModalComponent> */}
+      <ModalComponent
+        heading="Meeting Confirmation"
+        description="Are you sure to cancel the meeting?"
+        isOpen={isConfirmationOpen}
+        closeModal={closeConfirmationModal}
+      >
+        <Button onClick={confCancelMeeting} variant="primary" size="xs" className="text-theme-lg w-20 py-1">
+          Yes
+        </Button>
+        <Button
+          onClick={closeConfirmationModal}
+          variant="primary"
+          size="xs"
+          className="bg-error-500 text-theme-lg hover:bg-error-700 w-20 py-1 ml-5"
+        >
+          No
+        </Button>
+      </ModalComponent>
     </>
   );
 }

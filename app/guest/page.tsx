@@ -9,7 +9,7 @@ import { toast } from "sonner";
 
 export default function MeetingPage() {
 
-      const hasInitialized = useRef(false);
+    const hasInitialized = useRef(false);
     const searchParams = useSearchParams();
     const meetingId = searchParams.get("mid");
     const tenantId = searchParams.get("oid");
