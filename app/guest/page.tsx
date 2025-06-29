@@ -51,7 +51,7 @@ export default function MeetingPage() {
                     <img className="m-auto h-44 mb-4" src="/nabu-web/Nabu-Logo.png"></img>
                     <div className="rounded-4xl border-2 border-blue-500 p-8 shadow-lg">
                         <div className="mb-5 sm:mb-8">
-                            <h1 className="text-title-lg sm:text-title-lg pt-4 pb-6 text-center font-bold text-gray-900 dark:text-white/90">
+                            <h1 className="text-title-md sm:text-title-sm pt-4 pb-6 text-center font-semibold text-gray-900 dark:text-white/90">
                                 Join Meeting
                             </h1>
                         </div>

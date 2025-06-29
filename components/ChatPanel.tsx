@@ -64,7 +64,7 @@ export default function ChatPanel({ uid, room }: { uid: string, room: string }) 
   return (
     <div className="w-1/4 flex flex-col rounded-xl bg-white text-black shadow-lg  border-l m-4 ml-0">
       {/* Chat Header */}
-      <div className="flex justify-between font-bold border-b">
+      <div className="flex justify-between font-semibold border-b">
         <div className="p-4 text-lg ">Chat Messages</div>
         <div className="p-4">
           <button

@@ -6,7 +6,6 @@ import dynamic from "next/dynamic";
 import { useGetMeetingStats } from "./hooks/useGetMeetingStats";
 import { useUserStore } from "@/store/useUserStore";
 
-import { formatDuration, intervalToDuration } from "date-fns";
 import { formatTimeDuration } from "@/lib/utils";
 import { useMeetingStore } from "@/store/useMeetingStore";
 // Dynamically import the ReactApexChart component
@@ -15,10 +14,10 @@ const ReactApexChart = dynamic(() => import("react-apexcharts"), {
 });
 
 export const DashboardMetrics = () => {
-  const { data: meetingStats, isLoading, isSuccess, refetch } = useGetMeetingStats();
-  const { secondsUsed, meetingsScheduled, consumedPercentage } = meetingStats || {};
+  const { data: meetingStats, isSuccess, refetch } = useGetMeetingStats();
+  const { secondsUsed, meetingsScheduled } = meetingStats || {};
 
-  const hasInitialized = useRef(false); 
+  const hasInitialized = useRef(false);
   // let series = [consumedPercentage ?? 0];
 
   const [series, setSeries] = useState<number[]>([0]);
@@ -27,7 +26,7 @@ export const DashboardMetrics = () => {
     chart: {
       fontFamily: "Outfit, sans-serif",
       type: "radialBar",
-      height: 330,
+      height: "100",
       sparkline: {
         enabled: true,
       },
@@ -39,17 +38,18 @@ export const DashboardMetrics = () => {
         hollow: {
           size: "80%",
         },
+        offsetX: -50,
         track: {
           background: "#E4E7EC",
           strokeWidth: "100%",
-          margin: 5, // margin is in pixels
+          margin: 1, // margin is in pixels
         },
         dataLabels: {
           name: {
             show: false,
           },
           value: {
-            fontSize: "36px",
+            fontSize: "24px",
             fontWeight: "600",
             offsetY: -40,
             color: "#1D2939",
@@ -71,11 +71,11 @@ export const DashboardMetrics = () => {
   };
 
   useEffect(() => {
-     if (!hasInitialized.current) {
+    if (!hasInitialized.current) {
       hasInitialized.current = true;
       refetch();
     }
-  }, [])
+  }, []);
 
   useEffect(() => {
     if (
@@ -84,7 +84,7 @@ export const DashboardMetrics = () => {
       !isNaN(meetingStats.consumedPercentage)
     ) {
       setSeries([meetingStats.consumedPercentage]);
-      useMeetingStore.setState({trialDuration: secondsUsed})
+      useMeetingStore.setState({ trialDuration: secondsUsed });
     }
   }, [meetingStats]);
 
@@ -108,7 +108,7 @@ export const DashboardMetrics = () => {
         <div className="mt-5 flex items-end justify-between">
           <div>
             <span className="text-theme-xl text-gray-500 dark:text-gray-400">Minutes Used</span>
-            <h4 className="text-title-sm mt-2 font-bold text-gray-800 dark:text-white/90">
+            <h4 className="text-title-sm mt-2 font-semibold text-gray-800 dark:text-white/90">
               {secondsUsed ? formatTimeDuration(secondsUsed) : 0}
             </h4>
           </div>
@@ -127,25 +127,26 @@ export const DashboardMetrics = () => {
         <div className="mt-5 flex items-end justify-between">
           <div>
             <span className="text-theme-xl text-gray-500 dark:text-gray-400">Meetings Scheduled</span>
-            <h4 className="text-title-sm mt-2 font-bold text-gray-800 dark:text-white/90">{meetingsScheduled}</h4>
+            <h4 className="text-title-sm mt-2 font-semibold text-gray-800 dark:text-white/90">{meetingsScheduled}</h4>
           </div>
         </div>
       </div>
       {/* <!-- Metric Item End --> */}
       <div className="rounded-2xl border border-gray-200 bg-white p-5 md:p-6 dark:border-gray-800 dark:bg-white/[0.03]">
-        <div className="flex justify-between">
+        <div className="flex">
           <div>
-            <h3 className="text-lg font-semibold text-gray-800 dark:text-white/90">Usage</h3>
-            <p className="text-theme-xl mt-1 font-normal text-gray-500 dark:text-gray-400">Trial Minutes Consumed</p>
+            <h3 className="text-lg font-semibold text-gray-800 dark:text-white/90">Trial Minutes Consumed</h3>
+            {/* <p className="text-theme-xl mt-1 font-normal text-gray-500 dark:text-gray-400">Trial Minutes Consumed</p> */}
           </div>
+          
         </div>
-        <div className="mt-5 flex items-end justify-between">
-          <div className="relative">
-            <div className="max-h-[330px]">
-              <ReactApexChart key={series[0]} options={options} series={series} type="radialBar" height={330} />
+        <div className="flex items-end justify-between">
+            <div className="relative">
+              <div className="max-h-[200px]">
+                <ReactApexChart key={series[0]} options={options} series={series} type="radialBar" height={200} />
+              </div>
             </div>
           </div>
-        </div>
       </div>
     </div>
   );

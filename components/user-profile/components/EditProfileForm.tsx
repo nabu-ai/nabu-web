@@ -226,7 +226,7 @@ const EditProfileForm = ({ onSuccess }) => {
                       <SelectContent>
                         {countries.map(({ emoji, iso2, name }) => (
                           <SelectItem key={iso2} value={iso2}>
-                            <SVG src={flagIcons[iso2]} width="20px" height="20px" className="w-20 h-20" />
+                            <SVG src={flagIcons[iso2]} />
                             {name}
                           </SelectItem>
                         ))}

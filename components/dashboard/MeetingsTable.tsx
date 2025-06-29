@@ -1,7 +1,6 @@
 "use client";
 import { Table, TableBody, TableCell, TableHeader, TableRow } from "../ui/table";
 import Badge from "../ui/badge/Badge";
-import Link from "next/link";
 import { useModal } from "@/hooks/useModal";
 import { Modal } from "../ui/modal";
 import NewMeetingForm from "./components/NewMeetingForm";
@@ -17,12 +16,10 @@ import { useUserStore } from "@/store/useUserStore";
 import { useEffect, useRef, useState } from "react";
 import { useMeetingStore } from "@/store/useMeetingStore";
 import { useRouter } from "next/navigation";
-import { intervalToDuration } from "date-fns";
 import { NABU_DOMAIN } from "@/constants/environmentVariables";
 
-export default function MeetingsTable() {
+export default function MeetingsTable({ heading, meetingData }: { heading: string, meetingData: any }) {
   const router = useRouter();
-  const { data: meetings, isLoading, refetch } = useGetMeetings();
   const { mutateAsync: cancelMeeting } = useCancelMeeting();
   const { isOpen, openModal, closeModal } = useModal();
   const {
@@ -30,20 +27,13 @@ export default function MeetingsTable() {
     openModal: openConfirmationModeal,
     closeModal: closeConfirmationModal,
   } = useModal();
-  const hasInitialized = useRef(false);
+
   const tenantId = useUserStore().getLoginData().tenantId;
   const [selectedMeeting, setSelectedMeeting] = useState("");
 
-  const meetingList = meetings?.data || [];
+  const meetingList = meetingData || [];
 
-  //const { isConfirmOpen: isOpen, isConfirmOpenModal: openModal, isConfirmCloseModal: closeModal } = useModal();
 
-  useEffect(() => {
-    if (!hasInitialized.current) {
-      hasInitialized.current = true;
-      refetch();
-    }
-  }, []);
 
   const handleSave = () => {
     closeModal();
@@ -106,29 +96,29 @@ export default function MeetingsTable() {
     }, 1000);
   };
 
-  const headerCSS = "py-3 font-semibold text-gray-800 text-start text-theme-xl dark:text-gray-400";
-  const cellCSS = "py-3 text-gray-700 text-theme-xl dark:text-gray-400";
+  const headerCSS = "px-1 py-1 font-semibold text-gray-800 text-start text-theme-md dark:text-gray-400";
+  const cellCSS = "px-1 py-1 text-gray-700 text-theme-md dark:text-gray-400";
 
   return (
     <>
       <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white px-4 pt-4 pb-3 sm:px-6 dark:border-gray-800 dark:bg-white/[0.03]">
         <div className="mb-4 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <h3 className="text-3xl font-semibold text-gray-800 dark:text-white/90">Meetings</h3>
+            <h3 className="text-2xl font-semibold text-gray-800 dark:text-white/90">{heading}</h3>
           </div>
 
           <div className="flex items-center gap-3">
-            <button
+            <Button
               onClick={openModal}
               disabled={useUserStore.getState().trialExpired}
-              className="text-theme-xl bg-brand-500 shadow-theme-md hover:bg-brand-600 disabled:bg-brand-300 inline-flex w-full items-center justify-center gap-2 rounded-lg px-4 py-3 font-medium text-white transition"
+              size="sm"
             >
               New Instant Meeting
-            </button>
+            </Button>
           </div>
         </div>
-        <div className="max-w-full overflow-x-auto">
-          <Table>
+        <div className="max-w-full overflow-x-auto lg:overflow-auto lg:h-[60%]">
+          <Table className="table-auto md:table-fixed">
             {/* Table Header */}
             <TableHeader className="border-y border-gray-100 dark:border-gray-800">
               <TableRow>
@@ -179,19 +169,16 @@ export default function MeetingsTable() {
                     <TableCell className={cellCSS}>{languagesMap[meeting.hostLanguage]}</TableCell>
                     <TableCell className={cellCSS}>{partName}</TableCell>
                     <TableCell className={cellCSS}>
-                      {languagesMap[partLang]} ( {titleCase(partVoice)} )
+                      {languagesMap[partLang]} {(partVoice ? titleCase(partVoice) : "-")}
                     </TableCell>
                     <TableCell className={cellCSS}>{formatTimeDuration(meeting.duration)}</TableCell>
                     <TableCell className={cellCSS}>
-                      <Badge size="sm" color={getMeetingStatusColor(meeting.status)}>
+                      <Badge color={getMeetingStatusColor(meeting.status)}>
                         {meeting.status}
                       </Badge>
                     </TableCell>
                     <TableCell className={cellCSS}>{formatTimeDuration(meeting.consumedDuration)}</TableCell>
                     <TableCell className="text-theme-xl overflow-text-wrap w-50 gap-3 py-3 text-gray-500 dark:text-gray-400">
-                      {/* <button onClick={() => copyToClipboard(meetingLink)}>
-                         <ExternalLinkIcon/> Copy Link
-                        </button> */}
                       <button
                         onClick={() => copyToClipboard(meetingLink, meeting.status)}
                         className="hover:text-primary flex items-center gap-2 transition"

@@ -1,9 +1,9 @@
 "use client";
 import { DashboardMetrics } from "@/components/dashboard/DashboardMetrics";
 import React, { useEffect, useRef } from "react";
-import MeetingsTable from "@/components/dashboard/MeetingsTable";
 import { useUserStore } from "@/store/useUserStore";
 import { useGetUserProfile } from "@/components/user-profile/hooks/useGetUserProfile";
+import Meetings from "@/components/dashboard/Meetings";
 
 export default function DashboardPage() {
   //const loginData = useUserStore((s) => s.loginData);
@@ -51,7 +51,7 @@ export default function DashboardPage() {
             <DashboardMetrics />
           </div>
           <div className="col-span-12 xl:col-span-7">
-            <MeetingsTable />
+            <Meetings />
           </div>
         </div>
       )}

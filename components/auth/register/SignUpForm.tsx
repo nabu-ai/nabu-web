@@ -43,7 +43,7 @@ const SignUpForm = () => {
   });
 
   useEffect(() => {
-    if(isSuccess){
+    if (isSuccess) {
       toast.success("Registration Success. Please signin to continue")
       router.push("/signin")
     }
@@ -70,7 +70,7 @@ const SignUpForm = () => {
       state: data.state,
       postalCode: data.postalCode,
       country: data.country,
-     
+
     };
     await handleRegistration(registrationPayload);
 
@@ -246,13 +246,13 @@ const SignUpForm = () => {
                   <FormLabel>Country *</FormLabel>
                   <FormControl>
                     <Select defaultValue="" id="country" {...field} onValueChange={field.onChange}>
-                      <SelectTrigger id="country" className="w-full">
+                      <SelectTrigger id="country" className="w-full max-w-124">
                         <SelectValue placeholder="Select country" />
                       </SelectTrigger>
                       <SelectContent>
                         {countries.map(({ emoji, iso2, name }) => (
                           <SelectItem key={iso2} value={iso2}>
-                            <SVG src={flagIcons[iso2]} width="20px" height="20px" className="w-20 h-20" />
+                            <SVG src={flagIcons[iso2]} width="20px" height="20px" />
                             {name}
                           </SelectItem>))}
                       </SelectContent>

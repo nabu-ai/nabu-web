@@ -212,7 +212,7 @@ export default function LobbyPage() {
   //       <img className="m-auto h-24 mb-4" src="/nabu-web/Nabu-Logo.jpg"></img>
 
   //       <div className="text-center mb-6">
-  //         <h1 className="text-2xl font-bold mb-1">Nabu Meeting</h1>
+  //         <h1 className="text-2xl font-semibold mb-1">Nabu Meeting</h1>
   //         <p className="text-gray-500 text-theme-xl">
   //           Enter details to join the meeting
   //         </p>

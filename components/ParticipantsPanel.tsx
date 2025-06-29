@@ -40,7 +40,7 @@ export default function ParticipantsPanel({
   };
   return (
     <div className="w-1/4 flex flex-col rounded-xl bg-white text-black shadow-lg  border-l m-4 ml-0">
-      <div className="flex justify-between font-bold border-b">
+      <div className="flex justify-between font-semibold border-b">
         <div className="p-4 text-lg ">Participants</div>
         <div className="p-4">
           <button
@@ -58,7 +58,7 @@ export default function ParticipantsPanel({
             className="flex items-center justify-between p-2 m-2 rounded-md bg-gray-100"
           >
             {/* Initials Avatar */}
-            <div className="w-10 h-10 flex items-center justify-center rounded-full bg-gray-500 text-white font-bold">
+            <div className="w-10 h-10 flex items-center justify-center rounded-full bg-gray-500 text-white font-semibold">
               {getInitials(user.uid)}
             </div>
 

@@ -16,16 +16,16 @@ import { useUserStore } from "@/store/useUserStore";
 
 
 const SignInForm = () => {
-    const hasInitialized = useRef(false);
+  const hasInitialized = useRef(false);
   const router = useRouter();
   const { mutate: handleSignIn } = useSignIn({ router });
 
   useEffect(() => {
-     if (!hasInitialized.current) {
+    if (!hasInitialized.current) {
       hasInitialized.current = true;
       useMeetingStore.setState(useMeetingStore.getInitialState())
       useUserStore.setState(useUserStore.getInitialState())
-     }
+    }
   })
   // useMeetingStore.setState(useMeetingStore.getInitialState())
   // useUserStore.setState(useUserStore.getInitialState())

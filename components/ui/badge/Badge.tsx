@@ -23,7 +23,7 @@ interface BadgeProps {
 const Badge: React.FC<BadgeProps> = ({
   variant = "light",
   color = "primary",
-  size = "md",
+  size = "xs",
   startIcon,
   endIcon,
   children,
@@ -33,6 +33,7 @@ const Badge: React.FC<BadgeProps> = ({
 
   // Define size styles
   const sizeStyles = {
+    xs: "text-theme-xs", // Tiny padding and font size
     sm: "text-theme-xl", // Smaller padding and font size
     md: "text-theme-xl", // Default padding and font size
   };

@@ -32,12 +32,12 @@ export default function AuthWrapper({
                     </div>
                 </div>
             </div>
-            <div className="flex flex-col flex-1 lg:w-1/2 w-full overflow-auto px-4">
-                <div className="flex flex-col justify-center flex-1 w-full max-w-2xl mx-auto">
+            <div className="flex flex-col flex-1 lg:w-1/2 w-full overflow-auto px-4 ">
+                <div className="flex flex-col justify-center flex-1 w-full max-w-lg mx-auto">
                     <div className="p-8 rounded-4xl border-2 border-blue-500 shadow-lg">
 
                         <div className="mb-5 sm:mb-8">
-                            <h1 className="pt-4 pb-6 font-bold text-gray-900 text-title-lg dark:text-white/90 sm:text-title-lg text-center">
+                            <h1 className="pt-4 pb-6 font-semibold text-gray-900 text-title-md dark:text-white/90 text-center">
                                 {heading}
                             </h1>
                             <p className="text-xl text-gray-500 dark:text-gry-400">

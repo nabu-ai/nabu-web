@@ -37,7 +37,7 @@ function SelectTrigger({
       data-slot="select-trigger"
       data-size={size}
       className={cn(
-        "px-4 py-5 text-gray-800 dark:text-white/90 border-gray-300 dark:border-gray-700 data-[placeholder]:text-gray-400 dark:placeholder:text-white/30 [&_svg:not([class*='text-'])]:text-gray-800 dark:[&_svg:not([class*='text-'])]:text-gray-300 focus-visible:border-ring focus-visible:ring-brand-500/10 aria-invalid:ring-error-500/20 dark:aria-invalid:ring-error-500/40 aria-invalid:border-error-500 dark:bg-gray-900 dark:hover:bg-gray-800 flex w-fit items-center justify-between gap-2 rounded-md border bg-transparent text-lg whitespace-nowrap shadow-xs transition-[color,box-shadow] outline-none focus-visible:ring-[3px] disabled:cursor-not-allowed disabled:opacity-50 data-[size=default]:h-9 data-[size=sm]:h-8 *:data-[slot=select-value]:line-clamp-1 *:data-[slot=select-value]:flex *:data-[slot=select-value]:items-center *:data-[slot=select-value]:gap-2 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
+        "px-4 py-5 text-gray-800 dark:text-white/90 border-gray-300 dark:border-gray-700 data-[placeholder]:text-gray-400 dark:placeholder:text-white/30 [&_svg:not([class*='text-'])]:text-gray-800 dark:[&_svg:not([class*='text-'])]:text-gray-300 focus-visible:border-ring focus-visible:ring-brand-500/10 aria-invalid:ring-error-500/20 dark:aria-invalid:ring-error-500/40 aria-invalid:border-error-500 dark:bg-gray-900 dark:hover:bg-gray-800 flex w-fit items-center justify-between gap-2 rounded-md border bg-transparent text-lg whitespace-nowrap shadow-xs transition-[color,box-shadow] outline-none focus-visible:ring-[3px] disabled:cursor-not-allowed disabled:opacity-50 data-[size=default]:h-12 data-[size=sm]:h-8 *:data-[slot=select-value]:line-clamp-1 *:data-[slot=select-value]:flex *:data-[slot=select-value]:items-center *:data-[slot=select-value]:gap-2 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-8",
         className
       )}
       {...props}
@@ -113,7 +113,7 @@ function SelectItem({
     <SelectPrimitive.Item
       data-slot="select-item"
       className={cn(
-        "focus:bg-gray-300 dark:focus:bg-white focus:text-gray-700 [&_svg:not([class*='text-'])]:text-gray-300 relative flex w-full cursor-default items-center gap-2 rounded-sm py-1.5 pr-8 pl-2 text-lg outline-hidden select-none data-[disabled]:pointer-events-none data-[disabled]:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 *:[span]:last:flex *:[span]:last:items-center *:[span]:last:gap-2",
+        "focus:bg-gray-300 dark:focus:bg-white focus:text-gray-700 [&_svg:not([class*='text-'])]:text-gray-300 relative flex w-full cursor-default items-center gap-2 rounded-sm py-1.5 pr-8 pl-2 text-lg outline-hidden select-none data-[disabled]:pointer-events-none data-[disabled]:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-8 *:[span]:last:flex *:[span]:last:items-center *:[span]:last:gap-2",
         className
       )}
       {...props}

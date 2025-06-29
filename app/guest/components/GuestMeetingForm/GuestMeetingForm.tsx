@@ -86,12 +86,12 @@ const GuestMeetingForm = () => {
       <form onSubmit={form.handleSubmit(handleSubmit)} className="w-full space-y-6 p-4">
         <div className="w-full space-y-8 text-lg text-gray-900 sm:text-lg md:grid md:grid-cols-2 md:gap-2 dark:text-white/90">
           <div>
-            <Label className="font-bold">Agenda</Label>
+            <Label className="font-semibold">Agenda</Label>
           </div>
           <div>{meetingInfo?.agenda}</div>
 
           <div>
-            <Label className="font-bold">Email Id</Label>
+            <Label className="font-semibold">Email Id</Label>
           </div>
           <div>{meetingInfo?.participants?.[0].email}</div>
         </div>
