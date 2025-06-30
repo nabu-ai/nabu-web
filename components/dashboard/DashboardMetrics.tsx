@@ -127,7 +127,7 @@ export const DashboardMetrics = () => {
         <div className="mt-5 flex items-end justify-between">
           <div>
             <span className="text-theme-xl text-gray-500 dark:text-gray-400">Meetings Scheduled</span>
-            <h4 className="text-title-sm mt-2 font-semibold text-gray-800 dark:text-white/90">{meetingsScheduled}</h4>
+            <h4 className="text-title-sm mt-2 font-semibold text-gray-800 dark:text-white/90">{meetingsScheduled} Meeting(s)</h4>
           </div>
         </div>
       </div>

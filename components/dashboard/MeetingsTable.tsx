@@ -146,7 +146,7 @@ export default function MeetingsTable({ heading, meetingData }: { heading: strin
                   <TableCell className={cellCSS}>
                     {languagesMap[partLang]} {(partVoice ? titleCase(partVoice) : "-")}
                   </TableCell>
-                  <TableCell className={cellCSS}>{format(meeting.createdOn, "MM-dd-yyyy HH:mm:ss a")}</TableCell>
+                  <TableCell className={cellCSS}>{format(new Date(meeting.createdOn * 1000), "MM-dd-yyyy hh:mm a")}</TableCell>
                   <TableCell className={cellCSS}>
                     <Badge color={getMeetingStatusColor(meeting.status)}>
                       {meeting.status}
