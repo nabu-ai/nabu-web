@@ -7,7 +7,7 @@ const SignUpFormSchema = z
     email: z.string().email({ message: "Please enter a valid email address." }),
     password: z.string().min(3, { message: "Password must be at least 3 characters." }),
     confirmPassword: z.string().min(3, { message: "Confirm Password must be at least 3 characters." }),
-    company: z.string().optional(),
+    companyName: z.string().optional(),
     phoneNumber: z.string().optional(),
     city: z.string().min(1, { message: "City is required" }),
     state: z.string().min(1, { message: "State is required" }),

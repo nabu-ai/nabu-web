@@ -33,7 +33,7 @@ const SignUpForm = () => {
       email: "",
       password: "",
       confirmPassword: "",
-      company: "",
+      companyName: "",
       phoneNumber: "",
       city: "",
       state: "",
@@ -56,7 +56,7 @@ const SignUpForm = () => {
       email: data.email,
       password: data.password,
       confirmPassword: data.confirmPassword,
-      company: data.company,
+      companyName: data.companyName,
       phoneNumber: data.phoneNumber,
       city: data.city,
       state: data.state,
@@ -81,7 +81,7 @@ const SignUpForm = () => {
                 <FormItem>
                   <FormLabel>First Name *</FormLabel>
                   <FormControl>
-                    <Input id="firstName" type="text" placeholder="John" autoComplete="firstName" {...field} />
+                    <Input id="firstName" type="text" placeholder="First Name" autoComplete="firstName" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -94,7 +94,7 @@ const SignUpForm = () => {
                 <FormItem>
                   <FormLabel>Last Name *</FormLabel>
                   <FormControl>
-                    <Input id="lastName" type="text" placeholder="Doe" autoComplete="lastName" {...field}
+                    <Input id="lastName" type="text" placeholder="Last Name" autoComplete="lastName" {...field}
                     />
                   </FormControl>
                   <FormMessage />
@@ -151,12 +151,12 @@ const SignUpForm = () => {
             />
             <FormField
               control={form.control}
-              name="company"
+              name="companyName"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Company</FormLabel>
                   <FormControl>
-                    <Input id="company" type="text" placeholder="Comany Name" autoComplete="company" {...field} />
+                    <Input id="companyName" type="text" placeholder="Comany Name" autoComplete="companyName" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

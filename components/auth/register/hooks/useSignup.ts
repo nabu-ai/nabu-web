@@ -11,7 +11,7 @@ export type UseNewRegistrationPayload = {
     email: string;
     password: string;
     confirmPassword: string;
-    company: string;
+    companyName: string;
     phoneNumber: string;
     city: string;
     state: string;
