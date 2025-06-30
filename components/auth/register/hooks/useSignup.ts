@@ -36,7 +36,7 @@ export const useNewRegistration = () => {
             toast.error("Failed registration" + errorMsg);
         },
         onSuccess: async (data, variables) => {
-            toast.success("User registered successfully")
+           // toast.success("User registered successfully")
 
         },
     });
