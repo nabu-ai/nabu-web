@@ -58,13 +58,13 @@ export default function UserDropdown() {
       <Dropdown
         isOpen={isOpen}
         onClose={closeDropdown}
-        className="absolute right-0 mt-[17px] flex w-[260px] flex-col rounded-2xl border border-gray-200 bg-white p-3 shadow-theme-lg dark:border-gray-800 dark:bg-gray-dark"
+        className="absolute right-0 mt-[17px] flex w-[260px] flex-col rounded-2xl border border-gray-200 bg-white p-4 shadow-theme-lg dark:border-gray-800 dark:bg-gray-dark"
       >
         <div>
           <span className="block font-medium text-gray-700 text-theme-md dark:text-gray-400">
             {firstName} {lastName}
           </span>
-          <span className="mt-0.5 block text-theme-md text-gray-500 dark:text-gray-400 w-[230px] overflow-text-wrap">
+          <span className="mt-0.5 px-1 block text-theme-xs text-gray-500 dark:text-gray-400 w-[230px] overflow-text-wrap">
             {email}
           </span>
         </div>

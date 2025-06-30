@@ -14,6 +14,9 @@ export type UseNewMeetingPayload = {
 
 export const useNewMeeting = () => {
     const loginData = useUserStore().getLoginData();
+    const userId = useUserStore().getLoginData().userId
+  const tenantId = useUserStore().getLoginData().tenantId
+  const accessToken = useUserStore().getLoginData().accessToken
     const queryClient = useQueryClient()
   return useMutation({
     mutationFn: (payload: UseNewMeetingPayload) => {
@@ -21,7 +24,11 @@ export const useNewMeeting = () => {
         `${NABU_MEETING_API_ENDPOINT}/trial`,
         payload,
         {
-          headers: { "X-User-Id": loginData.userId},
+          headers: { 
+             "X-User-Id": userId,
+            "X-Tenant-Id": tenantId,
+            "Authorization": "Bearer " + accessToken
+          },
         },
       );
     },
@@ -32,6 +39,10 @@ export const useNewMeeting = () => {
       toast.success("Meeting created successfully")
         queryClient.invalidateQueries({
             queryKey: ['get-meetings'],
+            exact: true, // only if key must match exactly
+        });
+         queryClient.invalidateQueries({
+            queryKey: ['get-meeting-stats'],
             exact: true, // only if key must match exactly
         });
     },

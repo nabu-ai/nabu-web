@@ -28,7 +28,13 @@ export default function MeetingsTable({ heading, meetingData }: { heading: strin
   const tenantId = useUserStore().getLoginData().tenantId;
   const [selectedMeeting, setSelectedMeeting] = useState("");
 
-  const meetingList = meetingData || [];
+  const sortedMeetings = meetingData.sort((a, b) => {
+    const dateA = new Date(a.createdOn).getTime();
+    const dateB = new Date(b.createdOn).getTime();
+    return dateB - dateA;  // Descending by createdOn
+  });
+
+  const meetingList = sortedMeetings || [];
 
   const handleCancelMeeting = async (meetingId: string) => {
     setSelectedMeeting(meetingId);
@@ -88,11 +94,11 @@ export default function MeetingsTable({ heading, meetingData }: { heading: strin
   };
 
   const headerCSS = "px-2 py-1 font-semibold text-gray-800 text-start text-theme-md dark:text-gray-400";
-  const cellCSS = "px-2 py-1 text-gray-700 text-theme-md dark:text-gray-400";
+  const cellCSS = "px-2 py-1 text-gray-700 text-theme-sm dark:text-gray-400";
 
   return (
     <>
-      <div className="max-w-full overflow-x-auto lg:overflow-auto lg:h-[calc(100vh-350px)] lg:min-h-40">
+      <div className="max-w-full overflow-x-auto lg:overflow-auto lg:h-[calc(100vh-320px)] lg:min-h-40">
         <Table className="table-auto md:table-fixed">
           {/* Table Header */}
           <TableHeader className="border-y border-gray-100 dark:border-gray-800">
@@ -133,6 +139,11 @@ export default function MeetingsTable({ heading, meetingData }: { heading: strin
           </TableHeader>
           {/* Table Body */}
           <TableBody className="divide-y divide-gray-100 dark:divide-gray-800">
+            {meetingList.length === 0 && (
+              <TableRow>
+                 <TableCell className={cn(cellCSS, "text-2xl text-warning-500 ")}>No Meetings Scheduled</TableCell>
+              </TableRow>
+            )}
             {meetingList.map((meeting: any) => {
               const partName = meeting.participants[0]?.name;
               const partLang = meeting.participants[0]?.language;
@@ -140,11 +151,11 @@ export default function MeetingsTable({ heading, meetingData }: { heading: strin
               const meetingLink = `${NABU_DOMAIN}/nabu-web/guest?mid=${meeting.meetingId}&oid=${tenantId}`;
               return (
                 <TableRow key={meeting.meetingId} className="">
-                  <TableCell className={cn(cellCSS, "w-[200px]")}>{meeting.agenda}</TableCell>
+                  <TableCell className={cn(cellCSS, "w-[190px]")}>{meeting.agenda}</TableCell>
                   <TableCell className={cn(cellCSS, "w-[150px]")}>{languagesMap[meeting.hostLanguage]}</TableCell>
                   <TableCell className={cellCSS}>{partName}</TableCell>
                   <TableCell className={cellCSS}>
-                    {languagesMap[partLang]} {(partVoice ? titleCase(partVoice) : "-")}
+                    {languagesMap[partLang]?languagesMap[partLang]:" - "} ( {(partVoice ? titleCase(partVoice) : "-")} )
                   </TableCell>
                   <TableCell className={cn(cellCSS, "w-[180px]")}>{format(new Date(meeting.createdOn * 1000), "MM-dd-yyyy hh:mm a")}</TableCell>
                   <TableCell className={cellCSS}>
@@ -153,7 +164,7 @@ export default function MeetingsTable({ heading, meetingData }: { heading: strin
                     </Badge>
                   </TableCell>
                   <TableCell className={cn(cellCSS, "w-[100px]")}>{formatTimeDuration(meeting.consumedDuration)}</TableCell>
-                  <TableCell className="text-theme-xl overflow-text-wrap gap-3 py-1 text-gray-500 dark:text-gray-400">
+                  <TableCell className="text-theme-sm overflow-text-wrap gap-3 py-1 text-gray-500 dark:text-gray-400">
                     <button
                       onClick={() => copyToClipboard(meetingLink, meeting.status)}
                       className="hover:text-primary flex items-center gap-2 transition" 

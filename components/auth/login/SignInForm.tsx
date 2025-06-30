@@ -53,7 +53,7 @@ const SignInForm = () => {
             <FormItem>
               <FormLabel>Email Address</FormLabel>
               <FormControl>
-                <Input id="email" type="email" placeholder="info@gmail.com" autoComplete="email" {...field} />
+                <Input id="email" type="email" placeholder="Email Address" autoComplete="email" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>

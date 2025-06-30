@@ -67,7 +67,7 @@ const NewMeetingForm = ({ onSubmit }: NewMeetingFormProps) => {
             <FormItem>
               <FormLabel>Agenda</FormLabel>
               <FormControl>
-                <Input placeholder="Meeting Title" {...field} />
+                <Input placeholder="Meeting Agenda" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>

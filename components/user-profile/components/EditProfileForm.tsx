@@ -123,7 +123,7 @@ const EditProfileForm = ({ onSuccess }) => {
                 <FormItem>
                   <FormLabel>First Name *</FormLabel>
                   <FormControl>
-                    <Input id="firstName" type="text" placeholder="John" autoComplete="firstName" {...field} />
+                    <Input id="firstName" type="text" placeholder="First Name" autoComplete="firstName" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -136,7 +136,7 @@ const EditProfileForm = ({ onSuccess }) => {
                 <FormItem>
                   <FormLabel>Last Name *</FormLabel>
                   <FormControl>
-                    <Input id="lastName" type="text" placeholder="Doe" autoComplete="lastName" {...field} />
+                    <Input id="lastName" type="text" placeholder="Last Name" autoComplete="lastName" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -175,16 +175,19 @@ const EditProfileForm = ({ onSuccess }) => {
                 <FormItem>
                   <FormLabel>Want to be heard as</FormLabel>
                   <FormControl>
+                    <div className="flex items-center gap-3">
                     <RadioGroup orientation="horizontal" {...field} onValueChange={field.onChange}>
                       <RadioGroupItem value="male" id="male" label="He" disabled={!hasMaleVoiceParticipant} />
                       <RadioGroupItem value="female" id="female" label="She" disabled={!hasFemaleVoiceParticipant} />
                     </RadioGroup>
-                  </FormControl>
-                  <FormMessage />
-                  <div className="text-red-500">
+                    <div className="text-red-500">
                     {hasMaleVoiceParticipant && !hasFemaleVoiceParticipant && "Only male voice available"}
                     {hasFemaleVoiceParticipant && !hasMaleVoiceParticipant && "Only female voice available"}
                   </div>
+                  </div>
+                  </FormControl>
+                  <FormMessage />
+                  
                 </FormItem>
               )}
             />
