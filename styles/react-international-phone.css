@@ -11,7 +11,7 @@
     box-sizing: border-box;
     align-items: center;
     justify-content: center;
-    padding: 8px;
+    padding: 18px;
     border: 1px solid var(--react-international-phone-country-selector-border-color, var(--react-international-phone-border-color, gainsboro));
     margin: 0;
     appearance: button;
@@ -187,7 +187,7 @@
     overflow: visible;
     height: var(--react-international-phone-height, 36px);
     box-sizing: border-box;
-    padding: 8px 4px;
+    padding: 18px 12px;
     /* border: 1px solid var(--react-international-phone-border-color, gainsboro);
     border-radius: var(--react-international-phone-border-radius, 4px); */
     margin: 0;

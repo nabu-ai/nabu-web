@@ -87,8 +87,8 @@ export default function MeetingsTable({ heading, meetingData }: { heading: strin
     }, 1000);
   };
 
-  const headerCSS = "px-1 py-1 font-semibold text-gray-800 text-start text-theme-md dark:text-gray-400";
-  const cellCSS = "px-1 py-1 text-gray-700 text-theme-md dark:text-gray-400";
+  const headerCSS = "px-2 py-1 font-semibold text-gray-800 text-start text-theme-md dark:text-gray-400";
+  const cellCSS = "px-2 py-1 text-gray-700 text-theme-md dark:text-gray-400";
 
   return (
     <>
@@ -140,23 +140,23 @@ export default function MeetingsTable({ heading, meetingData }: { heading: strin
               const meetingLink = `${NABU_DOMAIN}/nabu-web/guest?mid=${meeting.meetingId}&oid=${tenantId}`;
               return (
                 <TableRow key={meeting.meetingId} className="">
-                  <TableCell className={cellCSS}>{meeting.agenda}</TableCell>
-                  <TableCell className={cellCSS}>{languagesMap[meeting.hostLanguage]}</TableCell>
+                  <TableCell className={cn(cellCSS, "w-[200px]")}>{meeting.agenda}</TableCell>
+                  <TableCell className={cn(cellCSS, "w-[150px]")}>{languagesMap[meeting.hostLanguage]}</TableCell>
                   <TableCell className={cellCSS}>{partName}</TableCell>
                   <TableCell className={cellCSS}>
                     {languagesMap[partLang]} {(partVoice ? titleCase(partVoice) : "-")}
                   </TableCell>
-                  <TableCell className={cellCSS}>{format(new Date(meeting.createdOn * 1000), "MM-dd-yyyy hh:mm a")}</TableCell>
+                  <TableCell className={cn(cellCSS, "w-[180px]")}>{format(new Date(meeting.createdOn * 1000), "MM-dd-yyyy hh:mm a")}</TableCell>
                   <TableCell className={cellCSS}>
                     <Badge color={getMeetingStatusColor(meeting.status)}>
                       {meeting.status}
                     </Badge>
                   </TableCell>
-                  <TableCell className={cellCSS}>{formatTimeDuration(meeting.consumedDuration)}</TableCell>
-                  <TableCell className="text-theme-xl overflow-text-wrap w-50 gap-3 py-3 text-gray-500 dark:text-gray-400">
+                  <TableCell className={cn(cellCSS, "w-[100px]")}>{formatTimeDuration(meeting.consumedDuration)}</TableCell>
+                  <TableCell className="text-theme-xl overflow-text-wrap gap-3 py-1 text-gray-500 dark:text-gray-400">
                     <button
                       onClick={() => copyToClipboard(meetingLink, meeting.status)}
-                      className="hover:text-primary flex items-center gap-2 transition"
+                      className="hover:text-primary flex items-center gap-2 transition" 
                       title={meetingLink}
                     >
                       <ExternalLinkIcon className="h-4 w-4" />
