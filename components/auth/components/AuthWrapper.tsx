@@ -25,7 +25,7 @@ export default function AuthWrapper({
                                 </a>
                                 <div className="space-y-2">
                                     <h1 className="text-5xl font-medium text-white/60" >{bannerHeading}</h1>
-                                    <p className="text-title-sm text-white/60">{bannerDescription}</p>
+                                    <p className="text-title-xs text-white/60">{bannerDescription}</p>
                                 </div>
                             </div>
                         </div>
