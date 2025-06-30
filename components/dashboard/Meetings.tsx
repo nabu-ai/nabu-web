@@ -32,13 +32,13 @@ const Meetings = () => {
         closeModal();
     };
 
-    return (<><div className="overflow-hidden rounded-2xl border border-gray-200 bg-white px-4 pt-4 pb-3 sm:px-6 dark:border-gray-800 dark:bg-white/[0.03]">
+    return (<><div className="overflow-hidden rounded-2xl border border-gray-200 bg-white px-4 pt-2 pb-3 sm:px-6 dark:border-gray-800 dark:bg-white/[0.03]">
 
         <Tabs defaultValue="activeMeetings">
-            <TabsList className="w-full py-12 px-2 gap-2">
-                <TabsTrigger className="flex-none py-6" value='activeMeetings'>Active Meetings</TabsTrigger>
-                <TabsTrigger className="flex-none py-6" value='allMeetings'>All Meetings</TabsTrigger>
-                <div className="grow text-right p-4">
+            <TabsList className="w-full py-8 px-2 gap-2">
+                <TabsTrigger className="flex-none py-4" value='activeMeetings'>Active Meetings</TabsTrigger>
+                <TabsTrigger className="flex-none py-4" value='allMeetings'>All Meetings</TabsTrigger>
+                <div className="grow text-right p-1">
                     <Button
                         onClick={openModal}
                         disabled={useUserStore.getState().trialExpired}

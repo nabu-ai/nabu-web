@@ -170,7 +170,7 @@ const SignUpForm = () => {
                   <FormLabel className="text-left">Phone Number</FormLabel>
                   <FormControl className="w-full">
                     <PhoneInput placeholder="Enter a phone number" {...field} defaultCountry="us"
-                      inputClassName={cn("w-full rounded-lg border appearance-none px-4 py-2.5 text-base shadow-theme-md placeholder:text-gray-400 focus:outline-hidden focus:ring-3 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800",
+                      inputClassName={cn("w-full rounded-lg border appearance-none px-2 py-1 text-theme-md shadow-theme-md placeholder:text-gray-400 focus:outline-hidden focus:ring-3 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800",
                         "bg-transparent text-gray-800 border-gray-300 focus:border-brand-300 focus:ring-3 focus:ring-brand-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:focus:border-brand-800",
                         "aria-invalid:ring-error-500/20 dark:aria-invalid:ring-error-500/40 aria-invalid:border-error-500"
                       )} />
@@ -238,7 +238,7 @@ const SignUpForm = () => {
                   <FormLabel>Country *</FormLabel>
                   <FormControl>
                     <Select defaultValue="" id="country" {...field} onValueChange={field.onChange}>
-                      <SelectTrigger id="country" className="w-full max-w-124">
+                      <SelectTrigger id="country" className="w-full max-w-124" size="8">
                         <SelectValue placeholder="Select country" />
                       </SelectTrigger>
                       <SelectContent>
@@ -261,7 +261,7 @@ const SignUpForm = () => {
         </form>
       </Form>
 
-      <div className="mt-5">
+      <div className="mt-2">
         <p className="text-theme-lg font-normal text-gray-700 dark:text-gray-400 sm:text-start">
           Already have an account? {""}
           <Link

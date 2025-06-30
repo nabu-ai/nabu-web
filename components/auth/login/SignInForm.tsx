@@ -84,7 +84,7 @@ const SignInForm = () => {
 
       </form>
     </Form>
-    <div className="mt-5">
+    <div className="mt-2">
       <p className="text-theme-xl font-normal text-gray-700 dark:text-gray-400 sm:text-start">
         Don&apos;t have an account? {""}
         <Link

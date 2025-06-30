@@ -34,10 +34,10 @@ export default function AuthWrapper({
             </div>
             <div className="flex flex-col flex-1 lg:w-1/2 w-full overflow-auto px-4 ">
                 <div className="flex flex-col justify-center flex-1 w-full max-w-lg mx-auto">
-                    <div className="p-8 rounded-4xl border-2 border-blue-500 shadow-lg">
+                    <div className="p-4 rounded-4xl border-2 border-blue-500 shadow-lg">
 
-                        <div className="mb-5 sm:mb-8">
-                            <h1 className="pt-2 pb-4 font-semibold text-gray-900 text-title-md dark:text-white/90 text-center">
+                        <div className="mb-2 sm:mb-6">
+                            <h1 className="pt-2 pb-2 font-semibold text-gray-900 text-title-md dark:text-white/90 text-center">
                                 {heading}
                             </h1>
                             <p className="text-theme-xl text-gray-500 dark:text-gry-400">

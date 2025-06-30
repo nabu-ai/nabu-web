@@ -37,7 +37,13 @@ function SelectTrigger({
       data-slot="select-trigger"
       data-size={size}
       className={cn(
-        "px-4 py-5 text-gray-800 dark:text-white/90 border-gray-300 dark:border-gray-700 data-[placeholder]:text-gray-400 dark:placeholder:text-white/30 [&_svg:not([class*='text-'])]:text-gray-800 dark:[&_svg:not([class*='text-'])]:text-gray-300 focus-visible:border-ring focus-visible:ring-brand-500/10 aria-invalid:ring-error-500/20 dark:aria-invalid:ring-error-500/40 aria-invalid:border-error-500 dark:bg-gray-900 dark:hover:bg-gray-800 flex w-fit items-center justify-between gap-2 rounded-md border bg-transparent text-lg whitespace-nowrap shadow-xs transition-[color,box-shadow] outline-none focus-visible:ring-[3px] disabled:cursor-not-allowed disabled:opacity-50 data-[size=default]:h-12 data-[size=sm]:h-8 *:data-[slot=select-value]:line-clamp-1 *:data-[slot=select-value]:flex *:data-[slot=select-value]:items-center *:data-[slot=select-value]:gap-2 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-8",
+        "px-2 py-1 text-gray-800 dark:text-white/90 border-gray-300 dark:border-gray-700 data-[placeholder]:text-gray-400 dark:placeholder:text-white/30",
+        "[&_svg:not([class*='text-'])]:text-gray-800 dark:[&_svg:not([class*='text-'])]:text-gray-300 focus-visible:border-ring focus-visible:ring-brand-500/10",
+        " aria-invalid:ring-error-500/20 dark:aria-invalid:ring-error-500/40 aria-invalid:border-error-500 dark:bg-gray-900 dark:hover:bg-gray-800",
+        "flex w-fit items-center justify-between gap-2 rounded-md border bg-transparent text-lg whitespace-nowrap shadow-xs transition-[color,box-shadow] ",
+        "outline-none focus-visible:ring-[3px] disabled:cursor-not-allowed disabled:opacity-50 data-[size=default]:h-12 data-[size=sm]:h-6 ",
+        "*:data-[slot=select-value]:line-clamp-1 *:data-[slot=select-value]:flex *:data-[slot=select-value]:items-center *:data-[slot=select-value]:gap-2 ",
+        "[&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-8",
         className
       )}
       {...props}
@@ -135,7 +141,7 @@ function SelectSeparator({
   return (
     <SelectPrimitive.Separator
       data-slot="select-separator"
-      className={cn("bg-gray-300 pointer-events-none -mx-1 my-1 h-px", className)}
+      className={cn("bg-gray-300 pointer-events-none -mx-1 my-1 h-1", className)}
       {...props}
     />
   )
