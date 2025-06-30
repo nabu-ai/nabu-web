@@ -92,7 +92,7 @@ export default function MeetingsTable({ heading, meetingData }: { heading: strin
 
   return (
     <>
-      <div className="max-w-full overflow-x-auto lg:overflow-auto lg:h-[60%]">
+      <div className="max-w-full overflow-x-auto lg:overflow-auto lg:h-[calc(100vh-350px)] lg:min-h-40">
         <Table className="table-auto md:table-fixed">
           {/* Table Header */}
           <TableHeader className="border-y border-gray-100 dark:border-gray-800">
