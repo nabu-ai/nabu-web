@@ -61,8 +61,11 @@ export default function MeetingsTable({ heading, meetingData }: { heading: strin
       case "CANCELLED":
         return "warning";
         break;
+      case "EXPIRED":
+        return "error";
+        break;
       default:
-        return "primary";
+        return "error";
         break;
     }
   };
@@ -93,8 +96,8 @@ export default function MeetingsTable({ heading, meetingData }: { heading: strin
     }, 1000);
   };
 
-  const headerCSS = "px-2 py-1 font-semibold text-gray-800 text-start text-theme-md dark:text-gray-400";
-  const cellCSS = "px-2 py-1 text-gray-700 text-theme-sm dark:text-gray-400";
+  const headerCSS = "px-2 py-1 font-semibold text-gray-800 text-start text-theme-sm dark:text-gray-400";
+  const cellCSS = "px-2 py-4 text-gray-700 text-theme-sm dark:text-gray-400";
 
   return (
     <>
@@ -141,7 +144,7 @@ export default function MeetingsTable({ heading, meetingData }: { heading: strin
           <TableBody className="divide-y divide-gray-100 dark:divide-gray-800">
             {meetingList.length === 0 && (
               <TableRow>
-                 <TableCell className={cn(cellCSS, "text-2xl text-warning-500 ")}>No Meetings Scheduled</TableCell>
+                 <TableCell colspan="10" className={cn(cellCSS, "text-2xl text-warning-500 ")}>No Meetings Scheduled</TableCell>
               </TableRow>
             )}
             {meetingList.map((meeting: any) => {
@@ -155,17 +158,17 @@ export default function MeetingsTable({ heading, meetingData }: { heading: strin
                   <TableCell className={cn(cellCSS, "w-[150px]")}>{languagesMap[meeting.hostLanguage]}</TableCell>
                   <TableCell className={cellCSS}>{partName}</TableCell>
                   <TableCell className={cellCSS}>
-                    {languagesMap[partLang]?languagesMap[partLang]:" - "} ( {(partVoice ? titleCase(partVoice) : "-")} )
+                    {languagesMap[partLang]?languagesMap[partLang]:" N/A "} {(partVoice ? (titleCase(partVoice)) : "")}
                   </TableCell>
                   <TableCell className={cn(cellCSS, "w-[180px]")}>{format(new Date(meeting.createdOn * 1000), "MM-dd-yyyy hh:mm a")}</TableCell>
                   <TableCell className={cellCSS}>
-                    <Badge color={getMeetingStatusColor(meeting.status)}>
-                      {meeting.status}
+                    <Badge color={getMeetingStatusColor(useUserStore.getState().trialExpired ? "EXPIRED" : meeting.status)}>
+                      {useUserStore.getState().trialExpired ? "EXPIRED" : meeting.status}
                     </Badge>
                   </TableCell>
                   <TableCell className={cn(cellCSS, "w-[100px]")}>{formatTimeDuration(meeting.consumedDuration)}</TableCell>
                   <TableCell className="text-theme-sm overflow-text-wrap gap-3 py-1 text-gray-500 dark:text-gray-400">
-                    <button
+                     {(meeting.status === "ACTIVE" || meeting.status === "ONGOING") && !useUserStore.getState().trialExpired && (<button
                       onClick={() => copyToClipboard(meetingLink, meeting.status)}
                       className="hover:text-primary flex items-center gap-2 transition" 
                       title={meetingLink}
@@ -173,19 +176,21 @@ export default function MeetingsTable({ heading, meetingData }: { heading: strin
                       <ExternalLinkIcon className="h-4 w-4" />
                       <span>Copy Link</span>
                     </button>
+                     )}
                   </TableCell>
                   <TableCell className="flex gap-3">
-                    {meeting.status === "ACTIVE" && (
+                    {!useUserStore.getState().trialExpired && <>
+                    {(meeting.status === "ACTIVE" || meeting.status === "ONGOING") && (
                       <Button
                         onClick={() => handleStartMeeting(meeting)}
-                        variant="primary"
+                        variant={meeting.status === "ACTIVE" ? "primary" : "success"}
                         size="xs"
-                        className="text-theme-lg w-20 py-1"
+                        className="text-theme-lg w-20 py-1 "
                       >
-                        Start
+                        {meeting.status === "ACTIVE" ? "Start" : "Join"}
                       </Button>
                     )}
-                    {(meeting.status === "ACTIVE" || meeting.status === "CANCELLED") && (
+                    {meeting.status === "ACTIVE" && (
                       <Button
                         onClick={() => handleCancelMeeting(meeting.meetingId)}
                         disabled={meeting.status === "CANCELLED"}
@@ -199,6 +204,7 @@ export default function MeetingsTable({ heading, meetingData }: { heading: strin
                         Cancel
                       </Button>
                     )}
+                    </>}
                   </TableCell>
                 </TableRow>
               );

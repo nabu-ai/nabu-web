@@ -45,7 +45,6 @@ export default function LobbyPage() {
     if (!hasInitialized.current && permissionStatus === "granted") {
       hasInitialized.current = true;
       if(permissionStatus === "granted"){
-        useMeetingStore.setState(useMeetingStore.getInitialState())
         handleJoin()
       }
     }

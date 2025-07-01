@@ -13,20 +13,25 @@ type SignInResponse = {
 export type EndMeetingPayload = {
     meetingId: string;
     duration: number;
+    trialDuration: number;
 };
 
-export const useEndMeeting = ({router}) => {
-    const meetingId = useMeetingStore.getState().meetingId;
-    const duration = useMeetingStore.getState().duration;
-    const userId =  useUserStore().getLoginData().userId 
-    
+export const useEndMeeting = ({ router }) => {
+    const userId = useUserStore().getLoginData().userId
+    const tenantId = useUserStore().getLoginData().tenantId
+    const accessToken = useUserStore().getLoginData().accessToken
+
     return useMutation({
         mutationFn: (payload: EndMeetingPayload) => {
             return axiosInstance.post(
                 `${NABU_MEETING_API_ENDPOINT}/end`,
                 payload,
                 {
-                     headers: { "X-User-Id": userId},
+                    headers: {
+                        "X-User-Id": userId,
+                        "X-Tenant-Id": tenantId,
+                        "Authorization": "Bearer " + accessToken
+                    },
                 },
             );
         },

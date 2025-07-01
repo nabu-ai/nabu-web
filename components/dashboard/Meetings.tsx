@@ -20,7 +20,7 @@ const Meetings = () => {
     const { isOpen, openModal, closeModal } = useModal();
     const { data, isLoading, refetch } = useGetMeetings();
     const meetings = data?.data || []
-    const activeMeetings = meetings?.filter((m: any) => m.status === "ACTIVE")
+    const activeMeetings = meetings?.filter((m: any) => m.status === "ACTIVE" || m.status === "ONGOING")
     useEffect(() => {
         if (!hasInitialized.current) {
             hasInitialized.current = true;
@@ -44,7 +44,7 @@ const Meetings = () => {
                         disabled={useUserStore.getState().trialExpired}
                         size="sm"
                     >
-                        New Instant Meeting
+                        {useUserStore.getState().trialExpired?"Trial Expired":"New Instant Meeting"}
                     </Button>
                 </div>
             </TabsList>

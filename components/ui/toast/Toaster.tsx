@@ -57,7 +57,7 @@ const Toaster = ({ ...props }: ToasterProps) => {
         // },
         classNames: {
           toast: 'text-lg px-6 py-4 rounded-xl shadow-2xl',
-          title: 'text-xl font-semibold',
+          title: 'text-md font-semibold',
           description: 'text-base text-gray-300',
         },
       }}

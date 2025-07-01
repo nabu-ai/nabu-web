@@ -89,12 +89,9 @@ export const DashboardMetrics = () => {
   }, [meetingStats]);
 
   useEffect(() => {
-    if (secondsUsed === 600) {
+    if (secondsUsed >= 600) {
       useUserStore.setState({ trialExpired: true });
-    } else {
-      //console.log("Setting trial state::::", secondsUsed)
-      useUserStore.setState({ trialExpired: false });
-    }
+    } 
   }, [isSuccess]);
 
   return (

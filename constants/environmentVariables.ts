@@ -2,16 +2,16 @@ const NABU_PUBLIC_BASE_PATH = process.env.NABU_PUBLIC_BASE_PATH ?? "/api/";
 
 
 // For local development
-// const NABU_SERVER_HOST = "http://localhost";
-// const NABU_MEETING_HOST = `${NABU_SERVER_HOST}:8083`
-// const NABU_TENANT_HOST = `${NABU_SERVER_HOST}:8082`
-// const NABU_USER_HOST = `${NABU_SERVER_HOST}:8081`
+const NABU_SERVER_HOST = "http://localhost";
+const NABU_MEETING_HOST = `${NABU_SERVER_HOST}:8083`
+const NABU_TENANT_HOST = `${NABU_SERVER_HOST}:8082`
+const NABU_USER_HOST = `${NABU_SERVER_HOST}:8081`
 
 
-const NABU_SERVER_HOST = "https://api.marisolsoftware.com";
-const NABU_MEETING_HOST = `${NABU_SERVER_HOST}/api/meeting`
-const NABU_TENANT_HOST = `${NABU_SERVER_HOST}/api/tenant`
-const NABU_USER_HOST = `${NABU_SERVER_HOST}/api/user`
+// const NABU_SERVER_HOST = "https://api.marisolsoftware.com";
+// const NABU_MEETING_HOST = `${NABU_SERVER_HOST}/api/meeting`
+// const NABU_TENANT_HOST = `${NABU_SERVER_HOST}/api/tenant`
+// const NABU_USER_HOST = `${NABU_SERVER_HOST}/api/user`
 
 const NABU_PUBLIC_API_ENDPOINT = NABU_SERVER_HOST
 const NABU_USER_API_ENDPOINT = process.env.NABU_USER_API_ENDPOINT ?? `${NABU_USER_HOST}/api/users`;

@@ -46,13 +46,14 @@ export default function ControlBar({ uid, roomName }: { uid: string; roomName: s
 
   const hasInitialized = useRef(false);
   const [duration, setDuration] = useState(0);
-  const [trialDuration, setTrialDuration] = useState(useMeetingStore((s) => s.trialDuration))
+  const [trialDuration, setTrialDuration] = useState(0)
+  const triDuration = useMeetingStore((s) => s.trialDuration)
   const [isMuteProcessing, setIsMuteProcessing] = useState(true);
    const router = useRouter()
-  const { isPending, mutate: handleEndMeeting, isSuccess, data } = useEndMeeting({router});
+  const { isPending, mutateAsync: handleEndMeeting, isSuccess, data } = useEndMeeting({router});
   const {
     isPending: isGuestPending,
-    mutate: handleLeaveMeeting,
+    mutateAsync: handleLeaveMeeting,
     isSuccess: isGuestSuccess,
     data: guestData,
   } = useLeaveMeeting();
@@ -101,11 +102,16 @@ export default function ControlBar({ uid, roomName }: { uid: string; roomName: s
   }, []);
 
   useEffect(() => {
-    if (trialDuration === 600) {
+    
+    if (trialDuration >= 600) {
       toast.warning("You have completed your free trial minutes. Please upgrade the account to continue")
       handleLeave();
     }
   }, [trialDuration]);
+
+  useEffect(() => {
+    setTrialDuration(triDuration)
+  }, [triDuration])
 
   const formatDuration = (seconds: number) => {
     const m = Math.floor(seconds / 60)
@@ -179,19 +185,19 @@ export default function ControlBar({ uid, roomName }: { uid: string; roomName: s
 
   const endMeeting = async () => {
     sendHostLeft(uid)
-    handleEndMeeting({ meetingId: meetingInfo.meetingId, duration });
+    await handleEndMeeting({ meetingId: meetingInfo.meetingId, duration, trialDuration });
     useMeetingStore.setState(useMeetingStore.getInitialState())
   };
 
   const leaveMeeting = async () => {
-    handleLeaveMeeting({ meetingId: meetingInfo.meetingId, duration, participantId: meetingInfo.participants?.[0].id });
+    await handleLeaveMeeting({ meetingId: meetingInfo.meetingId, duration, trialDuration, participantId: meetingInfo.participants?.[0].id });
     useMeetingStore.setState(useMeetingStore.getInitialState())
   };
 
   return (
     <div className="fixed top-1/2 right-4 z-50 flex -translate-y-1/2 transform flex-col items-center space-y-4 text-white">
       {/* Room name (at top of control bar) */}
-      <div className="text-theme-xl mb-6 font-semibold text-gray-300">{roomName}</div>
+      <div className="text-theme-xl mb-6 font-semibold text-gray-300">{trialDuration}</div>
 
       {/* Mic */}
       {!meetingInfo.nonVerbal && (

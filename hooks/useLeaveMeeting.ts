@@ -10,6 +10,7 @@ export type LeaveMeetingPayload = {
     meetingId: string;
     participantId: string;
     duration: number;
+    trialDuration: number;
 };
 
 export const useLeaveMeeting = () => {

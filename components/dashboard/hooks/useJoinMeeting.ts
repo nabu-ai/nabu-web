@@ -9,12 +9,14 @@ export const useJoinMeeting =  () => {
   const queryClient = useQueryClient()
   const userId =  useUserStore().getLoginData().userId
   const tenantId = useUserStore().getLoginData().tenantId
+  const accessToken = useUserStore().getLoginData().accessToken
   return useMutation({
     mutationFn: (meetingId: string) => {
       return axiosInstance.post(`${NABU_MEETING_API_ENDPOINT}/${meetingId}/join`, {}, {
         headers: { 
             "X-User-Id": userId,
-            "X-Tenant-Id": tenantId
+            "X-Tenant-Id": tenantId,
+            "Authorization": "Bearer "+accessToken
         },
       });
     },
