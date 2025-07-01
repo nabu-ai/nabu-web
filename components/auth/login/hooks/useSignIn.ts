@@ -6,6 +6,7 @@ import { NABU_AUTH_API_ENDPOINT } from "@/constants/environmentVariables";
 import { toast } from "sonner";
 import { useGetUserProfile } from "@/components/user-profile/hooks/useGetUserProfile";
 import { useEffect, useState } from "react";
+import { useMeetingStore } from "@/store/useMeetingStore";
 
 type SignInResponse = {
   accessToken: string;
@@ -56,6 +57,7 @@ export const useSignIn = ({router}) => {
                 userId: results.userId,
                 tenantId: results.tenantId
               }})
+          useMeetingStore.setState(useMeetingStore.getInitialState());
       }
     },
   });

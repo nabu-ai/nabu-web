@@ -180,6 +180,7 @@ export default function ControlBar({ uid, roomName }: { uid: string; roomName: s
   const endMeeting = async () => {
     sendHostLeft(uid)
     handleEndMeeting({ meetingId: meetingInfo.meetingId, duration });
+    useMeetingStore.setState(useMeetingStore.getInitialState())
   };
 
   const leaveMeeting = async () => {
