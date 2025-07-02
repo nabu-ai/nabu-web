@@ -32,6 +32,7 @@ export default function LobbyPage() {
    const { mutateAsync: joinMeeting } = useJoinMeeting()
   const meetingInfo = useMeetingStore.getState().meetingInfo;
   const userData = useUserStore.getState().getUserData()
+  const loginData = useUserStore.getState().getLoginData()
   const { prepareStreaming } = nabuTranslator;
 
   const [mediaPermissionGranted, setMediaPermissionGranted] = useState(false);
@@ -65,11 +66,11 @@ export default function LobbyPage() {
       appId = "";
     }
     // console.log("appId:::", appId)
-    const userName = userData?.firstName?(userData.firstName + " " + userData.lastName):meetingInfo.participants?.[0]?.name
-    const gender = userData?.spokenInVoice?userData.spokenInVoice:meetingInfo.participants?.[0]?.voiceHeardAs
-    const nonVerbal = userData?.nonVerbal?userData.nonVerbal:meetingInfo.participants?.[0]?.nonVerbal
-    const hearingImpaired = userData?.hearingImpaired?userData.hearingImpaired:meetingInfo.participants?.[0]?.hearingImpaired
-    const preferredLanguage = userData?.preferredLanguage?userData.preferredLanguage:meetingInfo.participants?.[0]?.language
+    const userName = loginData?.userId?(userData.firstName + " " + userData.lastName):meetingInfo.participants?.[0]?.name
+    const gender = loginData?.userId?meetingInfo.hostHeardAs:meetingInfo.participants?.[0]?.voiceHeardAs
+    const nonVerbal = loginData?.userId?userData.nonVerbal:meetingInfo.participants?.[0]?.nonVerbal
+    const hearingImpaired = loginData?.userId?userData.hearingImpaired:meetingInfo.participants?.[0]?.hearingImpaired
+    const preferredLanguage = loginData?.userId?meetingInfo.hostLanguage:meetingInfo.participants?.[0]?.language
     connectWebSocket(meetingInfo.meetingId, userName); // 🔁 one-time setup
 
     useMeetingStore.setState({

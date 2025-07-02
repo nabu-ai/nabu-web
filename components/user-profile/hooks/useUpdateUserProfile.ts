@@ -21,15 +21,21 @@ export type UseProfileUpdatePayload = {
 };
 
 export const useUpdateUserProfile = () => {
-  const loginData = useUserStore().getLoginData();
+  const userId = useUserStore().getLoginData().userId
+  const tenantId = useUserStore().getLoginData().tenantId
+  const accessToken = useUserStore().getLoginData().accessToken
   const queryClient = useQueryClient()
   return useMutation({
     mutationFn: (payload: UseProfileUpdatePayload) => {
       return axiosInstance.put(
-        `${NABU_USER_API_ENDPOINT}/${loginData.userId}/update`,
+        `${NABU_USER_API_ENDPOINT}/${userId}/update`,
         payload,
         {
-          headers: { "Content-Type": undefined },
+          headers: {
+            "X-User-Id": userId,
+            "X-Tenant-Id": tenantId,
+            "Authorization": "Bearer " + accessToken
+          },
         },
       );
     },

@@ -44,6 +44,9 @@ export default function ControlBar({ uid, roomName }: { uid: string; roomName: s
   const toggleParticipants = useMeetingStore((s) => s.toggleParticipants);
   const addTranscript = useMeetingStore((s) => s.addTranscript);
 
+  const [warningSent, setWarningSent] = useState(false);
+  const [criticalWarnSent, setCriticalWarnSent] = useState(false);
+
   const hasInitialized = useRef(false);
   const [duration, setDuration] = useState(0);
   const [trialDuration, setTrialDuration] = useState(0)
@@ -63,8 +66,6 @@ export default function ControlBar({ uid, roomName }: { uid: string; roomName: s
   useEffect(() => {
     if (!hasInitialized.current) {
       hasInitialized.current = true;
-
-      //setTrialDuration(useMeetingStore((s) => s.trialDuration))
 
       if (muted) {
         muteUser(uid);
@@ -102,7 +103,14 @@ export default function ControlBar({ uid, roomName }: { uid: string; roomName: s
   }, []);
 
   useEffect(() => {
-    
+    if(!warningSent && trialDuration > 480 && trialDuration < 540){
+      setWarningSent(true);
+      toast.warning("Your trial meetng will end in anoher 2 minutes")
+    }
+    else if(!criticalWarnSent && trialDuration > 540){
+       setCriticalWarnSent(true);
+      toast.error("Your trial meetng will end in 1 minute")
+    }
     if (trialDuration >= 600) {
       toast.warning("You have completed your free trial minutes. Please upgrade the account to continue")
       handleLeave();
@@ -110,7 +118,9 @@ export default function ControlBar({ uid, roomName }: { uid: string; roomName: s
   }, [trialDuration]);
 
   useEffect(() => {
+    console.log("triDuration::::", triDuration)
     setTrialDuration(triDuration)
+    
   }, [triDuration])
 
   const formatDuration = (seconds: number) => {
@@ -197,7 +207,7 @@ export default function ControlBar({ uid, roomName }: { uid: string; roomName: s
   return (
     <div className="fixed top-1/2 right-4 z-50 flex -translate-y-1/2 transform flex-col items-center space-y-4 text-white">
       {/* Room name (at top of control bar) */}
-      <div className="text-theme-xl mb-6 font-semibold text-gray-300">{trialDuration}</div>
+      <div className="text-theme-xl mb-6 font-semibold text-gray-300"></div>
 
       {/* Mic */}
       {!meetingInfo.nonVerbal && (
@@ -267,7 +277,7 @@ export default function ControlBar({ uid, roomName }: { uid: string; roomName: s
       </button>
 
       {/* Room name (at top of control bar) */}
-      <div className="text-theme-xl mt-auto pt-6 text-gray-400">{formatDuration(duration)}</div>
+      <div className={`text-theme-xl mt-auto pt-6 ${warningSent?"text-warning-400":(criticalWarnSent?"text-red-400":"text-gray-400")} `}>{formatDuration(duration)}</div>
     </div>
   );
 }
